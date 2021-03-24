@@ -24,8 +24,8 @@ fi
 echo "\n### Installing runtime dependencies"
 pipenv install
 
-echo "\n### Bootstrapping Dotfiles"
-pipenv run ansible-playbook ansible/dotfiles.yml
+echo "\n### Bootstrapping system"
+pipenv run ansible-playbook ansible/system.yml
 
 if [ -z ${PIPENV_EXISTS} ]; then
     echo "\n### Cleaning up"
