@@ -1,0 +1,5 @@
+---
+- name: Install Homebrew
+  ansible.builtin.script: install_homebrew.sh
+  args:
+    creates: /usr/local/bin/brew

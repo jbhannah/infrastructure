@@ -1,4 +1,5 @@
 ---
 - hosts: localhost
-  tasks:
-    - ping:
+  roles:
+    - name: homebrew
+      when: ansible_system == "Darwin"
