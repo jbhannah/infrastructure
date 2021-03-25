@@ -1,0 +1,8 @@
+---
+brew_prefix: |-
+  {{
+    {
+      "Darwin": "/usr/local",
+      "Linux": "~/.linuxbrew"
+    }[ansible_system]
+  }}

@@ -1,5 +1,44 @@
 ---
-- name: Install Homebrew
-  ansible.builtin.script: install_homebrew.sh
+- name: Install Xcode Command Line Tools
+  ansible.builtin.command: xcode-select --install
   args:
-    creates: /usr/local/bin/brew
+    creates: /Library/Developer/CommandLineTools
+  when: ansible_system == "Darwin"
+
+- name: Install common Linux dependencies
+  ansible.builtin.package:
+    name:
+      - curl
+      - file
+      - git
+    state: present
+  become: true
+  when: ansible_system == "Linux"
+
+- name: Install build-essential
+  ansible.builtin.apt:
+    name: build-essential
+    state: present
+    install_recommends: false
+  become: true
+  when: ansible_os_family == "Debian"
+
+- name: Install Development Tools
+  ansible.builtin.dnf:
+    name: "@Development Tools"
+    state: present
+  become: true
+  when: ansible_os_family == "RedHat"
+
+- name: Install libxcrypt-compat
+  ansible.builtin.dnf:
+    name: libxcrypt-compat
+    state: present
+  become: true
+  when: ansible_distribution == "Fedora" and (ansible_distribution_major_version | int) >= 30
+
+- name: Install Homebrew
+  ansible.builtin.shell: |
+    yes | $(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)
+  args:
+    creates: "{{ brew_prefix }}/bin/brew"
