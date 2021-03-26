@@ -13,11 +13,6 @@
     - conf.d
     - functions
 
-- name: Copy config.fish
-  ansible.builtin.template:
-    src: config.fish.j2
-    dest: ~/.config/fish/config.fish
-
 - name: Copy common configuration
   ansible.builtin.copy:
     src: common/
@@ -27,3 +22,8 @@
   ansible.builtin.copy:
     src: Darwin/
     dest: ~/.config/fish/
+
+- name: Apply environment template
+  ansible.builtin.template:
+    src: conf.d/00-env.fish.j2
+    dest: ~/.config/fish/conf.d/00-env.fish
