@@ -17,3 +17,13 @@
   ansible.builtin.template:
     src: config.fish.j2
     dest: ~/.config/fish/config.fish
+
+- name: Copy common configuration
+  ansible.builtin.copy:
+    src: common/
+    dest: ~/.config/fish/
+
+- name: Copy macOS-specific configuration
+  ansible.builtin.copy:
+    src: Darwin/
+    dest: ~/.config/fish/
