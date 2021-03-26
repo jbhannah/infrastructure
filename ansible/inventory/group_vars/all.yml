@@ -1,0 +1,4 @@
+---
+fish_greeting: ""
+fish_key_bindings: fish_vi_key_bindings
+package_become: "{{ 'false' if ansible_system == 'Darwin' else 'true' }}"

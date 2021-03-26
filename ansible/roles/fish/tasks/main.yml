@@ -1,0 +1,16 @@
+---
+- name: Install fish
+  ansible.builtin.package:
+    name: fish
+    state: present
+  become: "{{ package_become }}"
+
+- name: Create .config/fish
+  ansible.builtin.file:
+    path: ~/.config/fish
+    state: directory
+
+- name: Copy config.fish
+  ansible.builtin.template:
+    src: config.fish.j2
+    dest: ~/.config/fish/config.fish
