@@ -1,0 +1,10 @@
+---
+- name: Install Starship
+  community.general.homebrew:
+    name: starship
+    state: present
+
+- name: Copy configuration
+  ansible.builtin.copy:
+    src: config/
+    dest: ~/.config/
