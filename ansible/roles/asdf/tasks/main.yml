@@ -1,0 +1,10 @@
+---
+- name: Install asdf
+  community.general.homebrew:
+    name: asdf
+    state: present
+
+- name: Copy configuration
+  ansible.builtin.copy:
+    src: config/
+    dest: ~/.config/
