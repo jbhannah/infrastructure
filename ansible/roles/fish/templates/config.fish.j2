@@ -1,11 +1,7 @@
 if status is-interactive
-{% if fish_greeting is not none %}
-    set -U fish_greeting {{ fish_greeting }}
-{% endif -%}
-{% if fish_key_bindings is not none %}
-    set -U fish_key_bindings {{ fish_key_bindings }}
-{% endif -%}
-{% if tz is not none %}
-    set -U TZ {{ tz }}
+    set -U fish_greeting
+    set -U fish_key_bindings fish_vi_key_bindings
+{% if timezone is not none %}
+    set -U TZ {{ timezone }}
 {% endif -%}
 end

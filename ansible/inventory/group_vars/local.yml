@@ -1,4 +1,4 @@
 ---
 ansible_connection: local
 ansible_python_interpreter: /usr/bin/python3
-tz: US/Pacific
+timezone: US/Pacific
