@@ -5,10 +5,13 @@
     state: present
   become: "{{ package_become }}"
 
-- name: Create .config/fish
+- name: Create ~/.config/fish directories
   ansible.builtin.file:
-    path: ~/.config/fish
+    path: ~/.config/fish/{{ item }}
     state: directory
+  loop:
+    - conf.d
+    - functions
 
 - name: Copy config.fish
   ansible.builtin.template:

@@ -1,4 +1,5 @@
 ---
 - hosts: local
   roles:
-    - name: fish
+    - fish
+    - git
