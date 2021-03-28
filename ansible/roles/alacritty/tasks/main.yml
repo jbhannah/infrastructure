@@ -1,0 +1,17 @@
+---
+- name: Check for alacritty
+  ansible.builtin.stat:
+    path: /Applications/Alacritty.app
+  when: ansible_system == "Darwin"
+  register: alacritty
+
+- name: Install alacritty
+  ansible.builtin.package:
+    name: alacritty
+    state: present
+  when: not alacritty.stat.exists or not ansible_system == "Darwin"
+
+- name: Copy configuration
+  ansible.builtin.copy:
+    src: alacritty.yml
+    dest: ~/.config/alacritty.yml
