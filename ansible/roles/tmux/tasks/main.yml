@@ -1,0 +1,27 @@
+---
+- name: Install tmux
+  ansible.builtin.package:
+    name: tmux
+    state: present
+  become: "{{ package_become }}"
+
+- name: Clone .tmux
+  ansible.builtin.git:
+    repo: https://github.com/gpakosz/.tmux.git
+    dest: ~/.tmux
+
+- name: Link .tmux.conf
+  ansible.builtin.file:
+    path: ~/.tmux.conf
+    state: link
+    src: ~/.tmux/.tmux.conf
+
+- name: Copy .tmux.conf.local
+  ansible.builtin.copy:
+    src: tmux.conf.local
+    dest: ~/.tmux.conf.local
+
+- name: Copy fish configuration
+  ansible.builtin.copy:
+    src: fish/
+    dest: ~/.config/fish/

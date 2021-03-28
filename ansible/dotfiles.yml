@@ -2,6 +2,7 @@
 - hosts: local
   roles:
     - fish
+    - tmux
     - git
     - starship
     - asdf
