@@ -10,6 +10,7 @@
     path: ~/.config/fish/{{ item }}
     state: directory
   loop:
+    - completions
     - conf.d
     - functions
 
