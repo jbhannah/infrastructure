@@ -5,5 +5,8 @@
     - tmux
     - git
     - starship
-    - asdf
     - exa
+
+- hosts: anorith
+  roles:
+    - terraform
