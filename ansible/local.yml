@@ -1,0 +1,10 @@
+---
+- name: Base system
+  import_playbook: system.yml
+
+- name: Dotfiles
+  import_playbook: dotfiles.yml
+
+- name: Desktop
+  import_playbook: desktop.yml
+  when: "'desktop' in group_names"

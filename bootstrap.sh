@@ -25,7 +25,7 @@ echo "\n### Installing runtime dependencies"
 pipenv install
 
 echo "\n### Bootstrapping system"
-pipenv run ansible-playbook ansible/system.yml
+pipenv run ansible-playbook -l (hostname -s) ansible/local.yml
 
 if [ -z ${PIPENV_EXISTS} ]; then
     echo "\n### Cleaning up"

@@ -1,5 +1,5 @@
 ---
-- hosts: localhost
+- hosts: all
   roles:
     - name: homebrew
       when: ansible_system == "Darwin"
