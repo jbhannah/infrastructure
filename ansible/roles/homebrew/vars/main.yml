@@ -3,6 +3,6 @@ brew_prefix: |-
   {{
     {
       "Darwin": "/usr/local",
-      "Linux": "~/.linuxbrew"
+      "Linux": "/home/linuxbrew/.linuxbrew"
     }[ansible_system]
   }}

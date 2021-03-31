@@ -42,3 +42,18 @@
     yes | $(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)
   args:
     creates: "{{ brew_prefix }}/bin/brew"
+  become: ansible_system == "Linux"
+
+- name: Add Homebrew to system-wide bash profile
+  ansible.builtin.template:
+    src: 10-brew.sh.j2
+    dest: /etc/profile.d/10-brew.sh
+  become: true
+  when: ansible_system == "Linux"
+
+- name: Add Homebrew to system-wide fish profile
+  ansible.builtin.template:
+    src: 10-brew.fish.j2
+    dest: /etc/fish/conf.d/10-brew.fish
+  become: true
+  when: ansible_system == "Linux"
