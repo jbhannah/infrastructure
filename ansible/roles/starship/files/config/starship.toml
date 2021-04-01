@@ -53,7 +53,7 @@ symbol = " "
 
 [python]
 symbol = " "
-format = 'via [${symbol}${pyenv_prefix}(${version} )($virtualenv )]($style)'
+format = 'via [${symbol}${pyenv_prefix}(${version} )(\($virtualenv\) )]($style)'
 
 [ruby]
 symbol = " "
