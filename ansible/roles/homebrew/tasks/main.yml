@@ -42,7 +42,7 @@
     yes | $(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)
   args:
     creates: "{{ brew_prefix }}/bin/brew"
-  become: ansible_system == "Linux"
+  become: "{{ package_become }}"
 
 - name: Add Homebrew to system-wide bash profile
   ansible.builtin.template:
