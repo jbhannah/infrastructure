@@ -8,11 +8,12 @@
 - name: Get path to fish
   ansible.builtin.command: which fish
   register: fish_path
+  changed_when: false
 
-- name: Add {{ fish_path }} to /etc/shells
+- name: Add {{ fish_path.stdout }} to /etc/shells
   ansible.builtin.lineinfile:
     path: /etc/shells
-    line: "{{ fish_path }}"
+    line: "{{ fish_path.stdout }}"
     state: present
   become: true
 
