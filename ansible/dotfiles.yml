@@ -6,6 +6,7 @@
     - git
     - starship
     - exa
+    - fnm
 
 - hosts: anorith
   roles:

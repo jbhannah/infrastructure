@@ -1,0 +1,18 @@
+---
+- name: Install fnm
+  block:
+    - name: with Homebrew
+      community.general.homebrew:
+        name: fnm
+        state: present
+      when: ansible_system == "Darwin"
+    - name: via installer
+      ansible.builtin.shell: curl -fsSL https://fnm.vercel.app/install | bash -s -- --skip-shell
+      args:
+        creates: ~/.fnm
+      when: ansible_system == "Linux"
+
+- name: Copy fish configuration
+  ansible.builtin.copy:
+    src: fish/
+    dest: ~/.config/fish/
