@@ -15,3 +15,8 @@
     line: terraform latest
     state: present
     create: true
+
+- name: Copy fish configuration
+  ansible.builtin.copy:
+    src: fish/
+    dest: ~/.config/fish/
