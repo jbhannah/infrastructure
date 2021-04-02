@@ -7,7 +7,6 @@
     - starship
     - exa
     - fnm
-    - sshpass
 
 - hosts: anorith
   roles:
