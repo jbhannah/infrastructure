@@ -1,0 +1,5 @@
+---
+- hosts: vps
+  roles:
+    - service_user
+    - sshd
