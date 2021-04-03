@@ -1,0 +1,11 @@
+---
+- hosts: all:!local
+  vars:
+    ansible_ssh_pass: "{{ adopt_password }}"
+    ansible_user: "{{ adopt_user }}"
+  roles:
+    - service_user
+
+- hosts: all:!local
+  roles:
+    - sshd
