@@ -5,6 +5,8 @@ name = "pypi"
 
 [packages]
 ansible = "~= 3.1"
+paramiko = "*"
+passlib = "*"
 
 [dev-packages]
 
