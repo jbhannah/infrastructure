@@ -27,7 +27,7 @@
   ansible.builtin.authorized_key:
     user: "{{ service_user_name }}"
     key: |-
-      {{ lookup("file", "../.ssh/id_ed25519.pub") }}
+      {{ lookup("file", "../.ssh/id_ed25519.infra.pub") }}
 
 - name: Set {{ service_user_name }} user sudoers configuration
   become: true

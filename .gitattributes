@@ -1,2 +1,2 @@
-.ssh/id_ed25519 filter=git-crypt diff=git-crypt
+.ssh/id_ed25519.infra filter=git-crypt diff=git-crypt
 .ansible-password filter=git-crypt diff=git-crypt
