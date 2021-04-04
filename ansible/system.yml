@@ -1,5 +1,5 @@
 ---
 - hosts: all
   roles:
-    - name: homebrew
-    - name: python
+    - homebrew
+    - python
