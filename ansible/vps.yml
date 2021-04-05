@@ -3,3 +3,11 @@
   roles:
     - service_user
     - sshd
+
+- hosts: ssdnodes
+  vars:
+    wireguard_group: ssdnodes
+  roles:
+    - wireguard
+  tags:
+    - wireguard

@@ -1,0 +1,41 @@
+---
+- name: Install Wireguard
+  ansible.builtin.package:
+    name: wireguard
+    state: present
+  become: "{{ package_become }}"
+
+- name: Generate private key
+  ansible.builtin.shell: wg genkey > privatekey
+  args:
+    chdir: /etc/wireguard
+    creates: /etc/wireguard/privatekey
+  become: true
+
+- name: Generate public key
+  ansible.builtin.shell: wg pubkey < privatekey > publickey
+  args:
+    chdir: /etc/wireguard
+    creates: /etc/wireguard/publickey
+  become: true
+
+- name: Get private key value
+  ansible.builtin.slurp:
+    src: /etc/wireguard/privatekey
+  register: private_key
+  become: true
+
+- name: Get public key value
+  ansible.builtin.slurp:
+    src: /etc/wireguard/publickey
+  register: public_key
+  become: true
+
+- name: Set public key fact
+  ansible.builtin.set_fact:
+    public_key: "{{ public_key.content | b64decode }}"
+
+- include_tasks:
+    file: group.yml
+    apply:
+      become: true
