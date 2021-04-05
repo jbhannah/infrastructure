@@ -1,13 +1,20 @@
 ---
 - hosts: vps
   roles:
-    - service_user
-    - sshd
+    - name: dns
+      tags:
+        - dns
+    - name: service_user
+      tags:
+        - service_user
+    - name: sshd
+      tags:
+        - sshd
 
 - hosts: ssdnodes
   vars:
     wireguard_group: ssdnodes
   roles:
-    - wireguard
-  tags:
-    - wireguard
+    - name: wireguard
+      tags:
+        - wireguard
