@@ -1,6 +1,6 @@
 ---
 - name: Allow WireGuard connections from peers
-  ansible.builtin.ufw:
+  community.general.ufw:
     rule: allow
     port: "{{ wireguard[wireguard_group].port }}"
     src: "{{ hostvars[peer].ansible_facts.default_ipv4.address }}"
@@ -26,7 +26,7 @@
     enabled: true
 
 - name: Allow connections over WireGuard interface
-  ansible.builtin.ufw:
+  community.general.ufw:
     rule: allow
     direction: in
     interface: "{{ wireguard[wireguard_group].interface }}"

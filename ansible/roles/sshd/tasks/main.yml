@@ -1,7 +1,7 @@
 ---
 - name: Rate-limit incoming SSH connections
   become: true
-  ansible.builtin.ufw:
+  community.general.ufw:
     app: OpenSSH
     rule: limit
     state: enabled
