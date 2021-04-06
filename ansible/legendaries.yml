@@ -3,11 +3,14 @@
   ansible.builtin.import_playbook: vps.yml
   vars:
     hosts_list: legendaries
+  tags:
+    - base
 
 - hosts: legendaries
   roles:
     - name: wireguard
-      vars:
-        wireguard_group: legendaries
       tags:
         - wireguard
+    - name: k3s
+      tags:
+        - k3s
