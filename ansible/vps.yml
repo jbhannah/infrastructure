@@ -12,9 +12,9 @@
         - sshd
 
 - hosts: ssdnodes
-  vars:
-    wireguard_group: ssdnodes
   roles:
     - name: wireguard
+      vars:
+        wireguard_group: ssdnodes
       tags:
         - wireguard
