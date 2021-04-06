@@ -7,7 +7,7 @@ adopt_password: !vault |
   3839343635393439370a346161376662303166306131356530626336626361343461616330356665
   6233
 wireguard:
-  ssdnodes:
+  legendaries:
     interface: wg0
     subnet: 172.17.3.0
     mask: 20

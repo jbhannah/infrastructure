@@ -1,5 +1,5 @@
 ---
-- hosts: vps
+- hosts: "{{ hosts_list | default('vps') }}"
   roles:
     - name: dns
       tags:
@@ -10,11 +10,3 @@
     - name: sshd
       tags:
         - sshd
-
-- hosts: ssdnodes
-  roles:
-    - name: wireguard
-      vars:
-        wireguard_group: ssdnodes
-      tags:
-        - wireguard

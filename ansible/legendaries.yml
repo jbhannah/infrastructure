@@ -1,0 +1,13 @@
+---
+- name: Base VPS setup
+  ansible.builtin.import_playbook: vps.yml
+  vars:
+    hosts_list: legendaries
+
+- hosts: legendaries
+  roles:
+    - name: wireguard
+      vars:
+        wireguard_group: legendaries
+      tags:
+        - wireguard
