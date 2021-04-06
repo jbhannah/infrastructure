@@ -10,6 +10,6 @@ wireguard:
   ssdnodes:
     interface: wg0
     subnet: 172.17.3.0
-    mask: 24
+    mask: 20
     address: 172.17.3.18
     port: 51820
