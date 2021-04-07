@@ -1,0 +1,11 @@
+---
+- name: Install grep
+  ansible.builtin.package:
+    name: grep
+    state: present
+  become: "{{ package_become }}"
+
+- name: Copy fish configuration
+  ansible.builtin.copy:
+    src: fish/
+    dest: ~/.config/fish/

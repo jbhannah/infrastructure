@@ -1,0 +1,11 @@
+---
+- name: Install fasd
+  ansible.builtin.package:
+    name: fasd
+    state: present
+  become: "{{ package_become }}"
+
+- name: Install fasd fish plugin
+  ansible.builtin.shell: fisher install fishgretel/fasd
+  args:
+    executable: /usr/local/bin/fish

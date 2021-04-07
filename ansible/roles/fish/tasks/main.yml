@@ -28,3 +28,8 @@
   ansible.builtin.template:
     src: conf.d/00-env.fish.j2
     dest: ~/.config/fish/conf.d/00-env.fish
+
+- name: Install fisher
+  ansible.builtin.shell: curl -sL https://git.io/fisher | source && fisher install jorgebucaran/fisher
+  args:
+    creates: ~/.config/fish/functions/fisher.fish

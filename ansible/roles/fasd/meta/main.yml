@@ -1,0 +1,4 @@
+---
+dependencies:
+  - name: grep
+    when: ansible_system == "Darwin"
