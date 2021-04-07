@@ -1,0 +1,127 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kured
+  labels:
+    app.kubernetes.io/instance: kured
+    app.kubernetes.io/name: kured
+rules:
+  - apiGroups: [""]
+    resources: ["nodes"]
+    verbs: ["get", "patch"]
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["list", "delete", "get"]
+  - apiGroups: ["apps"]
+    resources: ["daemonsets"]
+    verbs: ["get"]
+  - apiGroups: [""]
+    resources: ["pods/eviction"]
+    verbs: ["create"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kured
+  labels:
+    app.kubernetes.io/instance: kured
+    app.kubernetes.io/name: kured
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: kured
+subjects:
+  - kind: ServiceAccount
+    name: kured
+    namespace: kube-system
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: kube-system
+  name: kured
+  labels:
+    app.kubernetes.io/instance: kured
+    app.kubernetes.io/name: kured
+rules:
+  - apiGroups: ["apps"]
+    resources: ["daemonsets"]
+    resourceNames: ["kured"]
+    verbs: ["update"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  namespace: kube-system
+  name: kured
+  labels:
+    app.kubernetes.io/instance: kured
+    app.kubernetes.io/name: kured
+subjects:
+  - kind: ServiceAccount
+    namespace: kube-system
+    name: kured
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: kured
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kured
+  namespace: kube-system
+  labels:
+    app.kubernetes.io/instance: kured
+    app.kubernetes.io/name: kured
+
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: kured
+  namespace: kube-system
+  labels: &labels
+    app.kubernetes.io/instance: kured
+    app.kubernetes.io/name: kured
+spec:
+  selector:
+    matchLabels:
+      <<: *labels
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        <<: *labels
+    spec:
+      serviceAccountName: kured
+      tolerations:
+        - key: node-role.kubernetes.io/master
+          effect: NoSchedule
+      hostPID: true
+      restartPolicy: Always
+      containers:
+        - name: kured
+          image: docker.io/weaveworks/kured:1.6.1
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            privileged: true
+          env:
+            - name: KURED_NODE_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          command:
+            - /usr/bin/kured
+          args:
+            - --ds-name=kured
+            - --ds-namespace=kube-system
+            - --start-time=03:00
+            - --end-time=06:00
+            - --time-zone=US/Pacific
