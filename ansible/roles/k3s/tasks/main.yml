@@ -38,3 +38,10 @@
   when: k3s_cluster_init
 - ansible.builtin.include_tasks: install.yml
   when: not k3s_cluster_init
+
+- name: Enable iscsid
+  ansible.builtin.service:
+    name: iscsid
+    enabled: true
+    state: started
+  become: true
