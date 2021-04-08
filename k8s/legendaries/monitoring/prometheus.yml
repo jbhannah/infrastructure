@@ -13,6 +13,8 @@ spec:
       - name: alertmanager-main
         namespace: monitoring
         port: web
+  podMonitorNamespaceSelector: {}
+  podMonitorSelector: {}
   replicas: 1
   resources:
     limits: &resources
@@ -27,6 +29,7 @@ spec:
     runAsNonRoot: true
     runAsUser: 1000
   serviceAccountName: prometheus
+  serviceMonitorNamespaceSelector: {}
   serviceMonitorSelector: {}
   storage:
     volumeClaimTemplate:
