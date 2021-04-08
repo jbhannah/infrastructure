@@ -1,0 +1,12 @@
+---
+- name: Install kubectl and krew
+  community.general.homebrew:
+    name:
+      - kubernetes-cli
+      - krew
+    state: present
+
+- name: Copy fish configuration files
+  ansible.builtin.copy:
+    src: fish/
+    dest: ~/.config/fish/

@@ -10,4 +10,5 @@
 
 - hosts: anorith
   roles:
+    - kubectl
     - terraform
