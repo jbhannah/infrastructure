@@ -1,0 +1,225 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Prometheus
+metadata:
+  labels: &labels
+    app: prometheus
+    prometheus: k8s
+  name: k8s
+  namespace: monitoring
+spec:
+  alerting:
+    alertmanagers:
+      - name: alertmanager-main
+        namespace: monitoring
+        port: web
+  replicas: 1
+  resources:
+    limits: &resources
+      cpu: 500m
+      memory: 2Gi
+    requests:
+      <<: *resources
+  retention: 2w
+  retentionSize: 20GB
+  securityContext:
+    fsGroup: 2000
+    runAsNonRoot: true
+    runAsUser: 1000
+  serviceAccountName: prometheus
+  serviceMonitorSelector: {}
+  storage:
+    volumeClaimTemplate:
+      spec:
+        storageClassName: longhorn
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 21Gi
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: prometheus-k8s
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - services
+      - endpoints
+      - pods
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - nodes/metrics
+    verbs:
+      - get
+  - nonResourceURLs:
+      - /metrics
+    verbs:
+      - get
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: prometheus-k8s
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: prometheus-k8s
+subjects:
+  - kind: ServiceAccount
+    name: prometheus
+    namespace: monitoring
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: prometheus-k8s-config
+  namespace: monitoring
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: prometheus-k8s-config
+subjects:
+  - kind: ServiceAccount
+    name: prometheus
+    namespace: monitoring
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: prometheus-k8s-config
+  namespace: monitoring
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+    verbs:
+      - get
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    prometheus: k8s
+  name: prometheus-k8s
+  namespace: monitoring
+spec:
+  ports:
+    - name: web
+      port: 9090
+      targetPort: web
+  selector:
+    app: prometheus
+    prometheus: k8s
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: prometheus
+  namespace: monitoring
+
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    k8s-app: prometheus
+  name: prometheus
+  namespace: monitoring
+spec:
+  endpoints:
+    - interval: 30s
+      port: web
+  selector:
+    matchLabels:
+      prometheus: k8s
+
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    k8s-app: apiserver
+  name: kube-apiserver
+  namespace: monitoring
+spec:
+  endpoints:
+    - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+      interval: 30s
+      metricRelabelings:
+        - action: drop
+          regex: etcd_(debugging|disk|request|server).*
+          sourceLabels:
+            - __name__
+        - action: drop
+          regex: apiserver_admission_controller_admission_latencies_seconds_.*
+          sourceLabels:
+            - __name__
+        - action: drop
+          regex: apiserver_admission_step_admission_latencies_seconds_.*
+          sourceLabels:
+            - __name__
+      port: https
+      scheme: https
+      tlsConfig:
+        caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+  jobLabel: component
+  namespaceSelector:
+    matchNames:
+      - default
+  selector:
+    matchLabels:
+      component: apiserver
+      provider: kubernetes
+
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    k8s-app: kubelet
+  name: kubelet
+  namespace: monitoring
+spec:
+  endpoints:
+    - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+      honorLabels: true
+      interval: 30s
+      port: https-metrics
+      scheme: https
+      tlsConfig:
+        insecureSkipVerify: true
+    - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+      honorLabels: true
+      interval: 30s
+      metricRelabelings:
+        - action: drop
+          regex: container_(network_tcp_usage_total|network_udp_usage_total|tasks_state|cpu_load_average_10s)
+          sourceLabels:
+            - __name__
+      path: /metrics/cadvisor
+      port: https-metrics
+      scheme: https
+      tlsConfig:
+        insecureSkipVerify: true
+  jobLabel: k8s-app
+  namespaceSelector:
+    matchNames:
+      - kube-system
+  selector:
+    matchLabels:
+      k8s-app: kubelet
