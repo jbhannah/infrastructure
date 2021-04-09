@@ -47,14 +47,31 @@ allowVolumeExpansion: true
 reclaimPolicy: Delete
 volumeBindingMode: Immediate
 parameters:
-  numberOfReplicas: "3"
+  numberOfReplicas: "2"
   staleReplicaTimeout: "2880"
-  fromBackup: ""
-  diskSelector: "ssd"
+  dataLocality: best-effort
   recurringJobs: |
-    [{"name":"snap", "task":"snapshot", "cron":"*/1 * * * *", "retain":1},
-    {"name":"backup", "task":"backup", "cron":"*/2 * * * *", "retain":1,
-    "labels": {"interval":"2m"}}]
+    [{"name":"snap", "task":"snapshot", "cron":"*/30 * * * *", "retain":1},
+    {"name":"backup", "task":"backup", "cron":"*/60 * * * *", "retain":1,
+    "labels": {"interval":"60m"}}]
+
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: longhorn-minio
+provisioner: driver.longhorn.io
+allowVolumeExpansion: true
+reclaimPolicy: Delete
+volumeBindingMode: WaitForFirstConsumer
+parameters:
+  numberOfReplicas: "1"
+  staleReplicaTimeout: "2880"
+  dataLocality: best-effort
+  recurringJobs: |
+    [{"name":"snap", "task":"snapshot", "cron":"*/30 * * * *", "retain":1},
+    {"name":"backup", "task":"backup", "cron":"*/60 * * * *", "retain":1,
+    "labels": {"interval":"60m"}}]
 
 ---
 kind: StorageClass
@@ -66,14 +83,14 @@ allowVolumeExpansion: true
 reclaimPolicy: Delete
 volumeBindingMode: Immediate
 parameters:
-  numberOfReplicas: "3"
+  numberOfReplicas: "2"
   staleReplicaTimeout: "2880"
-  fromBackup: ""
-  diskSelector: "nvme"
+  diskSelector: nvme
+  dataLocality: best-effort
   recurringJobs: |
-    [{"name":"snap", "task":"snapshot", "cron":"*/1 * * * *", "retain":1},
-    {"name":"backup", "task":"backup", "cron":"*/2 * * * *", "retain":1,
-    "labels": {"interval":"2m"}}]
+    [{"name":"snap", "task":"snapshot", "cron":"*/30 * * * *", "retain":1},
+    {"name":"backup", "task":"backup", "cron":"*/60 * * * *", "retain":1,
+    "labels": {"interval":"60m"}}]
 
 ---
 apiVersion: apps/v1
