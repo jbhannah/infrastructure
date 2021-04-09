@@ -1,0 +1,23 @@
+---
+apiVersion: "acid.zalan.do/v1"
+kind: postgresql
+metadata:
+  name: monitoring-postgresql
+  namespace: monitoring
+spec:
+  teamId: monitoring
+  volume:
+    size: 1Gi
+    storageClass: longhorn
+  numberOfInstances: 2
+  users:
+    monitoring: # database owner
+      - superuser
+      - createdb
+  databases:
+    grafana: monitoring
+  preparedDatabases:
+    grafana:
+      defaultUsers: true
+  postgresql:
+    version: "13"
