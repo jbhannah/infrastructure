@@ -283,3 +283,43 @@ webhooks:
           - "*/*"
     sideEffects: None
     timeoutSeconds: 10
+
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-staging
+  namespace: cert-manager
+spec:
+  acme:
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    email: admin+staging@hannahs.family
+    privateKeySecretRef:
+      name: letsencrypt-staging
+    solvers:
+      - dns01:
+          cloudflare:
+            email: jesse@jbhannah.net
+            apiTokenSecretRef:
+              name: cloudflare
+              key: CF_API_TOKEN
+
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+  namespace: cert-manager
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: admin@hannahs.family
+    privateKeySecretRef:
+      name: letsencrypt-prod
+    solvers:
+      - dns01:
+          cloudflare:
+            email: jesse@jbhannah.net
+            apiTokenSecretRef:
+              name: cloudflare
+              key: CF_API_TOKEN
