@@ -120,6 +120,7 @@ metadata:
   name: prometheus-k8s
   namespace: monitoring
 spec:
+  clusterIP: None
   ports:
     - name: web
       port: 9090
@@ -226,3 +227,23 @@ spec:
   selector:
     matchLabels:
       k8s-app: kubelet
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasource-prometheus
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/instance: grafana
+    grafana.com/datasource: prometheus
+data:
+  prometheus.yml: |
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        url: http://prometheus-k8s:9090
+        access: proxy
+        isDefault: true

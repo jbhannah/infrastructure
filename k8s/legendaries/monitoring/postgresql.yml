@@ -19,5 +19,8 @@ spec:
   preparedDatabases:
     grafana:
       defaultUsers: true
+      schemas:
+        public:
+          defaultUsers: true
   postgresql:
     version: "13"
