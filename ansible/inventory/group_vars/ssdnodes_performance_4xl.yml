@@ -1,3 +1,5 @@
 ---
 k3s_node_labels:
   node.kubernetes.io/instance-type: performance.4xl
+k3s_node_taints:
+  hannahs.family/dedicated: minecraft:PreferNoSchedule
