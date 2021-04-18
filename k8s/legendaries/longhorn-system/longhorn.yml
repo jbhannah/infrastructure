@@ -48,11 +48,12 @@ reclaimPolicy: Delete
 volumeBindingMode: Immediate
 parameters:
   numberOfReplicas: "2"
+  dataLocality: best-effort
   staleReplicaTimeout: "2880"
   recurringJobs: |
-    [{"name":"snap", "task":"snapshot", "cron":"*/30 * * * *", "retain":1},
-    {"name":"backup", "task":"backup", "cron":"*/60 * * * *", "retain":1,
-    "labels": {"interval":"60m"}}]
+    [{"name":"snap", "task":"snapshot", "cron":"*/5 * * * *", "retain":1},
+    {"name":"backup", "task":"backup", "cron":"2 * * * *", "retain":1,
+    "labels": {"interval":"1h"}}]
 
 ---
 kind: StorageClass
@@ -65,12 +66,13 @@ reclaimPolicy: Delete
 volumeBindingMode: Immediate
 parameters:
   numberOfReplicas: "2"
+  dataLocality: best-effort
   staleReplicaTimeout: "2880"
   diskSelector: nvme
   recurringJobs: |
-    [{"name":"snap", "task":"snapshot", "cron":"*/30 * * * *", "retain":1},
-    {"name":"backup", "task":"backup", "cron":"*/60 * * * *", "retain":1,
-    "labels": {"interval":"60m"}}]
+    [{"name":"snap", "task":"snapshot", "cron":"*/5 * * * *", "retain":1},
+    {"name":"backup", "task":"backup", "cron":"32 * * * *", "retain":1,
+    "labels": {"interval":"1h"}}]
 
 ---
 apiVersion: apps/v1
@@ -228,7 +230,6 @@ spec:
     - name: http
       port: 80
       targetPort: http
-      nodePort: null
 
 ---
 apiVersion: apps/v1
