@@ -96,32 +96,32 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels:
-    helm.sh/chart: ingress-nginx-3.27.0
+  labels: &labels
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/instance: ingress-nginx
-    app.kubernetes.io/version: 0.45.0
-    app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: controller
   name: ingress-nginx-controller
   namespace: ingress-nginx
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/name: ingress-nginx
-      app.kubernetes.io/instance: ingress-nginx
-      app.kubernetes.io/component: controller
+      <<: *labels
   revisionHistoryLimit: 10
   minReadySeconds: 0
   replicas: 2
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: ingress-nginx
-        app.kubernetes.io/instance: ingress-nginx
-        app.kubernetes.io/component: controller
+        <<: *labels
     spec:
       dnsPolicy: ClusterFirst
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  <<: *labels
+              topologyKey: kubernetes.io/hostname
       containers:
         - name: controller
           image: k8s.gcr.io/ingress-nginx/controller:v0.45.0
