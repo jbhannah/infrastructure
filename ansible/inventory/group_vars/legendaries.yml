@@ -7,7 +7,6 @@ k3s_command_args:
   node-name: "{{ ansible_nodename }}"
 k3s_disable:
   - coredns
-  - local-storage
   - metrics-server
   - traefik
 k3s_token: !vault |
