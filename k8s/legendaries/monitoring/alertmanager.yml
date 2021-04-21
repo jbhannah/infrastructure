@@ -19,7 +19,7 @@ spec:
   storage:
     volumeClaimTemplate:
       spec:
-        storageClassName: longhorn
+        storageClassName: openebs-jiva-default
         accessModes:
           - ReadWriteOnce
         resources:

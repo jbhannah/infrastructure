@@ -7,9 +7,9 @@ metadata:
 spec:
   teamId: monitoring
   volume:
-    size: 1Gi
-    storageClass: longhorn
-  numberOfInstances: 2
+    size: 10Gi
+    storageClass: openebs-jiva-default
+  numberOfInstances: 3
   users:
     monitoring: # database owner
       - superuser
