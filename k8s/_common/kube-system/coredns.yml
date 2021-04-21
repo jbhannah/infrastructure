@@ -154,6 +154,22 @@ spec:
   clusterIP: 10.43.0.10
 
 ---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: coredns
+  namespace: kube-system
+  labels: &labels
+    app.kubernetes.io/instance: coredns
+    app.kubernetes.io/name: coredns
+spec:
+  endpoints:
+    - port: metrics
+  selector:
+    matchLabels:
+      <<: *labels
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:

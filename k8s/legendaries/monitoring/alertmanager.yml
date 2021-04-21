@@ -49,22 +49,6 @@ stringData:
         - match:
             alertname: Watchdog
           receiver: "null"
----
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    alertmanager: main
-  name: alertmanager-main
-  namespace: monitoring
-spec:
-  ports:
-    - name: web
-      port: 9093
-      targetPort: web
-  selector:
-    alertmanager: main
-    app: alertmanager
 
 ---
 apiVersion: v1
@@ -74,17 +58,39 @@ metadata:
   namespace: monitoring
 
 ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: alertmanager-main
+  namespace: monitoring
+  labels: &labels
+    app: alertmanager
+    alertmanager: main
+spec:
+  clusterIP: None
+  ports:
+    - name: web
+      port: 9093
+      targetPort: web
+  selector:
+    <<: *labels
+
+---
 apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
+kind: PodMonitor
 metadata:
   labels:
     k8s-app: alertmanager
   name: alertmanager
   namespace: monitoring
 spec:
-  endpoints:
-    - interval: 30s
-      port: web
+  podMetricsEndpoints:
+    - port: web
+      relabelings:
+        - replacement: alertmanager-$1
+          sourceLabels:
+            - __meta_kubernetes_pod_label_alertmanager
+          targetLabel: job
   selector:
     matchLabels:
-      alertmanager: main
+      app: alertmanager

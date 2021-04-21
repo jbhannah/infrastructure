@@ -9,7 +9,7 @@ metadata:
     helm.sh/chart: grafana-6.7.4
     app.kubernetes.io/name: grafana
     app.kubernetes.io/instance: grafana
-    app.kubernetes.io/version: "7.5.3"
+    app.kubernetes.io/version: "7.5.4"
     app.kubernetes.io/managed-by: Helm
   annotations:
     seccomp.security.alpha.kubernetes.io/allowedProfileNames: "docker/default,runtime/default"
@@ -59,28 +59,10 @@ metadata:
     helm.sh/chart: grafana-6.7.4
     app.kubernetes.io/name: grafana
     app.kubernetes.io/instance: grafana
-    app.kubernetes.io/version: "7.5.3"
+    app.kubernetes.io/version: "7.5.4"
     app.kubernetes.io/managed-by: Helm
   name: grafana
   namespace: monitoring
----
-# Source: grafana/templates/secret.yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: grafana
-  namespace: monitoring
-  labels:
-    helm.sh/chart: grafana-6.7.4
-    app.kubernetes.io/name: grafana
-    app.kubernetes.io/instance: grafana
-    app.kubernetes.io/version: "7.5.3"
-    app.kubernetes.io/managed-by: Helm
-type: Opaque
-data:
-  admin-user: "YWRtaW4="
-  admin-password: "WEl3ZDFzOEljRXMzN2pNTzFVc1BNY0g1cUZwYmZ0THJzNGd3enRyTg=="
-  ldap-toml: ""
 ---
 # Source: grafana/templates/configmap.yaml
 apiVersion: v1
@@ -92,7 +74,7 @@ metadata:
     helm.sh/chart: grafana-6.7.4
     app.kubernetes.io/name: grafana
     app.kubernetes.io/instance: grafana
-    app.kubernetes.io/version: "7.5.3"
+    app.kubernetes.io/version: "7.5.4"
     app.kubernetes.io/managed-by: Helm
 data:
   grafana.ini: |
@@ -146,7 +128,7 @@ metadata:
     helm.sh/chart: grafana-6.7.4
     app.kubernetes.io/name: grafana
     app.kubernetes.io/instance: grafana
-    app.kubernetes.io/version: "7.5.3"
+    app.kubernetes.io/version: "7.5.4"
     app.kubernetes.io/managed-by: Helm
   name: grafana-clusterrole
 rules: []
@@ -160,7 +142,7 @@ metadata:
     helm.sh/chart: grafana-6.7.4
     app.kubernetes.io/name: grafana
     app.kubernetes.io/instance: grafana
-    app.kubernetes.io/version: "7.5.3"
+    app.kubernetes.io/version: "7.5.4"
     app.kubernetes.io/managed-by: Helm
 subjects:
   - kind: ServiceAccount
@@ -181,7 +163,7 @@ metadata:
     helm.sh/chart: grafana-6.7.4
     app.kubernetes.io/name: grafana
     app.kubernetes.io/instance: grafana
-    app.kubernetes.io/version: "7.5.3"
+    app.kubernetes.io/version: "7.5.4"
     app.kubernetes.io/managed-by: Helm
 rules:
   - apiGroups: ["extensions"]
@@ -207,7 +189,7 @@ metadata:
     helm.sh/chart: grafana-6.7.4
     app.kubernetes.io/name: grafana
     app.kubernetes.io/instance: grafana
-    app.kubernetes.io/version: "7.5.3"
+    app.kubernetes.io/version: "7.5.4"
     app.kubernetes.io/managed-by: Helm
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -228,7 +210,7 @@ metadata:
     helm.sh/chart: grafana-6.7.4
     app.kubernetes.io/name: grafana
     app.kubernetes.io/instance: grafana
-    app.kubernetes.io/version: "7.5.3"
+    app.kubernetes.io/version: "7.5.4"
     app.kubernetes.io/managed-by: Helm
 spec:
   type: ClusterIP
@@ -252,11 +234,10 @@ metadata:
     helm.sh/chart: grafana-6.7.4
     app.kubernetes.io/name: grafana
     app.kubernetes.io/instance: grafana
-    app.kubernetes.io/version: "7.5.3"
+    app.kubernetes.io/version: "7.5.4"
     app.kubernetes.io/managed-by: Helm
 spec:
-  replicas: 1
-  revisionHistoryLimit: 10
+  replicas: 2
   selector:
     matchLabels:
       app.kubernetes.io/name: grafana
@@ -268,11 +249,6 @@ spec:
       labels:
         app.kubernetes.io/name: grafana
         app.kubernetes.io/instance: grafana
-      annotations:
-        checksum/config: 28dd26c6e82d2bd747d41a462a7579d471e9c9870133ae0e7b041dff8ec8a06b
-        checksum/dashboards-json-config: 01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b
-        checksum/sc-dashboard-provider-config: 01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b
-        checksum/secret: b86d4788c5122fddb92ccbb9a0cc8daec1e59f6efd9ce9835578b2b5334afaae
     spec:
       serviceAccountName: grafana
       securityContext:
@@ -314,7 +290,7 @@ spec:
             - mountPath: /tmp/dashboards
               name: sc-dashboard-volume
         - name: grafana
-          image: "grafana/grafana:7.5.3"
+          image: "grafana/grafana:7.5.4"
           imagePullPolicy: IfNotPresent
           volumeMounts:
             - name: config
@@ -337,36 +313,19 @@ spec:
               containerPort: 3000
               protocol: TCP
           env:
-            - name: GF_SECURITY_ADMIN_USER
-              valueFrom:
-                secretKeyRef:
-                  name: grafana
-                  key: admin-user
-            - name: GF_SECURITY_ADMIN_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: grafana
-                  key: admin-password
             - name: GF_DATABASE_USER
               valueFrom:
                 secretKeyRef:
-                  name: grafana-public-owner-user.monitoring-postgresql.credentials.postgresql.acid.zalan.do
+                  name: grafana.monitoring-postgresql.credentials.postgresql.acid.zalan.do
                   key: username
             - name: GF_DATABASE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: grafana-public-owner-user.monitoring-postgresql.credentials.postgresql.acid.zalan.do
+                  name: grafana.monitoring-postgresql.credentials.postgresql.acid.zalan.do
                   key: password
-            - name: GF_AUTH_GITHUB_CLIENT_ID
-              valueFrom:
-                secretKeyRef:
-                  name: grafana-github-oauth
-                  key: CLIENT_ID
-            - name: GF_AUTH_GITHUB_CLIENT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: grafana-github-oauth
-                  key: CLIENT_SECRET
+          envFrom:
+            - secretRef:
+                name: grafana
           livenessProbe:
             failureThreshold: 10
             httpGet:
@@ -378,7 +337,6 @@ spec:
             httpGet:
               path: /api/health
               port: 3000
-          resources: {}
       volumes:
         - name: config
           configMap:
@@ -401,7 +359,7 @@ metadata:
   labels:
     app.kubernetes.io/name: grafana
     app.kubernetes.io/instance: grafana
-    app.kubernetes.io/version: "7.5.3"
+    app.kubernetes.io/version: "7.5.4"
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:

@@ -61,12 +61,6 @@ spec:
             - containerPort: 9100
               hostPort: 9100
               name: http
-          resources:
-            limits: &resources
-              cpu: 100m
-              memory: 32Mi
-            requests:
-              <<: *resources
           volumeMounts:
             - mountPath: /host/proc
               name: proc

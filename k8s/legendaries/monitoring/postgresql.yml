@@ -1,5 +1,5 @@
 ---
-apiVersion: "acid.zalan.do/v1"
+apiVersion: acid.zalan.do/v1
 kind: postgresql
 metadata:
   name: monitoring-postgresql
@@ -11,16 +11,10 @@ spec:
     storageClass: openebs-jiva-default
   numberOfInstances: 3
   users:
-    monitoring: # database owner
-      - superuser
-      - createdb
+    grafana: []
   databases:
-    grafana: monitoring
+    grafana: grafana
   preparedDatabases:
-    grafana:
-      defaultUsers: true
-      schemas:
-        public:
-          defaultUsers: true
+    grafana: {}
   postgresql:
     version: "13"
