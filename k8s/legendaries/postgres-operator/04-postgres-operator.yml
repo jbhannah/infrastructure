@@ -22,7 +22,6 @@ spec:
       containers:
         - name: postgres-operator
           image: registry.opensource.zalan.do/acid/postgres-operator:v1.6.2
-          imagePullPolicy: IfNotPresent
           resources:
             requests:
               cpu: 100m

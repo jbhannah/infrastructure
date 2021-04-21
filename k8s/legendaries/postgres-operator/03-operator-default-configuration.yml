@@ -47,7 +47,7 @@ configuration:
     # - deployment-time
     # - downscaler/*
     enable_init_containers: true
-    enable_pod_antiaffinity: false
+    enable_pod_antiaffinity: true
     enable_pod_disruption_budget: true
     enable_sidecars: true
     # infrastructure_roles_secret_name: "postgresql-infrastructure-roles"
@@ -136,7 +136,7 @@ configuration:
     logical_backup_s3_sse: "AES256"
     logical_backup_schedule: "30 00 * * *"
   debug:
-    debug_logging: true
+    debug_logging: false
     enable_database_access: true
   teams_api:
     # enable_admin_role_for_users: true
