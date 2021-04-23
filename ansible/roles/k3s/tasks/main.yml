@@ -1,4 +1,11 @@
 ---
+- name: Uninstall LXD snap
+  community.general.snap:
+    name: lxd
+    state: absent
+  become: true
+  when: ansible_distribution == "Ubuntu"
+
 - ansible.builtin.include_tasks:
     file: sysctl.yml
     apply:
@@ -29,7 +36,7 @@
   register: k3s_current_install
 
 - name: Get current k3s version
-  shell: "{{ k3s_install_base }} --version | awk -F' ' '{ print $3 }'"
+  shell: "{{ k3s_install_base }} --version | head -n1 | awk -F' ' '{ print $3 }'"
   register: k3s_current_version
   when: k3s_current_install.stat.exists
   changed_when: k3s_current_version.stdout != k3s_version
@@ -38,6 +45,30 @@
   when: k3s_cluster_init
 - ansible.builtin.include_tasks: install.yml
   when: not k3s_cluster_init
+
+- name: Throttle k3s server and agent processes
+  vars:
+    params:
+      CPUQuota: 30%
+      CPUQuotaPeriodSec: 50ms
+      AllowedCPUs: 0
+  community.general.ini_file:
+    path: "{{ k3s_install_systemd_dir }}/{{ k3s_install_name | default('k3s', true) }}{{ '-agent' if k3s_command == 'agent' else '' }}.service"
+    section: Service
+    option: "{{ item.key }}"
+    value: "{{ item.value }}"
+  become: true
+  loop: "{{ params | dict2items }}"
+  register: k3s_throttle
+
+- name: Restart k3s
+  ansible.builtin.systemd:
+    name: k3s{{ '-agent' if k3s_command == 'agent' else '' }}
+    enabled: true
+    daemon_reload: true
+    state: restarted
+  become: true
+  when: k3s_throttle.changed
 
 - name: Enable iscsid
   ansible.builtin.service:
