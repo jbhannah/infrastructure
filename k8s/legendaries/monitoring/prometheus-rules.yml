@@ -12,16 +12,10 @@ spec:
     - name: node-exporter.rules
       rules:
         - expr: |
-            count without (cpu) (
-              count without (mode) (
-                node_cpu_seconds_total{job="node-exporter"}
-              )
-            )
+            label_replace(machine_cpu_cores, "instance", "$1", "node", "(.*)")
           record: instance:node_num_cpu:sum
         - expr: |
-            1 - avg without (cpu, mode) (
-              rate(node_cpu_seconds_total{job="node-exporter", mode="idle"}[1m])
-            )
+            sum (rate(node_cpu_seconds_total{job="node-exporter",mode!="idle"}[1m])) by (instance)
           record: instance:node_cpu_utilisation:rate1m
         - expr: |
             (
