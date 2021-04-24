@@ -1,0 +1,3 @@
+---
+k3s_command_args:
+  kube-controller-manager-arg: "address=0.0.0.0"

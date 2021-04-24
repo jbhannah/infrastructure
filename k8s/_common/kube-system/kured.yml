@@ -125,3 +125,22 @@ spec:
             - --start-time=03:00
             - --end-time=06:00
             - --time-zone=US/Pacific
+          ports:
+            - name: metrics
+              containerPort: 8080
+
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: kured
+  namespace: kube-system
+  labels: &labels
+    app.kubernetes.io/instance: kured
+    app.kubernetes.io/name: kured
+spec:
+  podMetricsEndpoints:
+    - port: metrics
+  selector:
+    matchLabels:
+      <<: *labels
