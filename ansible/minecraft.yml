@@ -1,0 +1,32 @@
+---
+- hosts:
+    - zacien
+  roles:
+    - name: minecraft
+      vars:
+        minecraft_configs:
+          eula.txt: "eula=true"
+          whitelist.json: |
+            [
+              {
+                "uuid": "aedf3044-aaed-40cf-8ac3-2eb19ea89e59",
+                "name": "BolderBrooklyn"
+              }
+            ]
+        minecraft_domain: mc.jbhannah.net
+        minecraft_jvm_heap_size: 10240
+        minecraft_properties:
+          difficulty: hard
+          enable-rcon: true
+          enforce-whitelist: true
+          force-gamemode: true
+          gamemode: survival
+          motd: BolderBrooklyn Survival Single Player
+          white-list: true
+            $ANSIBLE_VAULT;1.1;AES256
+            30376537336538383466643437353532653166353232383166313064656366373237353436363465
+            6233316666666164613461363431383862353437363036620a613562356361306263313534336337
+            65326132626364343266633965363262613866303063386633353661353830326262613038323165
+            3539666261386633380a656464343264303333343639396565666239363337393966636633366530
+            33333665393566313431623437313237393436303861633262393164663031383231353163346237
+            3337316239303665383461613462346232343532303139346633

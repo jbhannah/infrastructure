@@ -1,0 +1,44 @@
+---
+minecraft_default_configs:
+  banned-ips.json: "[]"
+  banned-players.json: "[]"
+  eula.txt: "eula=false"
+  log4j2.xml: |
+    <?xml version="1.0" encoding="UTF-8"?>
+    <Configuration status="WARN" packages="com.mojang.util">
+        <Appenders>
+            <Console name="SysOut" target="SYSTEM_OUT">
+                <PatternLayout pattern="[%d{HH:mm:ss}] [%t/%level]: %msg%n" />
+            </Console>
+            <Queue name="ServerGuiConsole">
+                <PatternLayout pattern="[%d{HH:mm:ss} %level]: %msg%n" />
+            </Queue>
+        </Appenders>
+        <Loggers>
+            <Root level="info">
+                <filters>
+                    <MarkerFilter marker="NETWORK_PACKETS" onMatch="DENY" onMismatch="NEUTRAL" />
+                </filters>
+                <AppenderRef ref="SysOut" />
+                <AppenderRef ref="ServerGuiConsole" />
+            </Root>
+        </Loggers>
+    </Configuration>
+  ops.json: "[]"
+  whitelist.json: "[]"
+minecraft_default_jvm_args:
+  Xms: "{{ minecraft_jvm_heap_size }}M"
+  Xmx: "{{ minecraft_jvm_heap_size }}M"
+  Xmns: "{{ (minecraft_jvm_heap_size / 2) | round | int }}M"
+  Xmnx: "{{ (minecraft_jvm_heap_size * 4 / 5) | round | int }}M"
+  Xgc:concurrentScavenge:
+  Xgc:dnssExpectedTimeRatioMaximum: =3
+  Xgc:scvNoAdaptiveTenure:
+  Xdisableexplicitgc:
+  Xtune:virtualized:
+  Dlog4j.configurationFile: =log4j2.xml
+minecraft_default_properties:
+  server-port: "{{ minecraft_server_port }}"
+  query.port: "{{ minecraft_server_port }}"
+  enable-rcon: false
+  rcon.port: "{{ minecraft_rcon_port }}"

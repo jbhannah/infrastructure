@@ -1,0 +1,16 @@
+---
+- name: Get URL of latest Lithium release
+  local_action:
+    module: shell
+    cmd: curl https://api.github.com/repos/CaffeineMC/lithium-fabric/releases/latest | jq '.assets | map(select(.name | test("[0-9].jar$"))) | .[0].browser_download_url' | tr -d '"'
+    warn: false
+  register: lithium_latest_release
+
+- name: Get latest Lithium release
+  # TODO: check against current version and replace if newer
+  become: true
+  get_url:
+    url: "{{ lithium_latest_release.stdout }}"
+    dest: "{{ minecraft_home }}/mods/lithium.jar"
+    owner: "{{ minecraft_user }}"
+    group: "{{ minecraft_user }}"

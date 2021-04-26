@@ -1,0 +1,21 @@
+[Unit]
+Description=Minecraft Server %i
+After=network.target
+
+[Service]
+WorkingDirectory={{ minecraft_user_home }}/%i
+PrivateUsers=true
+User={{ minecraft_user }}
+Group={{ minecraft_user }}
+ProtectSystem=full
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+ExecStart=/usr/local/bin/mc-server-runner -detach-stdin java{% for item in minecraft_default_jvm_args | combine(minecraft_jvm_args) | dict2items %} -{{ item.key }}{{ item.value }}{% endfor %} -jar fabric-server-launch.jar -nogui
+Restart=on-failure
+RestartSec=60s
+TimeoutStopSec=120s
+
+[Install]
+WantedBy=multi-user.target

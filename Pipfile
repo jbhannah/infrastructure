@@ -7,6 +7,7 @@ name = "pypi"
 ansible = "~= 3.1"
 paramiko = "*"
 passlib = "*"
+lxml = "*"
 
 [dev-packages]
 

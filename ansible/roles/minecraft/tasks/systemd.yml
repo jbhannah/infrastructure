@@ -1,0 +1,19 @@
+---
+- name: Copy systemd unit file
+  become: true
+  template:
+    src: minecraft@.service.j2
+    dest: /etc/systemd/system/minecraft@.service
+    owner: root
+    group: root
+    mode: 0644
+  register: minecraft_systemd_unit
+
+- name: Enable and start Minecraft {{ minecraft_domain }} service
+  become: true
+  service:
+    name: minecraft@{{ minecraft_domain }}
+    enabled: true
+    state: restarted
+    daemon_reload: true
+  when: minecraft_systemd_unit.changed

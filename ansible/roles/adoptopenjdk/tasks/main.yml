@@ -1,0 +1,21 @@
+---
+- name: Add AdoptOpenJDK repository key
+  become: true
+  apt_key:
+    url: https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public
+
+- name: Get Ubuntu release name
+  shell: cat /etc/os-release | grep UBUNTU_CODENAME | cut -d = -f 2
+  register: release
+  changed_when: false
+
+- name: Add AdoptOpenJDK repository
+  become: true
+  apt_repository:
+    repo: deb https://adoptopenjdk.jfrog.io/adoptopenjdk/deb/ {{ release.stdout }} main
+
+- name: Install AdoptOpenJDK
+  become: true
+  apt:
+    name:
+      - adoptopenjdk-{{ adoptopenjdk_version }}-{{ adoptopenjdk_jvm }}-{{ "jdk" if adoptopenjdk_jdk else "jre" }}

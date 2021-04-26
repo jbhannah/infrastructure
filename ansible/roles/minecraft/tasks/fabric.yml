@@ -1,0 +1,45 @@
+---
+- name: Get latest Fabric installer
+  become: true
+  get_url:
+    url: https://maven.fabricmc.net/net/fabricmc/fabric-installer/{{ fabric_installer_version }}/fabric-installer-{{ fabric_installer_version }}.jar
+    dest: "{{ minecraft_home }}/fabric-installer-{{ fabric_installer_version }}.jar"
+    owner: "{{ minecraft_user }}"
+    group: "{{ minecraft_user }}"
+  register: fabric_installer
+
+- name: Check for Fabric server launcher
+  stat:
+    path: "{{ minecraft_home }}/fabric-server-launch.jar"
+  register: fabric_launcher
+
+- name: Check for Minecraft server
+  stat:
+    path: "{{ minecraft_home }}/server.jar"
+  register: minecraft_server
+
+- name: Remove old Fabric remapped JARs
+  become: true
+  become_user: "{{ minecraft_user }}"
+  file:
+    path: "{{ minecraft_home }}/.fabric"
+    state: absent
+  when: fabric_installer.changed or not fabric_launcher.stat.exists or not minecraft_server.stat.exists
+
+- name: Run the Fabric installer
+  become: true
+  become_user: "{{ minecraft_user }}"
+  command:
+    chdir: "{{ minecraft_home }}"
+    cmd: java -jar fabric-installer-{{ fabric_installer_version }}.jar server -downloadMinecraft
+  when: fabric_installer.changed or not fabric_launcher.stat.exists or not minecraft_server.stat.exists
+
+- name: Create mods directory
+  become: true
+  become_user: "{{ minecraft_user }}"
+  file:
+    path: "{{ minecraft_home }}/mods"
+    state: directory
+
+- include_tasks: lithium.yml
+- include_tasks: phosphor.yml
