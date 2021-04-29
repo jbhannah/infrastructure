@@ -16,11 +16,9 @@ spec:
   podMonitorSelector: {}
   replicas: 1
   resources:
-    limits: &resources
-      cpu: 500m
-      memory: 2Gi
     requests:
-      <<: *resources
+      cpu: 200m
+      memory: 2Gi
   retentionSize: 40GB
   ruleNamespaceSelector: {}
   ruleSelector:
