@@ -1,6 +1,9 @@
 ---
 - hosts: "{{ hosts_list | default('vps') }}"
   roles:
+    - name: apt
+      tags:
+        - apt
     - name: dns
       tags:
         - dns
