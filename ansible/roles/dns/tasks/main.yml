@@ -6,3 +6,11 @@
     type: A
     value: "{{ ansible_default_ipv4.address }}"
     api_token: "{{ cloudflare_api_token }}"
+
+- name: Set Cloudflare DNS AAAA record
+  community.general.cloudflare_dns:
+    zone: "{{ ansible_domain }}"
+    record: "{{ ansible_hostname }}"
+    type: AAAA
+    value: "{{ ansible_default_ipv6.address }}"
+    api_token: "{{ cloudflare_api_token }}"
