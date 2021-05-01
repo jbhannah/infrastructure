@@ -53,7 +53,7 @@
     params:
       CPUQuota: 30%
       CPUQuotaPeriodSec: 50ms
-      AllowedCPUs: 0
+      CPUWeight: 20
   community.general.ini_file:
     path: "{{ k3s_install_systemd_dir }}/{{ k3s_install_name | default('k3s', true) }}{{ '-agent' if k3s_command == 'agent' else '' }}.service"
     section: Service
