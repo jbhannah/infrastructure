@@ -10,7 +10,7 @@ ListenPort = {{ wireguard[wireguard_group].port }}
 [Peer]
 PublicKey = {{ hostvars[host].public_key }}
 AllowedIPs = {{ peer.address }}/32
-Endpoint = {{ hostvars[host].ansible_facts.default_ipv4.address }}:{{ peer.port }}
+Endpoint = {{ hostvars[host].ansible_host }}:{{ peer.port }}
 {% if peer.keepalive is defined -%}
 PersistentKeepalive = {{ peer.keepalive }}
 {% endif %}
