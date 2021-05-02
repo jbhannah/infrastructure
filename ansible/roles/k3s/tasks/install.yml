@@ -1,4 +1,45 @@
 ---
+- name: Set k3s base path
+  set_fact:
+    k3s_install_base: "{{ k3s_install_bin_dir }}/{{ k3s_install_name | default('k3s', true) }}"
+
+- name: Get k3s installation script
+  become: true
+  get_url:
+    url: https://get.k3s.io
+    dest: "{{ k3s_install_base }}-install.sh"
+    mode: 0755
+    owner: root
+    group: root
+  register: k3s_install_script
+
+- name: Check for current k3s installation
+  stat:
+    path: "{{ k3s_install_base }}"
+  register: k3s_current_install
+
+- name: Get current k3s version
+  shell: "{{ k3s_install_base }} --version | head -n1 | awk -F' ' '{ print $3 }'"
+  register: k3s_current_version
+  when: k3s_current_install.stat.exists
+  changed_when: k3s_current_version.stdout != k3s_version
+
+- name: Create configuration directory
+  become: true
+  ansible.builtin.file:
+    path: "{{ k3s_config_dir }}"
+    state: directory
+    owner: root
+    group: root
+
+- name: Copy configuration file
+  become: true
+  ansible.builtin.template:
+    src: config.yaml.j2
+    dest: "{{ k3s_config_dir }}/config.yaml"
+    owner: root
+    group: root
+
 - name: Run k3s installation script
   become: true
   command: k3s-install.sh
@@ -8,28 +49,33 @@
     INSTALL_K3S_SYSTEMD_DIR: "{{ k3s_install_systemd_dir }}"
     INSTALL_K3S_EXEC: >
       {{ k3s_command }}
-      {% for key, value in k3s_command_args.items() %}
-        {% if value is not none %}
-          --{{ key }}={{ value }}
-          {% if key == 'node-ip' and k3s_command == 'server' %}
-            --tls-san={{ value }}
-          {% endif %}
-        {% endif %}
-      {% endfor %}
-      {% for key, value in k3s_node_labels.items() %}
-        --node-label={{ key }}={{ value }}
-      {% endfor %}
-      {% for key, value in k3s_node_taints.items() %}
-        --node-taint={{ key }}={{ value }}
-      {% endfor %}
       {% if k3s_cluster_init %}
         --cluster-init
       {% endif %}
-      {% if k3s_command == 'server' and k3s_disable | length > 0 %}
-        --disable={{ k3s_disable | join(',') }}
-      {% endif %}
     INSTALL_K3S_NAME: "{{ k3s_install_name | default('', true) }}"
     INSTALL_K3S_TYPE: "{{ k3s_install_type | default('', true) }}"
-    K3S_TOKEN: "{{ k3s_token | default('', true) }}"
-    K3S_URL: "{{ '' if k3s_cluster_init else k3s_url }}"
   when: k3s_install_script.changed or k3s_current_version.changed or not k3s_current_install.stat.exists
+
+- name: Throttle k3s server and agent processes
+  vars:
+    params:
+      CPUQuota: 30%
+      CPUQuotaPeriodSec: 50ms
+      CPUWeight: 20
+  community.general.ini_file:
+    path: "{{ k3s_install_systemd_dir }}/{{ k3s_install_name | default('k3s', true) }}{{ '-agent' if k3s_command == 'agent' else '' }}.service"
+    section: Service
+    option: "{{ item.key }}"
+    value: "{{ item.value }}"
+  become: true
+  loop: "{{ params | dict2items }}"
+  register: k3s_throttle
+
+- name: Restart k3s
+  ansible.builtin.systemd:
+    name: k3s{{ '-agent' if k3s_command == 'agent' else '' }}
+    enabled: true
+    daemon_reload: true
+    state: restarted
+  become: true
+  when: k3s_throttle.changed

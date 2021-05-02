@@ -1,3 +1,4 @@
 ---
-k3s_node_labels:
-  node.kubernetes.io/instance-type: performance.2xl
+k3s_config_agent:
+  node-label:
+    - node.kubernetes.io/instance-type=performance.2xl

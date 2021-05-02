@@ -1,0 +1,4 @@
+{{ k3s_config_agent | to_nice_yaml }}
+{% if k3s_command == 'server' %}
+{{ k3s_config_server | to_nice_yaml }}
+{% endif %}
