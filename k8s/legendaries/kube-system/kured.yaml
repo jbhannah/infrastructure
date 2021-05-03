@@ -1,0 +1,15 @@
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: kured
+  namespace: kube-system
+spec:
+  repo: https://weaveworks.github.io/kured
+  chart: kured
+  version: 2.4.3
+  targetNamespace: kube-system
+  set:
+    metrics.create: "true"
+    podSecurityPolicy.create: "true"
+    service.create: "true"

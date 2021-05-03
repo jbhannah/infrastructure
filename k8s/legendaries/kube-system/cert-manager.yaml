@@ -1,0 +1,56 @@
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: cert-manager
+  namespace: kube-system
+spec:
+  repo: https://charts.jetstack.io
+  chart: cert-manager
+  version: 1.3.1
+  targetNamespace: kube-system
+  set:
+    global.podSecurityPolicy.enabled: "true"
+    ingressShim.defaultIssuerName: letsencrypt-prod
+    installCRDs: "true"
+    prometheus.servicemonitor.enabled: "true"
+
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-staging
+  namespace: kube-system
+spec:
+  acme:
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    email: admin+staging@hannahs.family
+    privateKeySecretRef:
+      name: letsencrypt-staging
+    solvers:
+      - dns01:
+          cloudflare:
+            email: jesse@jbhannah.net
+            apiTokenSecretRef:
+              name: cloudflare
+              key: CF_API_TOKEN
+
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+  namespace: kube-system
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: admin@hannahs.family
+    privateKeySecretRef:
+      name: letsencrypt-prod
+    solvers:
+      - dns01:
+          cloudflare:
+            email: jesse@jbhannah.net
+            apiTokenSecretRef:
+              name: cloudflare
+              key: CF_API_TOKEN

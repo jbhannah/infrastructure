@@ -1,0 +1,45 @@
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: ingress-nginx
+  namespace: kube-system
+spec:
+  repo: https://kubernetes.github.io/ingress-nginx
+  chart: ingress-nginx
+  version: 3.30.0
+  target-namespace: kube-system
+  valuesContent: |-
+    controller:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                  - ingress-nginx
+                - key: app.kubernetes.io/instance
+                  operator: In
+                  values:
+                  - ingress-nginx
+                - key: app.kubernetes.io/component
+                  operator: In
+                  values:
+                  - controller
+              topologyKey: kubernetes.io/hostname
+      metrics:
+        enabled: true
+        serviceMonitor:
+          enabled: true
+      replicaCount: 2
+      resources:
+        limits:
+          cpu: 200m
+          memory: 128Mi
+      service:
+        annotations:
+          external-dns.alpha.kubernetes.io/hostname: www.hannahs.family
