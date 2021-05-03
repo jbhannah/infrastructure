@@ -35,7 +35,7 @@
   ansible.builtin.set_fact:
     public_key: "{{ public_key.content | b64decode }}"
 
-- ansible.builtin.include_tasks:
+- include_tasks:
     file: group.yml
     apply:
       become: true
