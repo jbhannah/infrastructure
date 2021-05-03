@@ -14,7 +14,7 @@
               }
             ]
         minecraft_domain: mc.jbhannah.net
-        minecraft_jvm_heap_size: 10240
+        minecraft_jvm_heap_size: 6144
         minecraft_properties:
           difficulty: hard
           enable-rcon: true
