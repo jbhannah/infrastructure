@@ -31,6 +31,8 @@ spec:
                   values:
                   - controller
               topologyKey: kubernetes.io/hostname
+      extraArgs:
+        publish-status-address: www.hannahs.family
       metrics:
         enabled: true
         prometheusRule:
@@ -70,6 +72,8 @@ spec:
                 summary: More than 5% of all requests returned 4XX, this requires your attention
         serviceMonitor:
           enabled: true
+      publishService:
+        enabled: false
       replicaCount: 2
       resources:
         limits:
