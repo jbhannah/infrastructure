@@ -12,6 +12,8 @@ spec:
   set:
     global.podSecurityPolicy.enabled: "true"
     ingressShim.defaultIssuerName: letsencrypt-prod
+    ingressShim.defaultIssuerKind: ClusterIssuer
+    ingressShim.defaultIssuerGroup: cert-manager.io
     installCRDs: "true"
     prometheus.servicemonitor.enabled: "true"
 
