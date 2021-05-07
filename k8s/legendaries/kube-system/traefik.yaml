@@ -1,0 +1,35 @@
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: traefik
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    additionalArguments:
+      - --providers.kubernetesingress.ingressendpoint.hostname=www.hannahs.family
+    deployment:
+      replicas: 2
+    forwardedHeaders:
+      enabled: true
+      trustedIPs:
+        - 10.0.0.0/8
+    image:
+      name: traefik
+      tag: v2.4.8
+    ingressClass:
+      enabled: true
+      isDefault: true
+    podAnnotations: {}
+    podDisruptionBudget:
+      minAvailable: 1
+    proxyProtocol:
+      enabled: true
+      trustedIPs:
+        - 10.0.0.0/8
+    service:
+      annotations:
+        external-dns.alpha.kubernetes.io/hostname: www.hannahs.family
+    ssl:
+      enabled: true
+      permanentRedirect: true
