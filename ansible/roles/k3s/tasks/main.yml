@@ -6,16 +6,19 @@
   become: true
   when: ansible_distribution == "Ubuntu"
 
-- ansible.builtin.include_tasks:
+- include_tasks:
     file: sysctl.yml
     apply:
       become: true
 
-- ansible.builtin.include_tasks:
+- include_tasks:
     file: ufw.yml
     apply:
       become: true
   tags:
     - ufw
 
-- ansible.builtin.include_tasks: install.yml
+- include_tasks: install.yml
+  when: k3s_cluster_init
+- include_tasks: install.yml
+  when: not k3s_cluster_init
