@@ -19,9 +19,4 @@
 - name: Check for reboot sentinel
   ansible.builtin.stat:
     path: /var/run/reboot-required
-  register: reboot_required
-
-- name: Reboot
-  become: true
-  ansible.builtin.reboot: {}
-  when: reboot_required.stat.exists
+  notify: Reboot
