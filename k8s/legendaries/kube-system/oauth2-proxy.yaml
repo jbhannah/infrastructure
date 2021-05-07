@@ -6,16 +6,26 @@ metadata:
   namespace: kube-system
 data:
   oauth2_proxy.cfg: |
-    cookie_domains = [".hannahs.family"]
+    cookie_domains = [
+      ".hannahs.family",
+      ".jbhannah.net"
+    ]
     email_domains = ["*"]
     github_org = "hannahs-family"
     github_team = ""
     metrics_address = "127.0.0.1:4190"
     provider = "github"
-    set_xauthrequest = true
+    redirect_url = "https://auth.hannahs.family/oauth2/callback"
+    reverse_proxy = true
     set_authorization_header = true
-    upstreams = ["file:///dev/null"]
-    whitelist_domains = [".hannahs.family"]
+    set_xauthrequest = true
+    upstreams = [
+      "static://202"
+    ]
+    whitelist_domains = [
+      ".hannahs.family",
+      ".jbhannah.net"
+    ]
 
 ---
 apiVersion: helm.cattle.io/v1
@@ -38,6 +48,8 @@ spec:
     ingress:
       annotations:
         kubernetes.io/tls-acme: "true"
+        traefik.ingress.kubernetes.io/router.middlewares: kube-system-oauth2-proxy-auth-headers@kubernetescrd
+        traefik.ingress.kubernetes.io/router.priority: "101"
       enabled: true
       hosts:
         - &hostname auth.hannahs.family
@@ -47,3 +59,53 @@ spec:
           secretName: *hostname
     securityContext:
       enabled: true
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: oauth2-proxy-forward-auth
+  namespace: kube-system
+spec:
+  forwardAuth:
+    address: http://oauth2-proxy/
+    trustForwardHeader: true
+    authResponseHeaders:
+      - X-Auth-Request-Access-Token
+      - Authorization
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: oauth2-proxy-auth-headers
+  namespace: kube-system
+spec:
+  headers:
+    sslRedirect: true
+    stsSeconds: 315360000
+    browserXssFilter: true
+    contentTypeNosniff: true
+    forceSTSHeader: true
+    sslHost: hannahs.family
+    stsIncludeSubdomains: true
+    stsPreload: true
+    frameDeny: true
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: oauth2-proxy
+  namespace: kube-system
+spec:
+  routes:
+    - match: PathPrefix(`/oauth2`)
+      kind: Rule
+      priority: 100
+      services:
+        - name: oauth2-proxy
+          kind: Service
+          port: 80
+      middlewares:
+        - name: oauth2-proxy-auth-headers
