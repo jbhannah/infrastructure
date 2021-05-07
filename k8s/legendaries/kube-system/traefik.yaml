@@ -7,6 +7,7 @@ metadata:
 spec:
   valuesContent: |-
     additionalArguments:
+      - --api
       - --providers.kubernetesingress.ingressendpoint.hostname=www.hannahs.family
     deployment:
       replicas: 2
@@ -19,10 +20,20 @@ spec:
       tag: v2.4.8
     ingressClass:
       enabled: true
-      isDefault: true
+      isDefaultClass: true
+    ingressRoute:
+      dashboard:
+        enabled: false
+    logs:
+      access:
+        enabled: true
     podAnnotations: {}
     podDisruptionBudget:
       minAvailable: 1
+    providers:
+      kubernetesIngress:
+        publishedService:
+          enabled: false
     proxyProtocol:
       enabled: true
       trustedIPs:
@@ -33,3 +44,48 @@ spec:
     ssl:
       enabled: true
       permanentRedirect: true
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-dashboard
+  namespace: kube-system
+spec:
+  routes:
+    - match: Host(`traefik.hannahs.family`)
+      kind: Rule
+      services:
+        - name: api@internal
+          kind: TraefikService
+      middlewares:
+        - name: oauth2-proxy-forward-auth
+  tls:
+    secretName: traefik.hannahs.family
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: &name traefik.hannahs.family
+  namespace: kube-system
+spec:
+  secretName: *name
+  dnsNames:
+    - *name
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+
+---
+apiVersion: externaldns.k8s.io/v1alpha1
+kind: DNSEndpoint
+metadata:
+  name: traefik-dashboard
+  namespace: kube-system
+spec:
+  endpoints:
+    - dnsName: traefik.hannahs.family
+      recordType: CNAME
+      targets:
+        - www.hannahs.family
