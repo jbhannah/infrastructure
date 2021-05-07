@@ -9,5 +9,3 @@
 - hosts: all:!local
   roles:
     - sshd
-    - name: apt
-      when: ansible_os_family == "Debian"
