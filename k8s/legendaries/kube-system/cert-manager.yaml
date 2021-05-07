@@ -15,7 +15,6 @@ spec:
     ingressShim.defaultIssuerKind: ClusterIssuer
     ingressShim.defaultIssuerGroup: cert-manager.io
     installCRDs: "true"
-    prometheus.servicemonitor.enabled: "true"
 
 ---
 apiVersion: cert-manager.io/v1alpha2
@@ -35,7 +34,7 @@ spec:
             email: jesse@jbhannah.net
             apiTokenSecretRef:
               name: cloudflare
-              key: CF_API_TOKEN
+              key: cloudflare_api_token
 
 ---
 apiVersion: cert-manager.io/v1alpha2
@@ -55,4 +54,4 @@ spec:
             email: jesse@jbhannah.net
             apiTokenSecretRef:
               name: cloudflare
-              key: CF_API_TOKEN
+              key: cloudflare_api_token
