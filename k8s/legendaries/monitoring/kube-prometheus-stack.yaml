@@ -10,9 +10,13 @@ spec:
   version: 15.4.4
   targetNamespace: monitoring
   valuesContent: |-
+    alertmanager:
+      alertmanagerSpec:
+        externalUrl: https://alerts.monitoring.hannahs.family
     defaultRules:
       rules:
         etcd: false
+        kubeApiserverSlos: false
     fullnameOverride: kps
     grafana:
       enabled: false
@@ -42,6 +46,7 @@ spec:
         enabled: false
     prometheus:
       prometheusSpec:
+        externalUrl: https://prometheus.metrics.hannahs.family
         probeSelectorNilUsesHelmValues: false
         ruleSelectorNilUsesHelmValues: false
         serviceMonitorSelectorNilUsesHelmValues: false
