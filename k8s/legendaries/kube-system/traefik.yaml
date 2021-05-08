@@ -8,6 +8,7 @@ spec:
   valuesContent: |-
     additionalArguments:
       - --api
+      - --metrics.prometheus=true
       - --providers.kubernetesingress.ingressendpoint.hostname=www.hannahs.family
     deployment:
       replicas: 2
