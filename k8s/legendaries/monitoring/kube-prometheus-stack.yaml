@@ -1,0 +1,53 @@
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: kube-prometheus-stack
+  namespace: kube-system
+spec:
+  repo: https://prometheus-community.github.io/helm-charts
+  chart: kube-prometheus-stack
+  version: 15.4.4
+  targetNamespace: monitoring
+  valuesContent: |-
+    fullnameOverride: kps
+    alertmanager:
+      ingress:
+        enabled: false
+        annotations:
+          kubernetes.io/tls-acme: "true"
+          traefik.ingress.kubernetes.io/router.middlewares: kube-system-oauth2-proxy-forward-auth@kubernetescrd
+        hosts:
+          - &hostname alerts.monitoring.hannahs.family
+        tls:
+          - hosts:
+              - *hostname
+            secretName: *hostname
+    grafana:
+      enabled: false
+    prometheusOperator:
+      tls:
+        enabled: false
+    prometheus:
+      ingress:
+        enabled: false
+        annotations:
+          kubernetes.io/tls-acme: "true"
+          traefik.ingress.kubernetes.io/router.middlewares: kube-system-oauth2-proxy-forward-auth@kubernetescrd
+        hosts:
+          - &hostname prometheus.monitoring.hannahs.family
+        tls:
+          - hosts:
+              - *hostname
+            secretName: *hostname
+      prometheusSpec:
+        storageSpec:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: openebs-jiva-default
+              accessModes:
+                - ReadWriteOnce
+              resources:
+                requests:
+                  storage: 50Gi
+        walCompression: true
