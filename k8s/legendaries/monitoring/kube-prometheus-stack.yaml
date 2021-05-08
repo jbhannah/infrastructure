@@ -41,6 +41,9 @@ spec:
               - *hostname
             secretName: *hostname
       prometheusSpec:
+        probeSelectorNilUsesHelmValues: false
+        ruleSelectorNilUsesHelmValues: false
+        serviceMonitorSelectorNilUsesHelmValues: false
         storageSpec:
           volumeClaimTemplate:
             spec:
