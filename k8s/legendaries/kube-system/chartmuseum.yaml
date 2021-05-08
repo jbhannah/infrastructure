@@ -1,0 +1,25 @@
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: chartmuseum
+  namespace: kube-system
+spec:
+  repo: https://chartmuseum.github.io/charts
+  chart: chartmuseum
+  version: 3.1.0
+  targetNamespace: kube-system
+  valuesContent: |-
+    env:
+      existingSecret: chartmuseum
+      existingSecretMappings:
+        AWS_ACCESS_KEY_ID: access_key
+        AWS_SECRET_ACCESS_KEY: secret_key
+      open:
+        DISABLE_API: false
+        DISABLE_METRICS: false
+        STORAGE: amazon
+        STORAGE_AMAZON_BUCKET: chartmuseum
+        STORAGE_AMAZON_ENDPOINT: http://minio.kube-system.svc.legendaries.hannahs.family
+    serviceAccount:
+      create: true
