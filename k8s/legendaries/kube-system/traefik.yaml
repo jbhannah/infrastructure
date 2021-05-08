@@ -34,6 +34,9 @@ spec:
     podAnnotations: {}
     podDisruptionBudget:
       minAvailable: 1
+    ports:
+      web:
+        redirectTo: websecure
     providers:
       kubernetesIngress:
         publishedService:
@@ -45,9 +48,6 @@ spec:
     service:
       annotations:
         external-dns.alpha.kubernetes.io/hostname: www.hannahs.family
-    ssl:
-      enabled: true
-      permanentRedirect: true
 
 ---
 apiVersion: traefik.containo.us/v1alpha1
