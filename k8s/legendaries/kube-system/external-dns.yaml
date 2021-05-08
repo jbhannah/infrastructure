@@ -11,6 +11,7 @@ spec:
   targetNamespace: kube-system
   valuesContent: |-
     cloudflare:
+      proxied: false
       secretName: cloudflare
     crd:
       create: true
