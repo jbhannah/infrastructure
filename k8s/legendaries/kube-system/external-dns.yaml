@@ -23,10 +23,10 @@ spec:
     provider: cloudflare
     resources:
       requests:
-        cpu: 5m
+        cpu: 10m
         memory: 16Mi
       limits:
-        cpu: 10m
+        cpu: 20m
         memory: 32Mi
     sources:
       - service
