@@ -11,6 +11,9 @@ spec:
       - --providers.kubernetesingress.ingressendpoint.hostname=www.hannahs.family
     deployment:
       replicas: 2
+    envFrom:
+      - secretRef:
+          name: traefik
     forwardedHeaders:
       enabled: true
       trustedIPs:
