@@ -39,6 +39,7 @@
     dest: "{{ k3s_config_dir }}/config.yaml"
     owner: root
     group: root
+  notify: Restart k3s
 
 - name: Run k3s installation script
   become: true
@@ -55,6 +56,7 @@
     INSTALL_K3S_NAME: "{{ k3s_install_name | default('', true) }}"
     INSTALL_K3S_TYPE: "{{ k3s_install_type | default('', true) }}"
   when: k3s_install_script.changed or k3s_current_version.changed or not k3s_current_install.stat.exists
+  notify: Restart k3s
 
 - name: Throttle k3s server and agent processes
   vars:
@@ -69,13 +71,4 @@
     value: "{{ item.value }}"
   become: true
   loop: "{{ params | dict2items }}"
-  register: k3s_throttle
-
-- name: Restart k3s
-  ansible.builtin.systemd:
-    name: k3s{{ '-agent' if k3s_command == 'agent' else '' }}
-    enabled: true
-    daemon_reload: true
-    state: restarted
-  become: true
-  when: k3s_throttle.changed
+  notify: Restart k3s
