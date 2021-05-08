@@ -11,35 +11,12 @@ spec:
   targetNamespace: monitoring
   valuesContent: |-
     fullnameOverride: kps
-    alertmanager:
-      ingress:
-        enabled: false
-        annotations:
-          kubernetes.io/tls-acme: "true"
-          traefik.ingress.kubernetes.io/router.middlewares: kube-system-oauth2-proxy-forward-auth@kubernetescrd
-        hosts:
-          - &hostname alerts.monitoring.hannahs.family
-        tls:
-          - hosts:
-              - *hostname
-            secretName: *hostname
     grafana:
       enabled: false
     prometheusOperator:
       tls:
         enabled: false
     prometheus:
-      ingress:
-        enabled: false
-        annotations:
-          kubernetes.io/tls-acme: "true"
-          traefik.ingress.kubernetes.io/router.middlewares: kube-system-oauth2-proxy-forward-auth@kubernetescrd
-        hosts:
-          - &hostname prometheus.monitoring.hannahs.family
-        tls:
-          - hosts:
-              - *hostname
-            secretName: *hostname
       prometheusSpec:
         probeSelectorNilUsesHelmValues: false
         ruleSelectorNilUsesHelmValues: false
@@ -54,3 +31,55 @@ spec:
                 requests:
                   storage: 50Gi
         walCompression: true
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kps-prometheus
+  namespace: monitoring
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    traefik.ingress.kubernetes.io/router.middlewares: kube-system-oauth2-proxy-forward-auth@kubernetescrd
+spec:
+  tls:
+    - hosts:
+        - &hostname prometheus.monitoring.hannahs.family
+      secretName: *hostname
+  rules:
+    - host: *hostname
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: kps-prometheus
+                port:
+                  name: web
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kps-alertmanager
+  namespace: monitoring
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    traefik.ingress.kubernetes.io/router.middlewares: kube-system-oauth2-proxy-forward-auth@kubernetescrd
+spec:
+  tls:
+    - hosts:
+        - &hostname alerts.monitoring.hannahs.family
+      secretName: *hostname
+  rules:
+    - host: *hostname
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: kps-alertmanager
+                port:
+                  name: web
