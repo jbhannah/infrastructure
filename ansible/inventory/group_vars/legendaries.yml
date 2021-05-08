@@ -2,6 +2,8 @@
 k3s_cluster_name: legendaries
 k3s_config_agent:
   flannel-iface: "{{ wireguard[wireguard_group].interface }}"
+  kube-proxy-arg:
+    - metrics-bind-address=0.0.0.0:10249
   node-external-ip: "{{ ansible_default_ipv4.address }}"
   node-ip: &node_ip "{{ wireguard[wireguard_group].address }}"
   node-name: &node_name "{{ ansible_nodename }}"
@@ -11,6 +13,9 @@ k3s_config_server:
   cluster-domain: &cluster_domain "{{ k3s_cluster_name }}.{{ ansible_domain }}"
   kube-controller-manager-arg:
     - address=0.0.0.0
+  kube-scheduler-arg:
+    - address=0.0.0.0
+    - bind-address=0.0.0.0
   tls-san:
     - *cluster_domain
     - *node_ip

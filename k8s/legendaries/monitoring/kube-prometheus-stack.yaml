@@ -10,9 +10,33 @@ spec:
   version: 15.4.4
   targetNamespace: monitoring
   valuesContent: |-
+    defaultRules:
+      rules:
+        etcd: false
     fullnameOverride: kps
     grafana:
       enabled: false
+    kubeControllerManager:
+      endpoints:
+        - 172.17.3.17
+        - 172.17.3.18
+        - 172.17.3.122
+    kubeEtcd:
+      enabled: false
+    kubeProxy:
+      endpoints:
+        - 172.17.3.17
+        - 172.17.3.18
+        - 172.17.3.19
+        - 172.17.3.20
+        - 172.17.3.120
+        - 172.17.3.121
+        - 172.17.3.122
+    kubeScheduler:
+      endpoints:
+        - 172.17.3.17
+        - 172.17.3.18
+        - 172.17.3.122
     prometheusOperator:
       tls:
         enabled: false
