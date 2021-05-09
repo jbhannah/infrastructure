@@ -20,6 +20,8 @@ spec:
     metrics:
       enabled: true
       podAnnotations: {}
+      serviceMonitor:
+        enabled: true
     provider: cloudflare
     resources:
       requests:
