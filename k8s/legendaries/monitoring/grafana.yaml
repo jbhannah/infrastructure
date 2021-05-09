@@ -1,0 +1,59 @@
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: grafana
+  namespace: kube-system
+spec:
+  repo: https://grafana.github.io/helm-charts
+  chart: grafana
+  version: 6.9.0
+  targetNamespace: monitoring
+  valuesContent: |-
+    image:
+      tag: 7.5.5
+    ingress:
+      enabled: true
+      annotations:
+        kubernetes.io/tls-acme: "true"
+      hosts:
+        - &hostname monitoring.hannahs.family
+      tls:
+        - hosts:
+            - *hostname
+          secretName: *hostname
+    envFromSecret: grafana-env
+    envValueFrom:
+      GF_DATABASE_USER:
+        secretKeyRef:
+          name: &postgres_secret grafana.monitoring-postgresql.credentials.postgresql.acid.zalan.do
+          key: username
+      GF_DATABASE_PASSWORD:
+        secretKeyRef:
+          name: *postgres_secret
+          key: password
+    grafana.ini:
+      database:
+        type: postgres
+        host: monitoring-postgresql:5432
+        ssl_mode: require
+      auth.github:
+        enabled: true
+        allow_sign_up: true
+        allowed_organizations: hannahs-family
+      server:
+        root_url: https://monitoring.hannahs.family
+    serviceMonitor:
+      enabled: true
+    sidecar:
+      dashboards:
+        enabled: true
+        label: grafana.com/dashboard
+        provider:
+          disableDelete: true
+      datasources:
+        enabled: true
+        label: grafana.com/datasource
+      notifiers:
+        enabled: true
+        label: grafana.com/notifier

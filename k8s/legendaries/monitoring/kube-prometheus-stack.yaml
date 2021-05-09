@@ -113,3 +113,21 @@ spec:
                 name: kps-alertmanager
                 port:
                   name: web
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasource-prometheus
+  namespace: monitoring
+  labels:
+    grafana.com/datasource: prometheus
+data:
+  kps-prometheus.yml: |
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        url: http://kps-prometheus:9090
+        access: proxy
+        isDefault: true
