@@ -17,3 +17,22 @@ spec:
   targetNamespace: openebs
   set:
     localprovisioner.enabled: "false"
+
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app: openebs
+  name: openebs-jiva
+  namespace: openebs
+spec:
+  endpoints:
+    - path: /metrics
+      port: exporter
+  namespaceSelector:
+    matchNames:
+      - openebs
+  selector:
+    matchLabels:
+      openebs.io/cas-type: jiva
