@@ -1,33 +1,4 @@
 ---
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: oauth2-proxy
-  namespace: kube-system
-data:
-  oauth2_proxy.cfg: |
-    cookie_domains = [
-      ".hannahs.family",
-      ".jbhannah.net"
-    ]
-    email_domains = ["*"]
-    github_org = "hannahs-family"
-    github_team = ""
-    metrics_address = "127.0.0.1:4190"
-    provider = "github"
-    redirect_url = "https://auth.hannahs.family/oauth2/callback"
-    reverse_proxy = true
-    set_authorization_header = true
-    set_xauthrequest = true
-    upstreams = [
-      "static://202"
-    ]
-    whitelist_domains = [
-      ".hannahs.family",
-      ".jbhannah.net"
-    ]
-
----
 apiVersion: helm.cattle.io/v1
 kind: HelmChart
 metadata:
@@ -40,7 +11,27 @@ spec:
   targetNamespace: kube-system
   valuesContent: |-
     config:
-      existingConfig: oauth2-proxy
+      configFile: |-
+        cookie_domains = [
+          ".hannahs.family",
+          ".jbhannah.net"
+        ]
+        email_domains = ["*"]
+        github_org = "hannahs-family"
+        github_team = ""
+        metrics_address = "127.0.0.1:4190"
+        provider = "github"
+        redirect_url = "https://auth.hannahs.family/oauth2/callback"
+        reverse_proxy = true
+        set_authorization_header = true
+        set_xauthrequest = true
+        upstreams = [
+          "static://202"
+        ]
+        whitelist_domains = [
+          ".hannahs.family",
+          ".jbhannah.net"
+        ]
       existingSecret: oauth2-proxy
     image:
       repository: quay.io/oauth2-proxy/oauth2-proxy
