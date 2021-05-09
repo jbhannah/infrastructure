@@ -46,7 +46,7 @@ spec:
         enabled: false
     prometheus:
       prometheusSpec:
-        externalUrl: https://prometheus.metrics.hannahs.family
+        externalUrl: https://prometheus.monitoring.hannahs.family
         probeSelectorNilUsesHelmValues: false
         ruleSelectorNilUsesHelmValues: false
         serviceMonitorSelectorNilUsesHelmValues: false
