@@ -41,9 +41,6 @@ spec:
         - 172.17.3.17
         - 172.17.3.18
         - 172.17.3.122
-    prometheusOperator:
-      tls:
-        enabled: false
     prometheus:
       prometheusSpec:
         externalUrl: https://prometheus.monitoring.hannahs.family
