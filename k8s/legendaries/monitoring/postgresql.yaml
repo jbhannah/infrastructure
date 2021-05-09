@@ -18,3 +18,1707 @@ spec:
     grafana: {}
   postgresql:
     version: "13"
+
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: monitoring-postgresql-exporter
+  namespace: kube-system
+spec:
+  repo: https://prometheus-community.github.io/helm-charts
+  chart: prometheus-postgres-exporter
+  version: 2.3.0
+  targetNamespace: monitoring
+  valuesContent: |-
+    serviceMonitor:
+      enabled: true
+    config:
+      datasource:
+        host: monitoring-postgresql
+        user: postgres
+        password:
+        passwordSecret:
+          name: postgres.monitoring-postgresql.credentials.postgresql.acid.zalan.do
+          key: password
+        sslmode: require
+      autoDiscoverDatabases: true
+      queries: |-
+        pg_replication:
+          query: "SELECT CASE WHEN NOT pg_is_in_recovery() THEN 0 ELSE GREATEST (0, EXTRACT(EPOCH FROM (now() - pg_last_xact_replay_timestamp()))) END AS lag"
+          master: true
+          metrics:
+            - lag:
+                usage: "GAUGE"
+                description: "Replication lag behind master in seconds"
+        pg_postmaster:
+          query: "SELECT pg_postmaster_start_time as start_time_seconds from pg_postmaster_start_time()"
+          master: true
+          metrics:
+            - start_time_seconds:
+                usage: "GAUGE"
+                description: "Time at which postmaster started"
+        pg_stat_user_tables:
+          query: |
+          SELECT
+            current_database() datname,
+            schemaname,
+            relname,
+            seq_scan,
+            seq_tup_read,
+            idx_scan,
+            idx_tup_fetch,
+            n_tup_ins,
+            n_tup_upd,
+            n_tup_del,
+            n_tup_hot_upd,
+            n_live_tup,
+            n_dead_tup,
+            n_mod_since_analyze,
+            COALESCE(last_vacuum, '1970-01-01Z') as last_vacuum,
+            COALESCE(last_autovacuum, '1970-01-01Z') as last_autovacuum,
+            COALESCE(last_analyze, '1970-01-01Z') as last_analyze,
+            COALESCE(last_autoanalyze, '1970-01-01Z') as last_autoanalyze,
+            vacuum_count,
+            autovacuum_count,
+            analyze_count,
+            autoanalyze_count
+          FROM
+            pg_stat_user_tables
+          metrics:
+            - datname:
+                usage: "LABEL"
+                description: "Name of current database"
+            - schemaname:
+                usage: "LABEL"
+                description: "Name of the schema that this table is in"
+            - relname:
+                usage: "LABEL"
+                description: "Name of this table"
+            - seq_scan:
+                usage: "COUNTER"
+                description: "Number of sequential scans initiated on this table"
+            - seq_tup_read:
+                usage: "COUNTER"
+                description: "Number of live rows fetched by sequential scans"
+            - idx_scan:
+                usage: "COUNTER"
+                description: "Number of index scans initiated on this table"
+            - idx_tup_fetch:
+                usage: "COUNTER"
+                description: "Number of live rows fetched by index scans"
+            - n_tup_ins:
+                usage: "COUNTER"
+                description: "Number of rows inserted"
+            - n_tup_upd:
+                usage: "COUNTER"
+                description: "Number of rows updated"
+            - n_tup_del:
+                usage: "COUNTER"
+                description: "Number of rows deleted"
+            - n_tup_hot_upd:
+                usage: "COUNTER"
+                description: "Number of rows HOT updated (i.e., with no separate index update required)"
+            - n_live_tup:
+                usage: "GAUGE"
+                description: "Estimated number of live rows"
+            - n_dead_tup:
+                usage: "GAUGE"
+                description: "Estimated number of dead rows"
+            - n_mod_since_analyze:
+                usage: "GAUGE"
+                description: "Estimated number of rows changed since last analyze"
+            - last_vacuum:
+                usage: "GAUGE"
+                description: "Last time at which this table was manually vacuumed (not counting VACUUM FULL)"
+            - last_autovacuum:
+                usage: "GAUGE"
+                description: "Last time at which this table was vacuumed by the autovacuum daemon"
+            - last_analyze:
+                usage: "GAUGE"
+                description: "Last time at which this table was manually analyzed"
+            - last_autoanalyze:
+                usage: "GAUGE"
+                description: "Last time at which this table was analyzed by the autovacuum daemon"
+            - vacuum_count:
+                usage: "COUNTER"
+                description: "Number of times this table has been manually vacuumed (not counting VACUUM FULL)"
+            - autovacuum_count:
+                usage: "COUNTER"
+                description: "Number of times this table has been vacuumed by the autovacuum daemon"
+            - analyze_count:
+                usage: "COUNTER"
+                description: "Number of times this table has been manually analyzed"
+            - autoanalyze_count:
+                usage: "COUNTER"
+                description: "Number of times this table has been analyzed by the autovacuum daemon"
+        pg_statio_user_tables:
+          query: "SELECT current_database() datname, schemaname, relname, heap_blks_read, heap_blks_hit, idx_blks_read, idx_blks_hit, toast_blks_read, toast_blks_hit, tidx_blks_read, tidx_blks_hit FROM pg_statio_user_tables"
+          metrics:
+            - datname:
+                usage: "LABEL"
+                description: "Name of current database"
+            - schemaname:
+                usage: "LABEL"
+                description: "Name of the schema that this table is in"
+            - relname:
+                usage: "LABEL"
+                description: "Name of this table"
+            - heap_blks_read:
+                usage: "COUNTER"
+                description: "Number of disk blocks read from this table"
+            - heap_blks_hit:
+                usage: "COUNTER"
+                description: "Number of buffer hits in this table"
+            - idx_blks_read:
+                usage: "COUNTER"
+                description: "Number of disk blocks read from all indexes on this table"
+            - idx_blks_hit:
+                usage: "COUNTER"
+                description: "Number of buffer hits in all indexes on this table"
+            - toast_blks_read:
+                usage: "COUNTER"
+                description: "Number of disk blocks read from this table's TOAST table (if any)"
+            - toast_blks_hit:
+                usage: "COUNTER"
+                description: "Number of buffer hits in this table's TOAST table (if any)"
+            - tidx_blks_read:
+                usage: "COUNTER"
+                description: "Number of disk blocks read from this table's TOAST table indexes (if any)"
+            - tidx_blks_hit:
+                usage: "COUNTER"
+                description: "Number of buffer hits in this table's TOAST table indexes (if any)"
+        pg_database:
+          query: "SELECT pg_database.datname, pg_database_size(pg_database.datname) as size_bytes FROM pg_database"
+          master: true
+          cache_seconds: 30
+          metrics:
+            - datname:
+                usage: "LABEL"
+                description: "Name of the database"
+            - size_bytes:
+                usage: "GAUGE"
+                description: "Disk space used by the database"
+        pg_stat_statements:
+          query: "SELECT t2.rolname, t3.datname, queryid, calls, total_exec_time / 1000 as total_time_seconds, min_exec_time / 1000 as min_time_seconds, max_exec_time / 1000 as max_time_seconds, mean_exec_time / 1000 as mean_time_seconds, stddev_exec_time / 1000 as stddev_time_seconds, rows, shared_blks_hit, shared_blks_read, shared_blks_dirtied, shared_blks_written, local_blks_hit, local_blks_read, local_blks_dirtied, local_blks_written, temp_blks_read, temp_blks_written, blk_read_time / 1000 as blk_read_time_seconds, blk_write_time / 1000 as blk_write_time_seconds FROM pg_stat_statements t1 JOIN pg_roles t2 ON (t1.userid=t2.oid) JOIN pg_database t3 ON (t1.dbid=t3.oid) WHERE t2.rolname != 'rdsadmin'"
+          master: true
+          metrics:
+            - rolname:
+                usage: "LABEL"
+                description: "Name of user"
+            - datname:
+                usage: "LABEL"
+                description: "Name of database"
+            - queryid:
+                usage: "LABEL"
+                description: "Query ID"
+            - calls:
+                usage: "COUNTER"
+                description: "Number of times executed"
+            - total_time_seconds:
+                usage: "COUNTER"
+                description: "Total time spent in the statement, in milliseconds"
+            - min_time_seconds:
+                usage: "GAUGE"
+                description: "Minimum time spent in the statement, in milliseconds"
+            - max_time_seconds:
+                usage: "GAUGE"
+                description: "Maximum time spent in the statement, in milliseconds"
+            - mean_time_seconds:
+                usage: "GAUGE"
+                description: "Mean time spent in the statement, in milliseconds"
+            - stddev_time_seconds:
+                usage: "GAUGE"
+                description: "Population standard deviation of time spent in the statement, in milliseconds"
+            - rows:
+                usage: "COUNTER"
+                description: "Total number of rows retrieved or affected by the statement"
+            - shared_blks_hit:
+                usage: "COUNTER"
+                description: "Total number of shared block cache hits by the statement"
+            - shared_blks_read:
+                usage: "COUNTER"
+                description: "Total number of shared blocks read by the statement"
+            - shared_blks_dirtied:
+                usage: "COUNTER"
+                description: "Total number of shared blocks dirtied by the statement"
+            - shared_blks_written:
+                usage: "COUNTER"
+                description: "Total number of shared blocks written by the statement"
+            - local_blks_hit:
+                usage: "COUNTER"
+                description: "Total number of local block cache hits by the statement"
+            - local_blks_read:
+                usage: "COUNTER"
+                description: "Total number of local blocks read by the statement"
+            - local_blks_dirtied:
+                usage: "COUNTER"
+                description: "Total number of local blocks dirtied by the statement"
+            - local_blks_written:
+                usage: "COUNTER"
+                description: "Total number of local blocks written by the statement"
+            - temp_blks_read:
+                usage: "COUNTER"
+                description: "Total number of temp blocks read by the statement"
+            - temp_blks_written:
+                usage: "COUNTER"
+                description: "Total number of temp blocks written by the statement"
+            - blk_read_time_seconds:
+                usage: "COUNTER"
+                description: "Total time the statement spent reading blocks, in milliseconds (if track_io_timing is enabled, otherwise zero)"
+            - blk_write_time_seconds:
+                usage: "COUNTER"
+                description: "Total time the statement spent writing blocks, in milliseconds (if track_io_timing is enabled, otherwise zero)"
+        pg_stat_activity:
+          query: |
+            WITH
+              metrics AS (
+                SELECT
+                  application_name,
+                  SUM(EXTRACT(EPOCH FROM (CURRENT_TIMESTAMP - state_change))::bigint)::float AS process_idle_seconds_sum,
+                  COUNT(*) AS process_idle_seconds_count
+                FROM pg_stat_activity
+                WHERE state = 'idle'
+                GROUP BY application_name
+              ),
+              buckets AS (
+                SELECT
+                  application_name,
+                  le,
+                  SUM(
+                    CASE WHEN EXTRACT(EPOCH FROM (CURRENT_TIMESTAMP - state_change)) <= le
+                      THEN 1
+                      ELSE 0
+                    END
+                  )::bigint AS bucket
+                FROM
+                  pg_stat_activity,
+                  UNNEST(ARRAY[1, 2, 5, 15, 30, 60, 90, 120, 300]) AS le
+                GROUP BY application_name, le
+                ORDER BY application_name, le
+              )
+            SELECT
+              application_name,
+              process_idle_seconds_sum,
+              process_idle_seconds_count,
+              ARRAY_AGG(le) AS process_idle_seconds,
+              ARRAY_AGG(bucket) AS process_idle_seconds_bucket
+            FROM metrics JOIN buckets USING (application_name)
+            GROUP BY 1, 2, 3
+          metrics:
+            - application_name:
+                usage: "LABEL"
+                description: "Application Name"
+            - process_idle_seconds:
+                usage: "HISTOGRAM"
+                description: "Idle time of server processes"
+
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: postgresql.rules
+  namespace: monitoring
+spec:
+  groups:
+    - name: PostgreSQL
+      rules:
+        - alert: PostgreSQLMaxConnectionsReached
+          expr: sum(pg_stat_activity_count) by (instance) >= sum(pg_settings_max_connections) by (instance) - sum(pg_settings_superuser_reserved_connections) by (instance)
+          for: 1m
+          labels:
+            severity: email
+          annotations:
+            summary: "{{ $labels.instance }} has maxed out Postgres connections."
+            description: "{{ $labels.instance }} is exceeding the currently configured maximum Postgres connection limit (current value: {{ $value }}s). Services may be degraded - please take immediate action (you probably need to increase max_connections in the Docker image and re-deploy."
+
+        - alert: PostgreSQLHighConnections
+          expr: sum(pg_stat_activity_count) by (instance) > (sum(pg_settings_max_connections) by (instance) - sum(pg_settings_superuser_reserved_connections) by (instance)) * 0.8
+          for: 10m
+          labels:
+            severity: email
+          annotations:
+            summary: "{{ $labels.instance }} is over 80% of max Postgres connections."
+            description: "{{ $labels.instance }} is exceeding 80% of the currently configured maximum Postgres connection limit (current value: {{ $value }}s). Please check utilization graphs and confirm if this is normal service growth, abuse or an otherwise temporary condition or if new resources need to be provisioned (or the limits increased, which is mostly likely)."
+
+        - alert: PostgreSQLDown
+          expr: pg_up != 1
+          for: 1m
+          labels:
+            severity: email
+          annotations:
+            summary: "PostgreSQL is not processing queries: {{ $labels.instance }}"
+            description: "{{ $labels.instance }} is rejecting query requests from the exporter, and thus probably not allowing DNS requests to work either. User services should not be effected provided at least 1 node is still alive."
+
+        - alert: PostgreSQLSlowQueries
+          expr: avg(rate(pg_stat_activity_max_tx_duration{datname!~"template.*"}[2m])) by (datname) > 2 * 60
+          for: 2m
+          labels:
+            severity: email
+          annotations:
+            summary: "PostgreSQL high number of slow on {{ $labels.cluster }} for database {{ $labels.datname }} "
+            description: "PostgreSQL high number of slow queries {{ $labels.cluster }} for database {{ $labels.datname }} with a value of {{ $value }} "
+
+        - alert: PostgreSQLQPS
+          expr: avg(irate(pg_stat_database_xact_commit{datname!~"template.*"}[5m]) + irate(pg_stat_database_xact_rollback{datname!~"template.*"}[5m])) by (datname) > 10000
+          for: 5m
+          labels:
+            severity: email
+          annotations:
+            summary: "PostgreSQL high number of queries per second {{ $labels.cluster }} for database {{ $labels.datname }}"
+            description: "PostgreSQL high number of queries per second on {{ $labels.cluster }} for database {{ $labels.datname }} with a value of {{ $value }}"
+
+        - alert: PostgreSQLCacheHitRatio
+          expr: avg(rate(pg_stat_database_blks_hit{datname!~"template.*"}[5m]) / (rate(pg_stat_database_blks_hit{datname!~"template.*"}[5m]) + rate(pg_stat_database_blks_read{datname!~"template.*"}[5m]))) by (datname) < 0.98
+          for: 5m
+          labels:
+            severity: email
+          annotations:
+            summary: "PostgreSQL low cache hit rate on {{ $labels.cluster }} for database {{ $labels.datname }}"
+            description: "PostgreSQL low on cache hit rate on {{ $labels.cluster }} for database {{ $labels.datname }} with a value of {{ $value }}"
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-postgresql
+  namespace: monitoring
+  labels:
+    grafana.com/dashboard: postgresql
+data:
+  postgresql.json: |-
+    {
+      "annotations": {
+        "list": [
+          {
+            "builtIn": 1,
+            "datasource": "-- Grafana --",
+            "enable": true,
+            "hide": true,
+            "iconColor": "rgba(0, 211, 255, 1)",
+            "name": "Annotations & Alerts",
+            "type": "dashboard"
+          }
+        ]
+      },
+      "description": "Performance metrics for Postgres",
+      "editable": true,
+      "gnetId": 455,
+      "graphTooltip": 0,
+      "id": 1,
+      "iteration": 1603191461722,
+      "links": [],
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "$datasource",
+          "editable": true,
+          "error": false,
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "grid": {},
+          "gridPos": {
+            "h": 7,
+            "w": 20,
+            "x": 0,
+            "y": 0
+          },
+          "hiddenSeries": false,
+          "id": 1,
+          "isNew": true,
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": false,
+            "max": true,
+            "min": true,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "connected",
+          "options": {
+            "alertThreshold": true
+          },
+          "percentage": false,
+          "pluginVersion": "7.2.1",
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "fetched",
+              "dsType": "prometheus",
+              "expr": "sum(irate(pg_stat_database_tup_fetched{datname=~\"$db\",instance=~\"$instance\"}[5m]))",
+              "format": "time_series",
+              "groupBy": [
+                {
+                  "params": ["$interval"],
+                  "type": "time"
+                },
+                {
+                  "params": ["null"],
+                  "type": "fill"
+                }
+              ],
+              "intervalFactor": 2,
+              "legendFormat": "fetched",
+              "measurement": "postgresql",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": ["tup_fetched"],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": ["10s"],
+                    "type": "non_negative_derivative"
+                  }
+                ]
+              ],
+              "step": 120,
+              "tags": [
+                {
+                  "key": "instance",
+                  "operator": "=~",
+                  "value": "/^$instance$/"
+                }
+              ]
+            },
+            {
+              "alias": "fetched",
+              "dsType": "prometheus",
+              "expr": "sum(irate(pg_stat_database_tup_returned{datname=~\"$db\",instance=~\"$instance\"}[5m]))",
+              "format": "time_series",
+              "groupBy": [
+                {
+                  "params": ["$interval"],
+                  "type": "time"
+                },
+                {
+                  "params": ["null"],
+                  "type": "fill"
+                }
+              ],
+              "intervalFactor": 2,
+              "legendFormat": "returned",
+              "measurement": "postgresql",
+              "policy": "default",
+              "refId": "B",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": ["tup_fetched"],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": ["10s"],
+                    "type": "non_negative_derivative"
+                  }
+                ]
+              ],
+              "step": 120,
+              "tags": [
+                {
+                  "key": "instance",
+                  "operator": "=~",
+                  "value": "/^$instance$/"
+                }
+              ]
+            },
+            {
+              "alias": "fetched",
+              "dsType": "prometheus",
+              "expr": "sum(irate(pg_stat_database_tup_inserted{datname=~\"$db\",instance=~\"$instance\"}[5m]))",
+              "format": "time_series",
+              "groupBy": [
+                {
+                  "params": ["$interval"],
+                  "type": "time"
+                },
+                {
+                  "params": ["null"],
+                  "type": "fill"
+                }
+              ],
+              "intervalFactor": 2,
+              "legendFormat": "inserted",
+              "measurement": "postgresql",
+              "policy": "default",
+              "refId": "C",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": ["tup_fetched"],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": ["10s"],
+                    "type": "non_negative_derivative"
+                  }
+                ]
+              ],
+              "step": 120,
+              "tags": [
+                {
+                  "key": "instance",
+                  "operator": "=~",
+                  "value": "/^$instance$/"
+                }
+              ]
+            },
+            {
+              "alias": "fetched",
+              "dsType": "prometheus",
+              "expr": "sum(irate(pg_stat_database_tup_updated{datname=~\"$db\",instance=~\"$instance\"}[5m]))",
+              "format": "time_series",
+              "groupBy": [
+                {
+                  "params": ["$interval"],
+                  "type": "time"
+                },
+                {
+                  "params": ["null"],
+                  "type": "fill"
+                }
+              ],
+              "intervalFactor": 2,
+              "legendFormat": "updated",
+              "measurement": "postgresql",
+              "policy": "default",
+              "refId": "D",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": ["tup_fetched"],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": ["10s"],
+                    "type": "non_negative_derivative"
+                  }
+                ]
+              ],
+              "step": 120,
+              "tags": [
+                {
+                  "key": "instance",
+                  "operator": "=~",
+                  "value": "/^$instance$/"
+                }
+              ]
+            },
+            {
+              "alias": "fetched",
+              "dsType": "prometheus",
+              "expr": "sum(irate(pg_stat_database_tup_deleted{datname=~\"$db\",instance=~\"$instance\"}[5m]))",
+              "format": "time_series",
+              "groupBy": [
+                {
+                  "params": ["$interval"],
+                  "type": "time"
+                },
+                {
+                  "params": ["null"],
+                  "type": "fill"
+                }
+              ],
+              "intervalFactor": 2,
+              "legendFormat": "deleted",
+              "measurement": "postgresql",
+              "policy": "default",
+              "refId": "E",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": ["tup_fetched"],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": ["10s"],
+                    "type": "non_negative_derivative"
+                  }
+                ]
+              ],
+              "step": 120,
+              "tags": [
+                {
+                  "key": "instance",
+                  "operator": "=~",
+                  "value": "/^$instance$/"
+                }
+              ]
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Rows",
+          "tooltip": {
+            "msResolution": true,
+            "shared": true,
+            "sort": 0,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "datasource": "$datasource",
+          "decimals": 0,
+          "editable": true,
+          "error": false,
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "format": "none",
+          "gauge": {
+            "maxValue": 100,
+            "minValue": 0,
+            "show": false,
+            "thresholdLabels": false,
+            "thresholdMarkers": true
+          },
+          "gridPos": {
+            "h": 3,
+            "w": 4,
+            "x": 20,
+            "y": 0
+          },
+          "height": "55px",
+          "id": 11,
+          "interval": null,
+          "isNew": true,
+          "links": [],
+          "mappingType": 1,
+          "mappingTypes": [
+            {
+              "name": "value to text",
+              "value": 1
+            },
+            {
+              "name": "range to text",
+              "value": 2
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "rangeMaps": [
+            {
+              "from": "null",
+              "text": "N/A",
+              "to": "null"
+            }
+          ],
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": true,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "tableColumn": "",
+          "targets": [
+            {
+              "dsType": "prometheus",
+              "expr": "sum(irate(pg_stat_database_xact_commit{datname=~\"$db\",instance=~\"$instance\"}[5m])) + sum(irate(pg_stat_database_xact_rollback{datname=~\"$db\",instance=~\"$instance\"}[5m]))",
+              "format": "time_series",
+              "groupBy": [
+                {
+                  "params": ["$interval"],
+                  "type": "time"
+                },
+                {
+                  "params": ["null"],
+                  "type": "fill"
+                }
+              ],
+              "intervalFactor": 2,
+              "measurement": "postgresql",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": ["xact_commit"],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": ["10s"],
+                    "type": "non_negative_derivative"
+                  }
+                ]
+              ],
+              "step": 1800,
+              "tags": [
+                {
+                  "key": "instance",
+                  "operator": "=~",
+                  "value": "/^$instance$/"
+                }
+              ]
+            }
+          ],
+          "thresholds": "",
+          "title": "QPS",
+          "transparent": true,
+          "type": "singlestat",
+          "valueFontSize": "80%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "avg"
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "$datasource",
+          "decimals": 1,
+          "editable": true,
+          "error": false,
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "grid": {},
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 0,
+            "y": 7
+          },
+          "hiddenSeries": false,
+          "id": 2,
+          "isNew": true,
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": false,
+            "hideZero": true,
+            "max": true,
+            "min": true,
+            "rightSide": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "connected",
+          "options": {
+            "alertThreshold": true
+          },
+          "percentage": false,
+          "pluginVersion": "7.2.1",
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "Buffers Allocated",
+              "dsType": "prometheus",
+              "expr": "irate(pg_stat_bgwriter_buffers_alloc{instance='$instance'}[5m])",
+              "format": "time_series",
+              "groupBy": [
+                {
+                  "params": ["$interval"],
+                  "type": "time"
+                },
+                {
+                  "params": ["null"],
+                  "type": "fill"
+                }
+              ],
+              "intervalFactor": 2,
+              "legendFormat": "buffers_alloc",
+              "measurement": "postgresql",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": ["buffers_alloc"],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [],
+                    "type": "difference"
+                  }
+                ]
+              ],
+              "step": 240,
+              "tags": [
+                {
+                  "key": "instance",
+                  "operator": "=~",
+                  "value": "/^$instance$/"
+                }
+              ]
+            },
+            {
+              "alias": "Buffers Allocated",
+              "dsType": "prometheus",
+              "expr": "irate(pg_stat_bgwriter_buffers_backend_fsync{instance='$instance'}[5m])",
+              "format": "time_series",
+              "groupBy": [
+                {
+                  "params": ["$interval"],
+                  "type": "time"
+                },
+                {
+                  "params": ["null"],
+                  "type": "fill"
+                }
+              ],
+              "intervalFactor": 2,
+              "legendFormat": "buffers_backend_fsync",
+              "measurement": "postgresql",
+              "policy": "default",
+              "refId": "B",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": ["buffers_alloc"],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [],
+                    "type": "difference"
+                  }
+                ]
+              ],
+              "step": 240,
+              "tags": [
+                {
+                  "key": "instance",
+                  "operator": "=~",
+                  "value": "/^$instance$/"
+                }
+              ]
+            },
+            {
+              "alias": "Buffers Allocated",
+              "dsType": "prometheus",
+              "expr": "irate(pg_stat_bgwriter_buffers_backend{instance='$instance'}[5m])",
+              "format": "time_series",
+              "groupBy": [
+                {
+                  "params": ["$interval"],
+                  "type": "time"
+                },
+                {
+                  "params": ["null"],
+                  "type": "fill"
+                }
+              ],
+              "intervalFactor": 2,
+              "legendFormat": "buffers_backend",
+              "measurement": "postgresql",
+              "policy": "default",
+              "refId": "C",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": ["buffers_alloc"],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [],
+                    "type": "difference"
+                  }
+                ]
+              ],
+              "step": 240,
+              "tags": [
+                {
+                  "key": "instance",
+                  "operator": "=~",
+                  "value": "/^$instance$/"
+                }
+              ]
+            },
+            {
+              "alias": "Buffers Allocated",
+              "dsType": "prometheus",
+              "expr": "irate(pg_stat_bgwriter_buffers_clean{instance='$instance'}[5m])",
+              "format": "time_series",
+              "groupBy": [
+                {
+                  "params": ["$interval"],
+                  "type": "time"
+                },
+                {
+                  "params": ["null"],
+                  "type": "fill"
+                }
+              ],
+              "intervalFactor": 2,
+              "legendFormat": "buffers_clean",
+              "measurement": "postgresql",
+              "policy": "default",
+              "refId": "D",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": ["buffers_alloc"],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [],
+                    "type": "difference"
+                  }
+                ]
+              ],
+              "step": 240,
+              "tags": [
+                {
+                  "key": "instance",
+                  "operator": "=~",
+                  "value": "/^$instance$/"
+                }
+              ]
+            },
+            {
+              "alias": "Buffers Allocated",
+              "dsType": "prometheus",
+              "expr": "irate(pg_stat_bgwriter_buffers_checkpoint{instance='$instance'}[5m])",
+              "format": "time_series",
+              "groupBy": [
+                {
+                  "params": ["$interval"],
+                  "type": "time"
+                },
+                {
+                  "params": ["null"],
+                  "type": "fill"
+                }
+              ],
+              "intervalFactor": 2,
+              "legendFormat": "buffers_checkpoint",
+              "measurement": "postgresql",
+              "policy": "default",
+              "refId": "E",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": ["buffers_alloc"],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [],
+                    "type": "difference"
+                  }
+                ]
+              ],
+              "step": 240,
+              "tags": [
+                {
+                  "key": "instance",
+                  "operator": "=~",
+                  "value": "/^$instance$/"
+                }
+              ]
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Buffers",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "sort": 0,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": 0,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "$datasource",
+          "editable": true,
+          "error": false,
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "grid": {},
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 12,
+            "y": 7
+          },
+          "hiddenSeries": false,
+          "id": 3,
+          "isNew": true,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "options": {
+            "alertThreshold": true
+          },
+          "percentage": false,
+          "pluginVersion": "7.2.1",
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "conflicts",
+              "dsType": "prometheus",
+              "expr": "sum(rate(pg_stat_database_deadlocks{datname=~\"$db\",instance=~\"$instance\"}[5m]))",
+              "format": "time_series",
+              "groupBy": [
+                {
+                  "params": ["$interval"],
+                  "type": "time"
+                },
+                {
+                  "params": ["null"],
+                  "type": "fill"
+                }
+              ],
+              "intervalFactor": 2,
+              "legendFormat": "deadlocks",
+              "measurement": "postgresql",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": ["conflicts"],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [],
+                    "type": "difference"
+                  }
+                ]
+              ],
+              "step": 240,
+              "tags": [
+                {
+                  "key": "instance",
+                  "operator": "=~",
+                  "value": "/^$instance$/"
+                }
+              ]
+            },
+            {
+              "alias": "deadlocks",
+              "dsType": "prometheus",
+              "expr": "sum(rate(pg_stat_database_conflicts{datname=~\"$db\",instance=~\"$instance\"}[5m]))",
+              "format": "time_series",
+              "groupBy": [
+                {
+                  "params": ["$interval"],
+                  "type": "time"
+                },
+                {
+                  "params": ["null"],
+                  "type": "fill"
+                }
+              ],
+              "intervalFactor": 2,
+              "legendFormat": "conflicts",
+              "measurement": "postgresql",
+              "policy": "default",
+              "refId": "B",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": ["deadlocks"],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [],
+                    "type": "difference"
+                  }
+                ]
+              ],
+              "step": 240,
+              "tags": [
+                {
+                  "key": "instance",
+                  "operator": "=~",
+                  "value": "/^$instance$/"
+                }
+              ]
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Conflicts/Deadlocks",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "sort": 0,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": 0,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "$datasource",
+          "editable": true,
+          "error": false,
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "grid": {},
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 0,
+            "y": 14
+          },
+          "hiddenSeries": false,
+          "id": 12,
+          "isNew": true,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "options": {
+            "alertThreshold": true
+          },
+          "percentage": true,
+          "pluginVersion": "7.2.1",
+          "pointradius": 1,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum(pg_stat_database_blks_hit{datname=~\"$db\",instance=~\"$instance\"}) / (sum(pg_stat_database_blks_hit{datname=~\"$db\",instance=~\"$instance\"}) + sum(pg_stat_database_blks_read{datname=~\"$db\",instance=~\"$instance\"}))",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "cache hit rate",
+              "refId": "A",
+              "step": 240
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Cache hit ratio",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "sort": 0,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "percentunit",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "$datasource",
+          "editable": true,
+          "error": false,
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "grid": {},
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 12,
+            "y": 14
+          },
+          "hiddenSeries": false,
+          "id": 13,
+          "isNew": true,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "options": {
+            "alertThreshold": true
+          },
+          "percentage": false,
+          "pluginVersion": "7.2.1",
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "pg_stat_database_numbackends{datname=~\"$db\",instance=~\"$instance\"}",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "{{__name__}}",
+              "refId": "A",
+              "step": 240
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Number of active connections",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "sort": 0,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        }
+      ],
+      "refresh": false,
+      "schemaVersion": 26,
+      "style": "dark",
+      "tags": ["postgres"],
+      "templating": {
+        "list": [
+          {
+            "allValue": ".*",
+            "current": {
+              "selected": false,
+              "text": "All",
+              "value": "$__all"
+            },
+            "datasource": "$datasource",
+            "definition": "",
+            "hide": 0,
+            "includeAll": true,
+            "label": null,
+            "multi": false,
+            "name": "instance",
+            "options": [],
+            "query": "label_values(up{job=~\"postgres.*\"},instance)",
+            "refresh": 1,
+            "regex": "",
+            "skipUrlSync": false,
+            "sort": 0,
+            "tagValuesQuery": "",
+            "tags": [],
+            "tagsQuery": "",
+            "type": "query",
+            "useTags": false
+          },
+          {
+            "allValue": ".*",
+            "current": {
+              "selected": false,
+              "text": "All",
+              "value": "$__all"
+            },
+            "datasource": "$datasource",
+            "definition": "label_values(pg_stat_database_tup_fetched{instance=~\"$instance\",datname!~\"template.*|postgres\"},datname)",
+            "hide": 0,
+            "includeAll": true,
+            "label": "db",
+            "multi": false,
+            "name": "db",
+            "options": [],
+            "query": "label_values(pg_stat_database_tup_fetched{instance=~\"$instance\",datname!~\"template.*|postgres\"},datname)",
+            "refresh": 1,
+            "regex": "",
+            "skipUrlSync": false,
+            "sort": 0,
+            "tagValuesQuery": "",
+            "tags": [],
+            "tagsQuery": "",
+            "type": "query",
+            "useTags": false
+          },
+          {
+            "current": {
+              "text": "default",
+              "value": "default"
+            },
+            "hide": 0,
+            "includeAll": false,
+            "label": null,
+            "multi": false,
+            "name": "datasource",
+            "options": [],
+            "query": "prometheus",
+            "refresh": 1,
+            "regex": "",
+            "skipUrlSync": false,
+            "type": "datasource"
+          },
+          {
+            "allValue": null,
+            "current": {
+              "selected": true,
+              "text": "postgres",
+              "value": "postgres"
+            },
+            "datasource": "$datasource",
+            "definition": "label_values(pg_up, job)",
+            "hide": 0,
+            "includeAll": false,
+            "label": "job",
+            "multi": false,
+            "name": "job",
+            "options": [
+              {
+                "selected": true,
+                "text": "postgres",
+                "value": "postgres"
+              }
+            ],
+            "query": "label_values(pg_up, job)",
+            "refresh": 0,
+            "regex": "",
+            "skipUrlSync": false,
+            "sort": 0,
+            "tagValuesQuery": "",
+            "tags": [],
+            "tagsQuery": "",
+            "type": "query",
+            "useTags": false
+          }
+        ]
+      },
+      "time": {
+        "from": "now-1h",
+        "to": "now"
+      },
+      "timepicker": {
+        "refresh_intervals": [
+          "5s",
+          "10s",
+          "30s",
+          "1m",
+          "5m",
+          "15m",
+          "30m",
+          "1h",
+          "2h",
+          "1d"
+        ],
+        "time_options": ["5m", "15m", "1h", "6h", "12h", "24h", "2d", "7d", "30d"]
+      },
+      "timezone": "browser",
+      "title": "Postgres Overview",
+      "uid": "wGgaPlciz",
+      "version": 5
+    }
