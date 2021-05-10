@@ -63,6 +63,31 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  name: minio
+  namespace: kube-system
+  annotations:
+    kubernetes.io/tls-acme: "true"
+spec:
+  tls:
+    - hosts:
+        - &hostname minio.hannahs.family
+      secretName: *hostname
+  rules:
+    - host: *hostname
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: minio
+                port:
+                  name: http-minio
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
   name: minio-console
   namespace: kube-system
   annotations:
