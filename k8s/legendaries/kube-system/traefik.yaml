@@ -29,8 +29,11 @@ spec:
       dashboard:
         enabled: false
     logs:
+      general:
+        format: json
       access:
         enabled: true
+        format: json
     podAnnotations: {}
     podDisruptionBudget:
       minAvailable: 1
