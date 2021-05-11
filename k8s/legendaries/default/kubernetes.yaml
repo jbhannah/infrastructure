@@ -21,3 +21,16 @@ spec:
       services:
         - name: kubernetes
           port: 443
+
+---
+apiVersion: externaldns.k8s.io/v1alpha1
+kind: DNSEndpoint
+metadata:
+  name: kubernetes
+  namespace: default
+spec:
+  endpoints:
+    - dnsName: legendaries.hannahs.family
+      recordType: CNAME
+      targets:
+        - www.hannahs.family
