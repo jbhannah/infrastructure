@@ -42,6 +42,8 @@ spec:
         - 172.17.3.18
         - 172.17.3.122
     prometheus:
+      thanosService:
+        enabled: true
       prometheusSpec:
         externalUrl: https://prometheus.monitoring.hannahs.family
         podMonitorSelectorNilUsesHelmValues: false
@@ -55,8 +57,15 @@ spec:
             memory: 6Gi
         ruleSelectorNilUsesHelmValues: false
         serviceMonitorSelectorNilUsesHelmValues: false
+        shards: 4
         storageSpec:
           emptyDir: {}
+        thanos:
+          image: quay.io/thanos/thanos:v0.20.1
+          version: v0.20.1
+          objectStorageConfig:
+            name: thanos-objstore
+            key: objstore.yml
         walCompression: true
 
 ---
@@ -110,21 +119,3 @@ spec:
                 name: kps-alertmanager
                 port:
                   name: web
-
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: grafana-datasource-prometheus
-  namespace: monitoring
-  labels:
-    grafana.com/datasource: prometheus
-data:
-  kps-prometheus.yml: |
-    apiVersion: 1
-    datasources:
-      - name: Prometheus
-        type: prometheus
-        url: http://kps-prometheus:9090
-        access: proxy
-        isDefault: true

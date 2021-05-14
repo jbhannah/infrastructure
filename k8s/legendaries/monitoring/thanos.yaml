@@ -1,0 +1,127 @@
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: thanos
+  namespace: kube-system
+spec:
+  repo: https://charts.bitnami.com/bitnami
+  chart: thanos
+  version: 3.17.0
+  targetNamespace: monitoring
+  valuesContent: |-
+    image:
+      registry: quay.io
+      repository: thanos/thanos
+      tag: v0.20.1
+    clusterDomain: legendaries.hannahs.family
+    existingObjstoreSecret: thanos-objstore
+    query:
+      dnsDiscovery:
+        sidecarsService: kps-thanos-discovery
+        sidecarsNamespace: monitoring
+      rbac:
+        create: true
+      pspEnabled: true
+    queryFrontend:
+      rbac:
+        create: true
+      pspEnabled: true
+      ingress:
+        enabled: true
+        certManager: true
+        hostname: thanos.monitoring.hannahs.family
+        tls: true
+    compactor:
+      enabled: true
+      retentionResolutionRaw: 7d
+      retentionResolution1h: 1y
+      persistence:
+        enabled: false
+    storegateway:
+      enabled: true
+      persistence:
+        enabled: false
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ThanosRuler
+metadata:
+  name: kps-thanos-ruler
+  namespace: monitoring
+spec:
+  image: quay.io/thanos/thanos:v0.20.1
+  alertmanagersUrl:
+    - dnssrv+_http._tcp.kps-alertmanager.monitoring.svc.legendaries.hannahs.family
+  alertQueryUrl: https://thanos.monitoring.hannahs.family
+  objectStorageConfig:
+    name: thanos-objstore
+    key: objstore.yml
+  queryEndpoints:
+    - dnssrv+_http._tcp.thanos-query.monitoring.svc.legendaries.hannahs.family
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kps-thanos-ruler
+  namespace: monitoring
+spec:
+  selector:
+    app: thanos-ruler
+    thanos-ruler: kps-thanos-ruler
+  ports:
+    - port: 10901
+      name: grpc
+      targetPort: grpc
+    - port: 10902
+      name: web
+      targetPort: web
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kps-thanos-ruler
+  namespace: monitoring
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    traefik.ingress.kubernetes.io/router.middlewares: kube-system-oauth2-proxy-forward-auth@kubernetescrd
+spec:
+  tls:
+    - hosts:
+        - &hostname ruler.monitoring.hannahs.family
+      secretName: *hostname
+  rules:
+    - host: *hostname
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: kps-thanos-ruler
+                port:
+                  name: web
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasource-thanos
+  namespace: monitoring
+  labels:
+    grafana.com/datasource: thanos
+data:
+  kps-prometheus.yml: |
+    apiVersion: 1
+    datasources:
+      - name: Thanos
+        type: prometheus
+        url: http://thanos-query:9090
+        access: proxy
+        isDefault: true
