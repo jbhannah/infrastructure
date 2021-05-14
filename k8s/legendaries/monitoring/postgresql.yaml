@@ -8,7 +8,7 @@ spec:
   teamId: monitoring
   volume:
     size: 10Gi
-    storageClass: openebs-jiva-default
+    storageClass: local-path
   numberOfInstances: 3
   users:
     grafana: []

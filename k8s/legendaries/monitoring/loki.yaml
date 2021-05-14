@@ -226,7 +226,7 @@ spec:
       tolerations: []
       persistence:
         # -- Enable creating PVCs which is required when using boltdb-shipper
-        enabled: true
+        enabled: false
         # -- Size of persistent disk
         size: 10Gi
         # -- Storage class to be used.
@@ -343,7 +343,7 @@ spec:
       tolerations: []
       persistence:
         # -- Enable creating PVCs for the querier cache
-        enabled: true
+        enabled: false
         # -- Size of persistent disk
         size: 10Gi
         # -- Storage class to be used.
@@ -704,7 +704,7 @@ spec:
       tolerations: []
       persistence:
         # -- Enable creating PVCs for the compactor
-        enabled: true
+        enabled: false
         # -- Size of persistent disk
         size: 10Gi
         # -- Storage class to be used.
@@ -770,7 +770,7 @@ spec:
       tolerations: []
       persistence:
         # -- Enable creating PVCs for the ruler
-        enabled: true
+        enabled: false
         # -- Size of persistent disk
         size: 10Gi
         # -- Storage class to be used.
