@@ -43,6 +43,22 @@ spec:
           port: 25565
 
 ---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: mc-jbhannah-net-rcon
+  namespace: minecraft
+spec:
+  entryPoints:
+    - mc-rcon
+  routes:
+    - match: HostSNI(`*`)
+      kind: Rule
+      services:
+        - name: mc-jbhannah-net
+          port: 25575
+
+---
 apiVersion: externaldns.k8s.io/v1alpha1
 kind: DNSEndpoint
 metadata:
@@ -54,3 +70,88 @@ spec:
       recordType: SRV
       targets:
         - 0 0 25566 www.hannahs.family.
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mc-jbhannah-net-exporter
+  namespace: minecraft
+  labels: &labels
+    app.kubernetes.io/name: minecraft-exporter
+    app.kubernetes.io/instance: mc-jbhannah-net
+spec:
+  selector:
+    matchLabels:
+      <<: *labels
+  template:
+    metadata:
+      labels:
+        <<: *labels
+    spec:
+      containers:
+        - name: minecraft-exporter
+          image: ghcr.io/jbhannah/minecraft-exporter:latest
+          resources:
+            limits:
+              memory: 64Mi
+              cpu: 50m
+          ports:
+            - name: metrics
+              containerPort: 8000
+          env:
+            - name: RCON_HOST
+              value: $(MC_JBHANNAH_NET_SERVICE_HOST)
+            - name: RCON_PORT
+              value: $(MC_JBHANNAH_NET_PORT_25575_TCP_PORT)
+          envFrom:
+            - secretRef:
+                name: mc-jbhannah-net
+          volumeMounts:
+            - name: world
+              mountPath: /world
+              readOnly: true
+      nodeName: zacien.hannahs.family
+      volumes:
+        - name: world
+          hostPath:
+            path: /opt/minecraft/mc.jbhannah.net/world
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mc-jbhannah-net-exporter
+  namespace: minecraft
+  labels:
+    app.kubernetes.io/name: minecraft-exporter
+    app.kubernetes.io/instance: mc-jbhannah-net
+    jobName: mc.jbhannah.net
+spec:
+  selector:
+    app.kubernetes.io/name: minecraft-exporter
+    app.kubernetes.io/instance: mc-jbhannah-net
+  ports:
+    - name: metrics
+      port: 8000
+
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: mc-jbhannah-net
+  namespace: minecraft
+  labels: &labels
+    app.kubernetes.io/name: minecraft-exporter
+    app.kubernetes.io/instance: mc-jbhannah-net
+    jobName: mc.jbhannah.net
+spec:
+  namespaceSelector:
+    matchNames:
+      - minecraft
+  endpoints:
+    - port: metrics
+      interval: 15s
+  selector:
+    matchLabels:
+      <<: *labels
