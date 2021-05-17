@@ -1,0 +1,42 @@
+[aws]
+disabled = true
+
+[battery]
+disabled = true
+
+[docker_context]
+symbol = " "
+
+[git_branch]
+symbol = " "
+
+[golang]
+symbol = " "
+
+[java]
+symbol = " "
+
+[kubernetes]
+disabled = false
+style = "blue bold"
+
+[nodejs]
+symbol = " "
+
+[package]
+symbol = " "
+
+[php]
+symbol = " "
+
+[python]
+symbol = " "
+
+[ruby]
+symbol = " "
+
+[rust]
+symbol = " "
+
+[status]
+disabled = false
