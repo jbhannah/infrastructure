@@ -1,3 +1,5 @@
+add_newline = false
+
 [aws]
 disabled = true
 
@@ -20,6 +22,9 @@ symbol = " "
 disabled = false
 style = "blue bold"
 
+[line_break]
+disabled = true
+
 [nodejs]
 symbol = " "
 
@@ -37,6 +42,3 @@ symbol = " "
 
 [rust]
 symbol = " "
-
-[status]
-disabled = false
