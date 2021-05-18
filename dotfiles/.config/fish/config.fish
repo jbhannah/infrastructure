@@ -7,3 +7,5 @@ set -q VISUAL
 or set -gx VISUAL vim
 
 set -gx EDITOR $VISUAL
+
+__starship
