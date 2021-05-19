@@ -1,0 +1,10 @@
+---
+- name: Copy Fish configuration
+  ansible.builtin.copy:
+    src: fish/
+    dest: ~/.config/fish/
+
+- name: Load Starship last in config.fish
+  ansible.builtin.lineinfile:
+    line: __starship
+    path: ~/.config/fish/config.fish

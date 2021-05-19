@@ -1,0 +1,10 @@
+{% for section in starship_config | dict2items %}
+{% if section.value is mapping %}
+[{{ section.key }}]
+{% for item in section.value | dict2items %}
+"{{ item.key }}" = {{ ('"' + item.value + '"') if item.value is string else ((item.value | string | lower) if item.value is boolean else item.value) }}
+{% endfor %}
+{% else %}
+"{{ section.key }}" = {{ ('"' + section.value + '"') if section.value is string else ((section.value | string | lower) if section.value is boolean else section.value) }}
+{% endif %}
+{% endfor %}
