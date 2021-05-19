@@ -26,17 +26,25 @@
     - conf.d
     - functions
 
-- name: Copy common configuration
-  ansible.builtin.copy:
-    src: common/
-    dest: ~/.config/fish/
+- name: Ensure config.fish exists
+  ansible.builtin.stat:
+    path: ~/.config/fish/config.fish
+  register: fish_config_fish
 
-- name: Copy macOS-specific configuration
-  ansible.builtin.copy:
-    src: Darwin/
-    dest: ~/.config/fish/
+- name: Create config.fish
+  ansible.builtin.file:
+    path: ~/.config/fish/config.fish
+    state: touch
+  when: not fish_config_fish.stat.exists
 
-- name: Apply environment template
-  ansible.builtin.template:
-    src: conf.d/00-env.fish.j2
-    dest: ~/.config/fish/conf.d/00-env.fish
+- name: Write fish conf.d files
+  ansible.builtin.copy:
+    dest: ~/.config/fish/conf.d/{{ item.key }}
+    content: "{{ item.value }}"
+  loop: "{{ fish_config | dict2items }}"
+
+- name: Write fish functions
+  ansible.builtin.copy:
+    dest: ~/.config/fish/functions/{{ item.key }}
+    content: "{{ item.value }}"
+  loop: "{{ fish_functions | dict2items }}"

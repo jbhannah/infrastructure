@@ -8,7 +8,65 @@ cloudflare_api_token: !vault |
   6231383730333631310a313339383163333734353764633262383834353238636437363333326664
   66643034316439343064666363343731653235653736633336383763363233386339333563613465
   3333616633303063626639636535646438333338613533396163
-fish_greeting: ""
-fish_key_bindings: fish_vi_key_bindings
+fish_config:
+  99-editor.fish: |-
+    set -q VISUAL
+    or set -gx VISUAL vi
+
+    set -gx EDITOR $VISUAL
+  greeting.fish: |-
+    set -g fish_greeting
+  key_bindings.fish: |-
+    set -g fish_key_bindings fish_vi_key_bindings
+    set -g fish_vi_force_cursor 1
+    set -g fish_cursor_default block
+    set -g fish_cursor_insert line
+    set -g fish_cursor_replace_one underscore
+  ls.fish: |-
+    abbr -ag l ls -alh
+  tz.fish: |-
+    set -gx TZ {{ timezone }}
+fish_functions:
+  fish_title.fish: |-
+    function fish_title
+        echo (basename (prompt_pwd)):(status current-command)
+    end
+  take.fish: |-
+    function take
+        mkdir -p $argv
+        cd $argv
+    end
 package_become: "{{ 'true' if ansible_system == 'Linux' else 'false' }}"
+shell: fish
+starship_config:
+  add_newline: false
+  aws:
+    disabled: true
+  battery:
+    disabled: true
+  docker_context:
+    symbol: " "
+  git_branch:
+    symbol: " "
+  golang:
+    symbol: " "
+  java:
+    symbol: " "
+  kubernetes:
+    disabled: false
+    style: "blue bold"
+  line_break:
+    disabled: true
+  nodejs:
+    symbol: " "
+  package:
+    symbol: " "
+  php:
+    symbol: " "
+  python:
+    symbol: " "
+  ruby:
+    symbol: " "
+  rust:
+    symbol: " "
 timezone: US/Pacific

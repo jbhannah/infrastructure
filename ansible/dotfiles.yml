@@ -1,14 +1,29 @@
 ---
 - hosts: all
   roles:
-    - fish
-    - tmux
-    - git
-    - starship
-    - exa
-    - fnm
-
-- hosts: anorith
-  roles:
-    - kubectl
-    - terraform
+    - name: fish
+      when: shell == "fish"
+      tags:
+        - shell
+        - fish
+    - name: tmux
+      tags:
+        - tmux
+    - name: git
+      tags:
+        - git
+    - name: starship
+      tags:
+        - starship
+    - name: exa
+      tags:
+        - exa
+    - name: fnm
+      tags:
+        - fnm
+    - name: kubectl
+      tags:
+        - kubectl
+    - name: terraform
+      tags:
+        - terraform
