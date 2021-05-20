@@ -4,6 +4,7 @@
     name: alacritty
     state: present
   when: not ansible_system == "Darwin"
+  become: "{{ package_become }}"
 
 - name: Install alacritty
   community.general.homebrew_cask:
