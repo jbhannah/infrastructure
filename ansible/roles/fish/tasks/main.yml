@@ -48,3 +48,24 @@
     dest: ~/.config/fish/functions/{{ item.key }}
     content: "{{ item.value }}"
   loop: "{{ fish_functions | dict2items }}"
+
+- name: Install Fisher
+  ansible.builtin.shell: curl -sL https://git.io/fisher | source && fisher install jorgebucaran/fisher
+  args:
+    creates: ~/.config/fish/functions/fisher.fish
+    executable: "{{ fish_path.stdout }}"
+    warn: false
+
+- name: Write fish_plugins
+  ansible.builtin.lineinfile:
+    path: ~/.config/fish/fish_plugins
+    create: true
+    line: "{{ item }}"
+  loop: "{{ fish_plugins }}"
+  register: fish_plugins_file
+
+- name: Update fish plugins
+  ansible.builtin.shell: fisher update
+  args:
+    executable: "{{ fish_path.stdout }}"
+  when: fish_plugins_file.changed
