@@ -4,3 +4,6 @@
     - name: alacritty
       tags:
         - alacritty
+    - name: vscode
+      tags:
+        - vscode
