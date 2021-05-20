@@ -16,7 +16,5 @@
     state: present
     create: true
 
-- name: Copy fish configuration
-  ansible.builtin.copy:
-    src: fish/
-    dest: ~/.config/fish/
+- name: Install {{ shell }} shell configuration
+  include_tasks: "{{ shell }}.yml"

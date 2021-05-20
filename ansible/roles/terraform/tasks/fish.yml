@@ -1,0 +1,5 @@
+---
+- name: Copy Fish configuration
+  ansible.builtin.copy:
+    src: fish/
+    dest: ~/.config/fish/

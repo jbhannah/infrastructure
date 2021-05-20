@@ -4,7 +4,5 @@
     name: asdf
     state: present
 
-- name: Copy configuration
-  ansible.builtin.copy:
-    src: config/
-    dest: ~/.config/
+- name: Install {{ shell }} shell configuration
+  include_tasks: "{{ shell }}.yml"
