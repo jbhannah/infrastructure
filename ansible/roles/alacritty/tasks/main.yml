@@ -1,22 +1,20 @@
 ---
-- name: Check for alacritty
-  ansible.builtin.stat:
-    path: /Applications/Alacritty.app
-  when: ansible_system == "Darwin"
-  register: alacritty
-
 - name: Install alacritty
   ansible.builtin.package:
     name: alacritty
     state: present
-  when: not alacritty.stat.exists or not ansible_system == "Darwin"
+  when: not ansible_system == "Darwin"
+
+- name: Install alacritty
+  community.general.homebrew_cask:
+    name: alacritty
+    state: present
+  when: ansible_system == "Darwin"
 
 - name: Copy configuration
   ansible.builtin.copy:
     src: alacritty.yml
     dest: ~/.config/alacritty.yml
 
-- name: Copy fish configuration
-  ansible.builtin.copy:
-    src: fish/
-    dest: ~/.config/fish/
+- name: Install {{ shell }} shell configuration
+  include_tasks: "{{ shell }}.yml"
