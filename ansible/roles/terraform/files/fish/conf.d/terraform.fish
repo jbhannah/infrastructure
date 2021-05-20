@@ -1,4 +1,4 @@
-if status is-interactive; and type -q terraform
+if status is-interactive; and command -sq terraform
     abbr -a -g tf terraform
     abbr -a -g tfa terraform apply
     abbr -a -g tfp terraform plan

@@ -1,5 +1,5 @@
-if status is-interactive; and type -q git
-    set -g _git_status_ignore_submodules 'none'
+if status is-interactive; and command -sq git
+    set -g _git_status_ignore_submodules none
 
     # Git
     abbr -a -g g git
