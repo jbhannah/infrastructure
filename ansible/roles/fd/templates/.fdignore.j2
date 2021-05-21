@@ -1,0 +1,5 @@
+{% for section in fd_ignores | dict2items %}
+{% for item in section.value %}
+{{ item }}
+{% endfor %}
+{% endfor %}

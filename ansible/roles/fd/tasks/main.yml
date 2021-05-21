@@ -1,0 +1,11 @@
+---
+- name: Install fd
+  ansible.builtin.package:
+    name: "{{ fd_package }}"
+    state: present
+  become: "{{ package_become }}"
+
+- name: Copy .fdignore
+  ansible.builtin.template:
+    src: .fdignore.j2
+    dest: ~/.fdignore
