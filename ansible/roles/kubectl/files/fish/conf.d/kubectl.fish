@@ -1,3 +1,2 @@
-if status is-interactive
-    set -gx PATH $PATH $HOME/.krew/bin
-end
+test -d $HOME/.krew/bin
+and fish_add_path $HOME/.krew/bin
