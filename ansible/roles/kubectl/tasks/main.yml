@@ -6,7 +6,5 @@
       - krew
     state: present
 
-- name: Copy fish configuration files
-  ansible.builtin.copy:
-    src: fish/
-    dest: ~/.config/fish/
+- name: Install {{ shell }} shell configuration
+  include_tasks: "{{ shell }}.yml"

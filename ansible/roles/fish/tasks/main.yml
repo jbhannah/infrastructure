@@ -17,38 +17,6 @@
     state: present
   become: true
 
-- name: Create ~/.config/fish directories
-  ansible.builtin.file:
-    path: ~/.config/fish/{{ item }}
-    state: directory
-  loop:
-    - completions
-    - conf.d
-    - functions
-
-- name: Ensure config.fish exists
-  ansible.builtin.stat:
-    path: ~/.config/fish/config.fish
-  register: fish_config_fish
-
-- name: Create config.fish
-  ansible.builtin.file:
-    path: ~/.config/fish/config.fish
-    state: touch
-  when: not fish_config_fish.stat.exists
-
-- name: Write fish conf.d files
-  ansible.builtin.copy:
-    dest: ~/.config/fish/conf.d/{{ item.key }}
-    content: "{{ item.value }}"
-  loop: "{{ fish_config | dict2items }}"
-
-- name: Write fish functions
-  ansible.builtin.copy:
-    dest: ~/.config/fish/functions/{{ item.key }}
-    content: "{{ item.value }}"
-  loop: "{{ fish_functions | dict2items }}"
-
 - name: Install Fisher
   ansible.builtin.shell: curl -sL https://git.io/fisher | source && fisher install jorgebucaran/fisher
   args:
@@ -56,16 +24,4 @@
     executable: "{{ fish_path.stdout }}"
     warn: false
 
-- name: Write fish_plugins
-  ansible.builtin.lineinfile:
-    path: ~/.config/fish/fish_plugins
-    create: true
-    line: "{{ item }}"
-  loop: "{{ fish_plugins }}"
-  register: fish_plugins_file
-
-- name: Update fish plugins
-  ansible.builtin.shell: fisher update
-  args:
-    executable: "{{ fish_path.stdout }}"
-  when: fish_plugins_file.changed
+- include_tasks: config.yml

@@ -12,14 +12,16 @@
 
 - name: Link .tmux.conf
   ansible.builtin.file:
-    path: ~/.tmux.conf
-    state: link
     src: ~/.tmux/.tmux.conf
+    dest: ~/.tmux.conf
+    state: link
 
-- name: Copy .tmux.conf.local
-  ansible.builtin.copy:
-    src: tmux.conf.local
+- name: Link .tmux.conf.local
+  ansible.builtin.file:
+    src: "{{ lookup('fileglob', 'tmux.conf.local') }}"
     dest: ~/.tmux.conf.local
+    state: link
+    force: true
 
 - name: Install {{ shell }} shell configuration
   include_tasks: "{{ shell }}.yml"
