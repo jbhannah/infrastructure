@@ -1,0 +1,9 @@
+---
+- name: Install fzf
+  ansible.builtin.package:
+    name: fzf
+    state: present
+  become: "{{ package_become }}"
+
+- name: Install {{ shell }} shell configuration
+  include_tasks: "{{ shell }}.yml"
