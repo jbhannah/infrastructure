@@ -3,7 +3,6 @@ if status is-interactive
     set -gx FZF_COMPLETE 2
     set -gx FZF_LEGACY_KEYBINDINGS 0
 
-
     if command -sq fd
         set -gx FZF_DEFAULT_COMMAND "fd --hidden . \$dir"
         set -l fd_t_d "--type directory"
