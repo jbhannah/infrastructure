@@ -13,7 +13,7 @@ spec:
     image:
       registry: quay.io
       repository: thanos/thanos
-      tag: v0.20.1
+      tag: v0.20.2
     clusterDomain: legendaries.hannahs.family
     existingObjstoreSecret: thanos-objstore
     query:
