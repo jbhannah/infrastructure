@@ -45,6 +45,14 @@ spec:
       thanosService:
         enabled: true
       prometheusSpec:
+        affinity:
+          podAntiAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              - labelSelector:
+                  matchLabels:
+                    app: prometheus
+                    prometheus: kps-prometheus
+                topologyKey: kubernetes.io/hostname
         externalUrl: https://prometheus.monitoring.hannahs.family
         podMonitorSelectorNilUsesHelmValues: false
         probeSelectorNilUsesHelmValues: false
