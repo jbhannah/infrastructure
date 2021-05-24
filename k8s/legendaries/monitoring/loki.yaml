@@ -62,11 +62,10 @@ spec:
             cache_location: /loki/cache
             cache_ttl: 168h
           aws:
-            endpoint: minio.kube-system.svc.legendaries.hannahs.family
-            region: us-east-1
-            insecure: true
+            endpoint: s3.us-west-001.backblazeb2.com
+            region: us-west-001
             s3forcepathstyle: true
-            bucketnames: loki
+            bucketnames: legendaries-loki
             access_key_id: ${AWS_ACCESS_KEY_ID}
             secret_access_key: ${AWS_SECRET_ACCESS_KEY}
 
@@ -193,7 +192,7 @@ spec:
       # -- Environment variables from secrets or configmaps to add to the ingester pods
       extraEnvFrom:
         - secretRef:
-            name: minio-loki
+            name: backblaze-loki
       # -- Volume mounts to add to the ingester pods
       extraVolumeMounts: []
       # -- Volumes to add to the ingester pods
@@ -259,7 +258,7 @@ spec:
       # -- Environment variables from secrets or configmaps to add to the distributor pods
       extraEnvFrom:
         - secretRef:
-            name: minio-loki
+            name: backblaze-loki
       # -- Volume mounts to add to the distributor pods
       extraVolumeMounts: []
       # -- Volumes to add to the distributor pods
@@ -312,7 +311,7 @@ spec:
       # -- Environment variables from secrets or configmaps to add to the querier pods
       extraEnvFrom:
         - secretRef:
-            name: minio-loki
+            name: backblaze-loki
       # -- Volume mounts to add to the querier pods
       extraVolumeMounts: []
       # -- Volumes to add to the querier pods
@@ -376,7 +375,7 @@ spec:
       # -- Environment variables from secrets or configmaps to add to the query-frontend pods
       extraEnvFrom:
         - secretRef:
-            name: minio-loki
+            name: backblaze-loki
       # -- Volume mounts to add to the query-frontend pods
       extraVolumeMounts: []
       # -- Volumes to add to the query-frontend pods
@@ -431,7 +430,7 @@ spec:
       # -- Environment variables from secrets or configmaps to add to the table-manager pods
       extraEnvFrom:
         - secretRef:
-            name: minio-loki
+            name: backblaze-loki
       # -- Volume mounts to add to the table-manager pods
       extraVolumeMounts: []
       # -- Volumes to add to the table-manager pods
@@ -689,7 +688,7 @@ spec:
       # -- Environment variables from secrets or configmaps to add to the compactor pods
       extraEnvFrom:
         - secretRef:
-            name: minio-loki
+            name: backblaze-loki
       # -- Volume mounts to add to the compactor pods
       extraVolumeMounts: []
       # -- Volumes to add to the compactor pods
@@ -739,7 +738,7 @@ spec:
       # -- Environment variables from secrets or configmaps to add to the ruler pods
       extraEnvFrom:
         - secretRef:
-            name: minio-loki
+            name: backblaze-loki
       # -- Volume mounts to add to the ruler pods
       extraVolumeMounts: []
       # -- Volumes to add to the ruler pods
