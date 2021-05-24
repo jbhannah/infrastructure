@@ -7,3 +7,7 @@
     - name: vscode
       tags:
         - vscode
+    - name: postgres-app
+      tags:
+        - postgres-app
+      when: ansible_system == "Darwin"
