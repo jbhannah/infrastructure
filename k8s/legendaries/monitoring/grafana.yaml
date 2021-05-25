@@ -16,6 +16,7 @@ spec:
       enabled: true
       annotations:
         kubernetes.io/tls-acme: "true"
+        traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
       hosts:
         - &hostname monitoring.hannahs.family
       tls:

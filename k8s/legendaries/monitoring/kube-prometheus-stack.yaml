@@ -84,6 +84,7 @@ metadata:
   namespace: monitoring
   annotations:
     kubernetes.io/tls-acme: "true"
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
     traefik.ingress.kubernetes.io/router.middlewares: kube-system-oauth2-proxy-forward-auth@kubernetescrd
 spec:
   tls:
@@ -110,6 +111,7 @@ metadata:
   namespace: monitoring
   annotations:
     kubernetes.io/tls-acme: "true"
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
     traefik.ingress.kubernetes.io/router.middlewares: kube-system-oauth2-proxy-forward-auth@kubernetescrd
 spec:
   tls:

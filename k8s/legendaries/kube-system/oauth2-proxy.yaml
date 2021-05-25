@@ -39,6 +39,7 @@ spec:
     ingress:
       annotations:
         kubernetes.io/tls-acme: "true"
+        traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
         traefik.ingress.kubernetes.io/router.middlewares: kube-system-oauth2-proxy-auth-headers@kubernetescrd
         traefik.ingress.kubernetes.io/router.priority: "101"
       enabled: true
@@ -90,6 +91,9 @@ metadata:
   name: oauth2-proxy
   namespace: kube-system
 spec:
+  entryPoints:
+    - web
+    - websecure
   routes:
     - match: PathPrefix(`/oauth2`)
       kind: Rule

@@ -32,6 +32,8 @@ spec:
         certManager: true
         hostname: thanos.monitoring.hannahs.family
         tls: true
+        annotations:
+          traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
     compactor:
       enabled: true
       retentionResolutionRaw: 7d
@@ -90,6 +92,7 @@ metadata:
   namespace: monitoring
   annotations:
     kubernetes.io/tls-acme: "true"
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
     traefik.ingress.kubernetes.io/router.middlewares: kube-system-oauth2-proxy-forward-auth@kubernetescrd
 spec:
   tls:
