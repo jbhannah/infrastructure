@@ -31,7 +31,7 @@
   become_user: "{{ minecraft_user }}"
   command:
     chdir: "{{ minecraft_home }}"
-    cmd: java -jar fabric-installer-{{ fabric_installer_version }}.jar server -downloadMinecraft
+    cmd: java -jar fabric-installer-{{ fabric_installer_version }}.jar server -downloadMinecraft -mcversion {{ minecraft_version }}
   when: fabric_installer.changed or not fabric_launcher.stat.exists or not minecraft_server.stat.exists
 
 - name: Create mods directory
