@@ -1,0 +1,56 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hc7-mc-hannahs-family
+  namespace: minecraft
+spec:
+  ports:
+    - name: minecraft
+      port: 25665
+    - name: rcon
+      port: 25675
+
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: hc7-mc-hannahs-family
+  namespace: minecraft
+subsets:
+  - addresses:
+      - ip: 172.17.3.120
+    ports:
+      - name: minecraft
+        port: 25665
+      - name: rcon
+        port: 25675
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: hc7-mc-hannahs-family
+  namespace: minecraft
+spec:
+  entryPoints:
+    - hc7-mc-h-f
+  routes:
+    - match: HostSNI(`*`)
+      kind: Rule
+      services:
+        - name: hc7-mc-hannahs-family
+          port: 25665
+
+---
+apiVersion: externaldns.k8s.io/v1alpha1
+kind: DNSEndpoint
+metadata:
+  name: hc7-mc-hannahs-family
+  namespace: minecraft
+spec:
+  endpoints:
+    - dnsName: _minecraft._tcp.hc7.mc.hannahs.family
+      recordType: SRV
+      targets:
+        - 0 0 25666 www.hannahs.family.

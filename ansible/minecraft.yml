@@ -14,7 +14,6 @@
               }
             ]
         minecraft_domain: mc.jbhannah.net
-        minecraft_jvm_heap_size: 6144
         minecraft_properties:
           difficulty: hard
           enable-rcon: true
@@ -31,4 +30,19 @@
             6463386238343932620a656634346162353034393736363861663832616433353234643738326165
             32316532363834663634653832393438313533366166663563303963383433383735623164303362
             6431616131313966333032633266353239376537353231326135
+        minecraft_rcon_port: 25575
+        minecraft_server_port: 25565
         minecraft_ufw: false
+        minecraft_version: 1.17
+    - name: minecraft
+      vars:
+        minecraft_configs:
+          eula.txt: "eula=true"
+        minecraft_domain: hc7.mc.hannahs.family
+        minecraft_properties:
+          gamemode: creative
+          motd: Hermitcraft Season 7
+        minecraft_rcon_port: 25675
+        minecraft_server_port: 25665
+        minecraft_ufw: false
+        minecraft_version: 1.16.5

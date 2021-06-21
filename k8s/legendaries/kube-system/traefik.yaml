@@ -38,6 +38,11 @@ spec:
     podDisruptionBudget:
       minAvailable: 1
     ports:
+      hc7-mc-h-f:
+        expose: true
+        exposedPort: 25666
+        port: 25665
+        protocol: TCP
       mc-jbhannah-net:
         expose: true
         exposedPort: 25566
