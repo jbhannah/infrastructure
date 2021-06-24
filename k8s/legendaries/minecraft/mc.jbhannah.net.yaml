@@ -69,7 +69,7 @@ spec:
     - dnsName: _minecraft._tcp.mc.jbhannah.net
       recordType: SRV
       targets:
-        - 0 0 25566 www.hannahs.family.
+        - 0 0 25566 www.hannahs.family
 
 ---
 apiVersion: apps/v1

@@ -53,4 +53,4 @@ spec:
     - dnsName: _minecraft._tcp.hc7.mc.hannahs.family
       recordType: SRV
       targets:
-        - 0 0 25666 www.hannahs.family.
+        - 0 0 25666 www.hannahs.family
