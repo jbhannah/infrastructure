@@ -27,3 +27,6 @@
     - name: terraform
       tags:
         - terraform
+    - name: neovim
+      tags:
+        - neovim
