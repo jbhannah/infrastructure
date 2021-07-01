@@ -1,0 +1,4 @@
+---
+dependencies:
+  - name: python
+    when: neovim_python3

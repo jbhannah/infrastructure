@@ -4,3 +4,14 @@
   ansible.builtin.package:
     name: neovim
     state: present
+
+- name: Create configuration directories
+  ansible.builtin.file:
+    path: "{{ neovim_config }}"
+    state: directory
+    recurse: true
+
+- include_tasks: python2.yml
+  when: neovim_python2
+- include_tasks: python3.yml
+  when: neovim_python3

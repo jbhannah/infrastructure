@@ -1,0 +1,6 @@
+---
+neovim_config: ~/.config/nvim
+neovim_python2: true
+neovim_python2_virtualenv: /usr/local/var/virtualenv/neovim-py2
+neovim_python3: true
+neovim_python3_virtualenv: /usr/local/var/virtualenv/neovim-py3
