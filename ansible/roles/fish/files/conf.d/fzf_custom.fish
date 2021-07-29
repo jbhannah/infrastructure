@@ -4,12 +4,12 @@ if status is-interactive
     set -gx FZF_LEGACY_KEYBINDINGS 0
 
     if command -sq fd
-        set -gx FZF_DEFAULT_COMMAND "fd --hidden . \$dir"
-        set -l fd_t_d "--type directory"
+        set -gx FZF_DEFAULT_COMMAND "fd --type file --hidden . \$dir"
+        set -gx FZF_FIND_FILE_COMMAND $FZF_DEFAULT_COMMAND
 
+        set -l fd_t_d "--type directory"
         set -gx FZF_CD_COMMAND "fd $fd_t_d . \$dir"
         set -gx FZF_CD_WITH_HIDDEN_COMMAND "fd $fd_t_d --hidden . \$dir"
-        set -gx FZF_FIND_FILE_COMMAND $FZF_DEFAULT_COMMAND
     else
         command -sq rg
         and set -gx FZF_DEFAULT_COMMAND "rg --files --hidden"
