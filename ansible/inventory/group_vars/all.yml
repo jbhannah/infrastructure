@@ -10,7 +10,7 @@ cloudflare_api_token: !vault |
   3333616633303063626639636535646438333338613533396163
 package_become: "{{ 'true' if ansible_system == 'Linux' else 'false' }}"
 shell: fish
-starship_config:
+starship_config_all:
   add_newline: false
   aws:
     disabled: true

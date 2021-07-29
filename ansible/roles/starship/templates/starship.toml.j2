@@ -1,4 +1,4 @@
-{% for section in starship_config | dict2items %}
+{% for section in starship_config | combine(*query('vars', *query('varnames', '^starship_config_.+')), recursive=True) | dict2items %}
 {% if section.value is mapping %}
 [{{ section.key }}]
 {% for item in section.value | dict2items %}
