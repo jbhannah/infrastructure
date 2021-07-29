@@ -11,7 +11,25 @@
     state: directory
     recurse: true
 
+- name: Link configuration files
+  ansible.builtin.file:
+    src: "{{ item.src }}"
+    path: "{{ neovim_config }}/{{ item.path }}"
+    state: link
+  with_community.general.filetree: ""
+  when: item.state == "file"
+
 - include_tasks: python2.yml
   when: neovim_python2
 - include_tasks: python3.yml
   when: neovim_python3
+
+- name: Create autoload directory
+  ansible.builtin.file:
+    path: ~/.local/share/nvim/site/autoload
+    state: directory
+
+- name: Install vim-plug
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    dest: ~/.local/share/nvim/site/autoload/plug.vim
