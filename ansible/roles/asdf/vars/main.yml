@@ -1,4 +1,3 @@
 ---
-fd_ignores:
-  asdf:
-    - .asdf
+fd_ignores_asdf:
+  - .asdf

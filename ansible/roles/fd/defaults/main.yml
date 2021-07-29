@@ -1,9 +1,22 @@
 ---
 fd_package: "{{ 'fd' if ansible_system == 'Darwin' else 'fd-find' }}"
 fd_ignores:
-  default:
-    - .cache
-    - .git
-    - .vscode
-    - .zsh_sessions
-    - node_modules
+  - .cache
+  - .cargo/registry
+  - .docker
+  - .dotnet/optimizations
+  - .gem/ruby
+  - .gem/specs
+  - .git
+  - .local/share/IsolatedStorage
+  - .npm/_*
+  - .npm/index-*
+  - .rbenv
+  - .rustup/toolchains
+  - .vscode
+  - .zsh_sessions
+  - "**/pkg/"
+  - cache
+  - javasharedresources
+  - node_modules
+  - tmp

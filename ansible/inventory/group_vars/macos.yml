@@ -1,4 +1,12 @@
 ---
-fd_ignores:
-  macos:
-    - Library
+fd_ignores_macos:
+  - .Trash
+  - .dropbox
+  - Dropbox
+  - Library
+  - "*.app"
+  - "*.localized"
+  - "*.musiclibrary"
+  - "*.photoslibrary"
+  - "*.pxd"
+  - "*.tvlibrary"

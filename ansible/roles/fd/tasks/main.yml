@@ -5,7 +5,9 @@
     state: present
   become: "{{ package_become }}"
 
-- name: Copy .fdignore
-  ansible.builtin.template:
-    src: .fdignore.j2
-    dest: ~/.fdignore
+- name: Write .fdignore entries
+  ansible.builtin.lineinfile:
+    create: true
+    path: ~/.fdignore
+    line: "{{ item }}"
+  loop: "{{ query('vars', *query('varnames', '^fd_ignores.*')) | flatten | unique | sort }}"

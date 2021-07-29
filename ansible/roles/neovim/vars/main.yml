@@ -1,0 +1,4 @@
+---
+fd_ignores_neovim:
+  - .local/share/nvim
+  - .vim/bundle
