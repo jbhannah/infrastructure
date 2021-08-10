@@ -31,12 +31,11 @@ minecraft_default_jvm_args:
   Xmx: "{{ minecraft_jvm_heap_size }}M"
   Xmns: "{{ (minecraft_jvm_heap_size / 2) | round | int }}M"
   Xmnx: "{{ (minecraft_jvm_heap_size * 4 / 5) | round | int }}M"
-  Xgc:concurrentScavenge:
-  Xgc:dnssExpectedTimeRatioMaximum: =3
-  Xgc:scvNoAdaptiveTenure:
+  Xgcpolicy:balanced:
   Xdisableexplicitgc:
   Xtune:virtualized:
   Dlog4j.configurationFile: =log4j2.xml
+  server:
 minecraft_default_properties:
   server-port: "{{ minecraft_server_port }}"
   query.port: "{{ minecraft_server_port }}"

@@ -5,10 +5,11 @@ minecraft_domain: mc.example.com
 minecraft_home: "{{ minecraft_user_home }}/{{ minecraft_domain }}"
 minecraft_jvm_args: {}
 minecraft_jvm_heap_size: 4096
+minecraft_mods: {}
 minecraft_properties: {}
 minecraft_rcon_port: 25575
 minecraft_server_port: 25565
 minecraft_ufw: true
 minecraft_user: minecraft
 minecraft_user_home: /opt/minecraft
-minecraft_version: 1.17
+minecraft_version: 1.17.1

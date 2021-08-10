@@ -41,5 +41,12 @@
     path: "{{ minecraft_home }}/mods"
     state: directory
 
-- include_tasks: lithium.yml
-- include_tasks: phosphor.yml
+- name: Install mods
+  become: true
+  become_user: "{{ minecraft_user }}"
+  get_url:
+    url: "{{ item.value }}"
+    dest: "{{ minecraft_home }}/mods/{{ item.key }}"
+    owner: "{{ minecraft_user }}"
+    group: "{{ minecraft_user }}"
+  loop: "{{ minecraft_mods | dict2items }}"
