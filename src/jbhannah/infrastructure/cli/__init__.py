@@ -1,12 +1,14 @@
 from logging import DEBUG, getLogger
 
-import click
+from click import option
+
+from .group import group
 
 logger = getLogger(__name__)
 
 
-@click.command()
-@click.option(
+@group()
+@option(
     "--verbose",
     "-v",
     is_flag=True,
@@ -16,5 +18,8 @@ def main(verbose=False):
     if verbose:
         logger.setLevel(DEBUG)
 
+
+@main.command()
+def hello():
     logger.info("Hello, Click!")
     logger.debug("Hello, debug mode!")
