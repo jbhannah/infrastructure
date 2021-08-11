@@ -6,8 +6,15 @@ from typing import Coroutine, Optional
 
 import click
 from click import ClickException
+from click.core import Context
+from click.decorators import pass_context
 
 logger = getLogger(__name__)
+
+PROXY_COMMAND_CONTEXT_SETTINGS = {
+    "allow_extra_args": True,
+    "ignore_unknown_options": True
+}
 
 
 class ClickCalledProcessError(ClickException):
@@ -28,6 +35,13 @@ class Group(click.Group):
         asynchronous command support and exception handling."""
         return _command(super(), *args, **kwargs)
 
+    def proxy_command(self, *args, **kwargs):
+        """Wraps a function as a Click command that acts as a proxy for an
+        underling executable, passing it any unknown arguments received."""
+        kwargs.setdefault("context_settings",
+                          {}).update(PROXY_COMMAND_CONTEXT_SETTINGS)
+        return _ctx_command(super(), *args, **kwargs)
+
 
 def group(name: Optional[str] = None, **attrs):
     """Shortcut to add a subgroup to a group."""
@@ -40,6 +54,22 @@ def _command(base: click.Group, **attrs):
         @wraps(func)
         def wrapper(*func_args, **func_kwargs):
             return run(_wrap_function(func, *func_args, **func_kwargs))
+
+        return wrapper
+
+    return decorator
+
+
+def _ctx_command(base: click.Group, **attrs):
+    def decorator(func):
+        @base.command(**attrs)
+        @pass_context
+        @wraps(func)
+        def wrapper(ctx: Context, *func_args, **func_kwargs):
+            logger.debug(
+                "Extra arguments received: {args}".format(args=ctx.args))
+            return run(_wrap_function(func, ctx=ctx, *func_args,
+                                      **func_kwargs))
 
         return wrapper
 
