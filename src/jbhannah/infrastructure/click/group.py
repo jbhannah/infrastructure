@@ -2,7 +2,7 @@ from asyncio import run
 from functools import wraps
 from logging import getLogger
 from subprocess import CalledProcessError
-from typing import Coroutine, Optional
+from typing import Coroutine, Optional, Type
 
 import click
 from click import ClickException, Context, pass_context
@@ -41,9 +41,26 @@ class Group(click.Group):
         return _ctx_command(super(), *args, **kwargs)
 
 
+def command(name: Optional[str] = None,
+            cls: Optional[Type[click.Command]] = None,
+            **attrs):
+    """Wraps an async function as a Click command."""
+    return _command(click, name=name, cls=cls, **attrs)
+
+
 def group(name: Optional[str] = None, **attrs):
     """Shortcut to add a subgroup to a group."""
     return _command(click, name=name, cls=Group, **attrs)
+
+
+def proxy_command(name: Optional[str] = None,
+                  cls: Optional[Type[click.Command]] = None,
+                  **attrs):
+    """Wraps an async function as a Click command that forwards unknown
+    arguments to an underlying executable."""
+    attrs.setdefault("context_settings",
+                     {}).update(PROXY_COMMAND_CONTEXT_SETTINGS)
+    return _ctx_command(click, name=name, cls=cls, **attrs)
 
 
 def _command(base: click.Group, **attrs):
