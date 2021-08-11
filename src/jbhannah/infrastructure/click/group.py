@@ -1,14 +1,11 @@
 from asyncio import run
 from functools import wraps
-from logging import DEBUG, getLogger
+from logging import getLogger
 from subprocess import CalledProcessError
 from typing import Coroutine, Optional
 
 import click
-from click import ClickException
-from click.core import Context
-from click.decorators import option, pass_context
-from jbhannah.infrastructure import logger as base_logger
+from click import ClickException, Context, pass_context
 
 logger = getLogger(__name__)
 
@@ -52,7 +49,6 @@ def group(name: Optional[str] = None, **attrs):
 def _command(base: click.Group, **attrs):
     def decorator(func):
         @base.command(**attrs)
-        @_verbose
         @wraps(func)
         def wrapper(*func_args, **func_kwargs):
             return run(_wrap_function(func, *func_args, **func_kwargs))
@@ -65,30 +61,15 @@ def _command(base: click.Group, **attrs):
 def _ctx_command(base: click.Group, **attrs):
     def decorator(func):
         @base.command(**attrs)
-        @_verbose
         @pass_context
         @wraps(func)
         def wrapper(ctx: Context, *func_args, **func_kwargs):
-            logger.debug(
-                "Extra arguments received: {args}".format(args=ctx.args))
             return run(_wrap_function(func, ctx=ctx, *func_args,
                                       **func_kwargs))
 
         return wrapper
 
     return decorator
-
-
-def _verbose(func):
-    @option("--verbose", "-v", is_flag=True, default=False)
-    @wraps(func)
-    def wrapper(verbose=False, *func_args, **func_kwargs):
-        if verbose:
-            base_logger.setLevel(DEBUG)
-
-        return func(*func_args, **func_kwargs)
-
-    return wrapper
 
 
 async def _wrap_function(func, *args, **kwargs):
