@@ -13,9 +13,9 @@ logger = getLogger(__name__)
 @verbose_option(logger)
 @version_option(package_name="jbhannah.infrastructure")
 @pass_context
-def main(ctx: Context):
+def inf(ctx: Context):
     ctx.ensure_object(dict)
 
 
-main.add_command(hello)
-main.add_command(adopt)
+inf.add_command(hello)
+inf.add_command(adopt)
