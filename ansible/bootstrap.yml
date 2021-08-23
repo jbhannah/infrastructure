@@ -1,8 +1,8 @@
 ---
 - hosts: all:!local
   vars:
-    ansible_ssh_pass: "{{ adopt_password }}"
-    ansible_user: "{{ adopt_user }}"
+    ansible_ssh_pass: "{{ bootstrap_password }}"
+    ansible_user: "{{ bootstrap_user }}"
   roles:
     - service_user
 
