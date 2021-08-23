@@ -3,7 +3,7 @@ from logging import getLogger
 from click import Context, pass_context, version_option
 from jbhannah.infrastructure.click import group, verbose_option
 
-from .adopt import adopt
+from .bootstrap import bootstrap
 from .hello import hello
 
 logger = getLogger(__name__)
@@ -18,4 +18,4 @@ def inf(ctx: Context):
 
 
 inf.add_command(hello)
-inf.add_command(adopt)
+inf.add_command(bootstrap)
