@@ -1,8 +1,9 @@
 from asyncio import run
 from functools import wraps
 from logging import getLogger
-from subprocess import CalledProcessError
 from typing import Coroutine, Optional, Type
+
+from jbhannah.infrastructure import Exception
 
 import click
 from click import ClickException, Context, pass_context
@@ -15,15 +16,12 @@ PROXY_COMMAND_CONTEXT_SETTINGS = {
 }
 
 
-class ClickCalledProcessError(ClickException):
-    """Raised when a subprocess exits with a nonzero return code and causes the
-    command to exit with the same code."""
-    def __init__(self, err: CalledProcessError):
+class ClickError(ClickException):
+    """Handles cleanly exiting from internal exceptions, while retaining any
+    nonzero return codes from called subprocesses."""
+    def __init__(self, err: Exception):
         super().__init__(err)
         ClickException.exit_code = err.returncode
-
-    def show(self):
-        """Mute superfluous return code messages."""
 
 
 class Group(click.Group):
@@ -97,6 +95,5 @@ async def _wrap_function(func, *args, **kwargs):
             return await result
 
         return result
-    except CalledProcessError as err:
-        logger.error(err)
-        raise ClickCalledProcessError(err)
+    except Exception as err:
+        raise ClickError(err)
