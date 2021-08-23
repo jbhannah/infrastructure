@@ -2,6 +2,7 @@ from logging import getLogger
 from typing import List
 
 from click import Context, argument
+from jbhannah.infrastructure.ansible.playbook import run_playbook
 from jbhannah.infrastructure.click import proxy_command, verbose_option
 
 BOOTSTRAP_ENV = {
@@ -13,9 +14,10 @@ logger = getLogger(__name__)
 
 
 @proxy_command()
-@argument("hostnames", nargs=-1, required=True)
+@argument("selectors", nargs=-1, required=True)
 @verbose_option(logger)
-def bootstrap(ctx: Context, hostnames: List[str]):
+async def bootstrap(ctx: Context, selectors: List[str]):
     """Bootstrap one or more remote hosts."""
-    logger.debug(
-        "Bootstrapping hosts {hosts}".format(hosts=", ".join(hostnames)))
+    logger.debug("Bootstrapping host selectors {selectors}".format(
+        selectors=", ".join(selectors)))
+    await run_playbook("bootstrap", selectors, *ctx.args, env=BOOTSTRAP_ENV)
