@@ -5,6 +5,7 @@ from jbhannah.infrastructure.click import group, verbose_option
 
 from .bootstrap import bootstrap
 from .hello import hello
+from .playbook import playbook
 
 logger = getLogger(__name__)
 
@@ -19,3 +20,4 @@ def inf(ctx: Context):
 
 inf.add_command(hello)
 inf.add_command(bootstrap)
+inf.add_command(playbook)
