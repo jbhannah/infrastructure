@@ -1,10 +1,8 @@
-from logging import getLogger
 from pathlib import Path
 from typing import List
 
+from jbhannah.infrastructure import logger
 from jbhannah.infrastructure.asyncio.subprocess import run
-
-logger = getLogger(__name__)
 
 
 async def run_playbook(playbook: str, selector_list: List[str], *args,

@@ -4,7 +4,7 @@ from os import environ
 from shlex import join
 from subprocess import CalledProcessError as _CalledProcessError
 
-from jbhannah.infrastructure import Exception
+from jbhannah.infrastructure import Exception, logger
 
 
 class CalledProcessError(_CalledProcessError, Exception):
@@ -20,6 +20,8 @@ async def run(*args, watch=False, **kwargs):
 
     if "env" in kwargs:
         _env.update(kwargs["env"])
+
+    logger.debug("Running command {cmd}".format(cmd=join(args)))
 
     kwargs["env"] = _env
     proc = await (create_subprocess_shell(join(args), **kwargs)

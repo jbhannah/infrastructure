@@ -1,14 +1,11 @@
 from asyncio import run
 from functools import wraps
-from logging import getLogger
 from typing import Coroutine, Optional, Type
 
 from jbhannah.infrastructure import Exception
 
 import click
 from click import ClickException, Context, pass_context
-
-logger = getLogger(__name__)
 
 PROXY_COMMAND_CONTEXT_SETTINGS = {
     "allow_extra_args": True,

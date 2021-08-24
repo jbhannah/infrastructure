@@ -1,11 +1,9 @@
-from logging import getLogger
 from typing import List
 
 from click import Context, argument
+from jbhannah.infrastructure import logger
 from jbhannah.infrastructure.ansible.playbook import run_playbook
 from jbhannah.infrastructure.click import proxy_command, verbose_option
-
-logger = getLogger(__name__)
 
 
 @proxy_command()

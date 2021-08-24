@@ -1,8 +1,5 @@
-from logging import getLogger
-
+from jbhannah.infrastructure import logger
 from jbhannah.infrastructure.click import command, verbose_option
-
-logger = getLogger(__name__)
 
 
 @command()
