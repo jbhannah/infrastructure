@@ -16,8 +16,11 @@ logger = getLogger(__name__)
 @proxy_command()
 @argument("selectors", nargs=-1, required=True)
 @verbose_option(logger)
-async def bootstrap(ctx: Context, selectors: List[str]):
+async def bootstrap(ctx: Context, selector_list: List[str]):
     """Bootstrap one or more remote hosts."""
     logger.debug("Bootstrapping host selectors {selectors}".format(
-        selectors=", ".join(selectors)))
-    await run_playbook("bootstrap", selectors, *ctx.args, env=BOOTSTRAP_ENV)
+        selectors=", ".join(selector_list)))
+    await run_playbook("bootstrap",
+                       selector_list,
+                       *ctx.args,
+                       env=BOOTSTRAP_ENV)
