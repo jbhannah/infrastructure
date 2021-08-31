@@ -40,10 +40,45 @@ spec:
 
 ---
 apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: self-signed
+  namespace: kube-system
+spec:
+  selfSigned: {}
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: internal-ca-root
+  namespace: kube-system
+spec:
+  isCA: true
+  commonName: internal-ca
+  secretName: internal-ca-root
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+  issuerRef:
+    name: self-signed
+    kind: Issuer
+    group: cert-manager.io
+
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: internal-ca
+spec:
+  ca:
+    secretName: internal-ca-root
+
+---
+apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
   name: letsencrypt-staging
-  namespace: kube-system
 spec:
   acme:
     server: https://acme-staging-v02.api.letsencrypt.org/directory
@@ -63,7 +98,6 @@ apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
   name: letsencrypt-prod
-  namespace: kube-system
 spec:
   acme:
     server: https://acme-v02.api.letsencrypt.org/directory
