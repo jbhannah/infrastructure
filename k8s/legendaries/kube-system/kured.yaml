@@ -9,10 +9,16 @@ spec:
   chart: kured
   version: 2.9.0
   targetNamespace: kube-system
-  set:
-    metrics.create: "true"
-    podSecurityPolicy.create: "true"
-    service.create: "true"
+  valuesContent: |-
+    metrics:
+      create: true
+    podSecurityPolicy:
+      create: true
+    service:
+      create: true
+    tolerations:
+      - effect: NoSchedule
+        operator: Exists
 
 ---
 apiVersion: monitoring.coreos.com/v1
