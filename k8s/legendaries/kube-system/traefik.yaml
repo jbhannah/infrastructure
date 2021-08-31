@@ -20,9 +20,6 @@ spec:
             topologyKey: kubernetes.io/hostname
     deployment:
       replicas: 2
-    envFrom:
-      - secretRef:
-          name: traefik
     forwardedHeaders:
       enabled: true
       trustedIPs:
