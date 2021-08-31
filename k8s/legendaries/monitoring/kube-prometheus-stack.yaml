@@ -46,8 +46,6 @@ spec:
       endpoints:
         - 172.17.3.122
     prometheus:
-      thanosService:
-        enabled: true
       prometheusSpec:
         affinity:
           <<: *affinity
@@ -63,15 +61,13 @@ spec:
             memory: 6Gi
         ruleSelectorNilUsesHelmValues: false
         serviceMonitorSelectorNilUsesHelmValues: false
-        shards: 4
         storageSpec:
-          emptyDir: {}
-        thanos:
-          image: quay.io/thanos/thanos:v0.20.1
-          version: v0.20.1
-          objectStorageConfig:
-            name: thanos-objstore
-            key: objstore.yml
+          volumeClaimTemplate:
+            spec:
+              accessModes: ["ReadWriteOnce"]
+              resources:
+               requests:
+                 storage: 50Gi
         walCompression: true
 
 ---
