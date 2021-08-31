@@ -7,7 +7,6 @@ k3s_config_agent_legendaries:
   node-external-ip: "{{ ansible_default_ipv4.address }}"
   node-ip: &node_ip "{{ wireguard[wireguard_group].address }}"
   node-name: &node_name "{{ ansible_nodename }}"
-  server: "{{ 'https://172.17.3.122:6443' if not k3s_cluster_init else '' }}"
   token: "{{ k3s_token }}"
 k3s_config_server_legendaries:
   cluster-domain: &cluster_domain "{{ k3s_cluster_name }}.{{ ansible_domain }}"

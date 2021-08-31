@@ -22,8 +22,6 @@ spec:
       enabled: false
     kubeControllerManager:
       endpoints:
-        - 172.17.3.17
-        - 172.17.3.18
         - 172.17.3.122
     kubeEtcd:
       enabled: false
@@ -38,8 +36,6 @@ spec:
         - 172.17.3.122
     kubeScheduler:
       endpoints:
-        - 172.17.3.17
-        - 172.17.3.18
         - 172.17.3.122
     prometheus:
       thanosService:
