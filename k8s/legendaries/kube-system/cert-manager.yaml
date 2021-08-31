@@ -23,6 +23,8 @@ spec:
     cainjector:
       affinity:
         <<: *affinity
+      extraArgs:
+        - --leader-elect=false
     ingressShim:
       defaultIssuerName: letsencrypt-prod
       defaultIssuerKind: ClusterIssuer
