@@ -1,4 +1,4 @@
 ---
-k3s_config_agent:
+k3s_config_agent_ssdnodes_standard_lg:
   node-label:
     - node.kubernetes.io/instance-type=standard.lg

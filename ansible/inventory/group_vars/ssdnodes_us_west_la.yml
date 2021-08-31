@@ -1,5 +1,4 @@
 ---
-k3s_node_labels:
-k3s_config_agent:
+k3s_config_agent_ssdnodes_us_west_la:
   node-label:
     - topology.kubernetes.io/region=us-west-la

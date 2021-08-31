@@ -1,6 +1,6 @@
 ---
 k3s_cluster_name: legendaries
-k3s_config_agent:
+k3s_config_agent_legendaries:
   flannel-iface: "{{ wireguard[wireguard_group].interface }}"
   kube-proxy-arg:
     - metrics-bind-address=0.0.0.0:10249
@@ -9,7 +9,7 @@ k3s_config_agent:
   node-name: &node_name "{{ ansible_nodename }}"
   server: "{{ 'https://172.17.3.122:6443' if not k3s_cluster_init else '' }}"
   token: "{{ k3s_token }}"
-k3s_config_server:
+k3s_config_server_legendaries:
   cluster-domain: &cluster_domain "{{ k3s_cluster_name }}.{{ ansible_domain }}"
   kube-controller-manager-arg:
     - address=0.0.0.0
