@@ -103,21 +103,6 @@ spec:
         - name: oauth2-proxy-auth-headers
 
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: oauth2-proxy-metrics
-  namespace: kube-system
-  labels:
-    app: oauth2-proxy
-spec:
-  selector:
-    app: oauth2-proxy
-  ports:
-    - name: metrics
-      port: 4190
-
----
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
