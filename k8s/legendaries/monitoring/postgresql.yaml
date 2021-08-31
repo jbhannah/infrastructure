@@ -8,8 +8,7 @@ spec:
   teamId: monitoring
   volume:
     size: 10Gi
-    storageClass: local-path
-  numberOfInstances: 3
+  numberOfInstances: 1
   users:
     grafana: []
   databases:
