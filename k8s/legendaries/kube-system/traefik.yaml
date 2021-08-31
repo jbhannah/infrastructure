@@ -116,7 +116,7 @@ spec:
     matchNames:
       - kube-system
   podMetricsEndpoints:
-    - port: traefik
+    - port: metrics
       path: /metrics
       interval: 15s
   selector:
