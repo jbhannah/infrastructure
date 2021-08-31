@@ -28,7 +28,7 @@ metadata:
 spec:
   repo: https://prometheus-community.github.io/helm-charts
   chart: prometheus-postgres-exporter
-  version: 2.3.0
+  version: 2.3.6
   targetNamespace: monitoring
   valuesContent: |-
     serviceMonitor:
