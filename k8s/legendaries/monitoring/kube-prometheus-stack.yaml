@@ -31,6 +31,14 @@ spec:
     kubeControllerManager:
       endpoints:
         - 172.17.3.122
+      service:
+        enabled: true
+        port: 10257
+        targetPort: 10257
+      serviceMonitor:
+        https: true
+        insecureSkipVerify: true
+        serverName: 127.0.0.1
     kubeEtcd:
       enabled: false
     kubeProxy:
