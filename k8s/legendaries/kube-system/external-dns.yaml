@@ -17,6 +17,9 @@ spec:
             name: cloudflare
             key: cloudflare_api_token
     fqdnTemplate: "{{name}}.hannahs.family"
+    image:
+      repository: shosti/external-dns
+      tag: 0.9.0-k8s-1.22-v1
     metrics:
       enabled: true
       podAnnotations: {}
