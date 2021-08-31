@@ -12,6 +12,14 @@ spec:
   valuesContent: |-
     alertmanager:
       alertmanagerSpec:
+        affinity: &affinity
+          podAntiAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              - labelSelector:
+                  matchLabels:
+                    app: prometheus
+                    prometheus: kps-prometheus
+                topologyKey: kubernetes.io/hostname
         externalUrl: https://alerts.monitoring.hannahs.family
     defaultRules:
       rules:
@@ -42,13 +50,7 @@ spec:
         enabled: true
       prometheusSpec:
         affinity:
-          podAntiAffinity:
-            requiredDuringSchedulingIgnoredDuringExecution:
-              - labelSelector:
-                  matchLabels:
-                    app: prometheus
-                    prometheus: kps-prometheus
-                topologyKey: kubernetes.io/hostname
+          <<: *affinity
         externalUrl: https://prometheus.monitoring.hannahs.family
         podMonitorSelectorNilUsesHelmValues: false
         probeSelectorNilUsesHelmValues: false

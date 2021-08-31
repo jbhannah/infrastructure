@@ -10,6 +10,14 @@ spec:
       - --api
       - --metrics.prometheus=true
       - --providers.kubernetesingress.ingressendpoint.hostname=www.hannahs.family
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app.kubernetes.io/instance: traefik
+                app.kubernetes.io/name: traefik
+            topologyKey: kubernetes.io/hostname
     deployment:
       replicas: 2
     envFrom:

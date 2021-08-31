@@ -13,6 +13,16 @@ spec:
     global:
       podSecurityPolicy:
         enabled: true
+    affinity: &affinity
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app.kubernetes.io/instance: cert-manager
+            topologyKey: kubernetes.io/hostname
+    cainjector:
+      affinity:
+        <<: *affinity
     ingressShim:
       defaultIssuerName: letsencrypt-prod
       defaultIssuerKind: ClusterIssuer
@@ -22,6 +32,9 @@ spec:
       serviceMonitor:
         enabled: true
         prometheusInstance: kps-prometheus
+    webhook:
+      affinity:
+        <<: *affinity
 
 ---
 apiVersion: cert-manager.io/v1
