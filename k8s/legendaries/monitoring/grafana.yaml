@@ -45,14 +45,6 @@ spec:
     serviceMonitor:
       enabled: true
     sidecar:
-      dashboards:
-        enabled: true
-        label: grafana.com/dashboard
-        provider:
-          disableDelete: true
       datasources:
         enabled: true
         label: grafana.com/datasource
-      notifiers:
-        enabled: true
-        label: grafana.com/notifier
