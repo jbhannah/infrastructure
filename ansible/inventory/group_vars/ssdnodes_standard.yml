@@ -2,3 +2,4 @@
 k3s_config_agent_ssdnodes_standard:
   node-label:
     - node.kubernetes.io/disk-type=ssd
+    - node.hannahs.family/instance-class=standard

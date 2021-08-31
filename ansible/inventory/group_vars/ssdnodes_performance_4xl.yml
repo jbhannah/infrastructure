@@ -1,4 +1,4 @@
 ---
 k3s_config_agent_ssdnodes_performance_4xl:
   node-label:
-    - node.kubernetes.io/instance-type=performance.4xl
+    - node.hannahs.family/instance-type=performance.4xl
