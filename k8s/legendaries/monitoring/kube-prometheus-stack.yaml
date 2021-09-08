@@ -24,6 +24,9 @@ spec:
     defaultRules:
       rules:
         etcd: false
+        kubeApiserver: false
+        kubeApiserverAvailability: false
+        kubeApiserverError: false
         kubeApiserverSlos: false
     fullnameOverride: kps
     grafana:
