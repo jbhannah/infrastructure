@@ -7,5 +7,5 @@ metadata:
 spec:
   repo: https://kubernetes-sigs.github.io/descheduler
   chart: descheduler
-  version: 0.21.0
+  version: 0.22.0
   targetNamespace: kube-system
