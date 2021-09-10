@@ -7,9 +7,11 @@ metadata:
 spec:
   repo: https://grafana.github.io/helm-charts
   chart: grafana
-  version: 6.16.4
+  version: 6.16.5
   targetNamespace: monitoring
   valuesContent: |-
+    image:
+      tag: 8.1.3
     ingress:
       enabled: true
       annotations:
