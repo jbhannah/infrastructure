@@ -10,6 +10,9 @@ spec:
   version: 1.5.3
   targetNamespace: kube-system
   valuesContent: |-
+    deploymentAnnotations:
+      operator.1password.io/item-path: vaults/wusn2jxjimwouyjyaqp654h7vq/items/lka26khjsd4f3kwukwcut7rq7a
+      operator.1password.io/item-name: cloudflare-api
     global:
       podSecurityPolicy:
         enabled: true
@@ -90,8 +93,8 @@ spec:
           cloudflare:
             email: jesse@jbhannah.net
             apiTokenSecretRef:
-              name: cloudflare
-              key: cloudflare_api_token
+              name: cloudflare-api
+              key: credential
 
 ---
 apiVersion: cert-manager.io/v1
@@ -109,5 +112,5 @@ spec:
           cloudflare:
             email: jesse@jbhannah.net
             apiTokenSecretRef:
-              name: cloudflare
-              key: cloudflare_api_token
+              name: cloudflare-api
+              key: credential

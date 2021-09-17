@@ -14,8 +14,8 @@ spec:
       - name: CF_API_TOKEN
         valueFrom:
           secretKeyRef:
-            name: cloudflare
-            key: cloudflare_api_token
+            name: cloudflare-api
+            key: credential
     fqdnTemplate: "{{name}}.hannahs.family"
     image:
       repository: shosti/external-dns
@@ -25,6 +25,9 @@ spec:
       podAnnotations: {}
       serviceMonitor:
         enabled: true
+    podAnnotations:
+      operator.1password.io/item-path: vaults/wusn2jxjimwouyjyaqp654h7vq/items/lka26khjsd4f3kwukwcut7rq7a
+      operator.1password.io/item-name: cloudflare-api
     provider: cloudflare
     resources:
       requests:

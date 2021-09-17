@@ -10,6 +10,9 @@ spec:
   version: 6.16.5
   targetNamespace: monitoring
   valuesContent: |-
+    annotations:
+      operator.1password.io/item-path: vaults/wusn2jxjimwouyjyaqp654h7vq/items/5mxdqt64tyh5em5vlx25ftfoea
+      operator.1password.io/item-name: &github_secret grafana-github-auth
     image:
       tag: 8.1.3
     ingress:
@@ -23,8 +26,15 @@ spec:
         - hosts:
             - *hostname
           secretName: *hostname
-    envFromSecret: grafana-env
     envValueFrom:
+      GF_AUTH_GITHUB_CLIENT_ID:
+        secretKeyRef:
+          name: *github_secret
+          key: username
+      GF_AUTH_GITHUB_CLIENT_SECRET:
+        secretKeyRef:
+          name: *github_secret
+          key: credential
       GF_DATABASE_USER:
         secretKeyRef:
           name: &postgres_secret grafana.monitoring-postgresql.credentials.postgresql.acid.zalan.do

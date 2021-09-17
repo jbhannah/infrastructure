@@ -46,6 +46,9 @@ spec:
         - hosts:
             - *hostname
           secretName: *hostname
+    podAnnotations:
+      operator.1password.io/item-path: vaults/wusn2jxjimwouyjyaqp654h7vq/items/mevlkheef2vvcgcrdxq2ynhrjq
+      operator.1password.io/item-name: oauth2-proxy
     securityContext:
       enabled: true
 
