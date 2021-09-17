@@ -34,7 +34,7 @@ spec:
       defaultIssuerGroup: cert-manager.io
     installCRDs: true
     prometheus:
-      serviceMonitor:
+      servicemonitor:
         enabled: true
         prometheusInstance: kps-prometheus
     webhook:
