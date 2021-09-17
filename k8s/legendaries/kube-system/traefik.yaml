@@ -106,20 +106,55 @@ spec:
         - www.hannahs.family
 
 ---
+apiVersion: v1
+kind: Service
+spec:
+  ports:
+    - name: metrics
+      port: 9100
+  selector: &labels
+    app.kubernetes.io/instance: traefik
+    app.kubernetes.io/name: traefik
+metadata:
+  name: traefik-metrics
+  namespace: kube-system
+  labels:
+    <<: *labels
+    app.kubernetes.io/component: metrics
+
+---
 apiVersion: monitoring.coreos.com/v1
-kind: PodMonitor
+kind: ServiceMonitor
+spec:
+  endpoints:
+    - port: metrics
+      interval: 15s
+  jobLabel: app.kubernetes.io/name
+  selector:
+    matchLabels: &labels
+      app.kubernetes.io/component: metrics
+      app.kubernetes.io/instance: traefik
+      app.kubernetes.io/name: traefik
 metadata:
   name: traefik
   namespace: kube-system
-spec:
-  namespaceSelector:
-    matchNames:
-      - kube-system
-  podMetricsEndpoints:
-    - port: metrics
-      path: /metrics
-      interval: 15s
-  selector:
-    matchLabels:
-      app.kubernetes.io/instance: traefik
-      app.kubernetes.io/name: traefik
+  labels:
+    <<: *labels
+# ---
+# apiVersion: monitoring.coreos.com/v1
+# kind: PodMonitor
+# metadata:
+#   name: traefik
+#   namespace: kube-system
+# spec:
+#   namespaceSelector:
+#     matchNames:
+#       - kube-system
+#   podMetricsEndpoints:
+#     - port: metrics
+#       path: /metrics
+#       interval: 15s
+#   selector:
+#     matchLabels:
+#       app.kubernetes.io/instance: traefik
+#       app.kubernetes.io/name: traefik
