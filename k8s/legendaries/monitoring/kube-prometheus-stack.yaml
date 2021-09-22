@@ -7,7 +7,7 @@ metadata:
 spec:
   repo: https://prometheus-community.github.io/helm-charts
   chart: kube-prometheus-stack
-  version: 18.0.5
+  version: 18.0.12
   targetNamespace: monitoring
   valuesContent: |-
     alertmanager:
@@ -21,6 +21,22 @@ spec:
                     prometheus: kps-prometheus
                 topologyKey: kubernetes.io/hostname
         externalUrl: https://alerts.monitoring.hannahs.family
+      config:
+        route:
+          routes:
+            - match:
+                alertname: Watchdog
+              receiver: autocode
+              continue: false
+              group_wait: 0s
+              group_interval: 1m
+              repeat_interval: 14m
+        receivers:
+          - name: "null"
+          - name: autocode
+            webhook_configs:
+              - url: https://jbhannah.api.stdlib.com/alertmanager-hooks@dev/
+                send_resolved: false
     defaultRules:
       rules:
         etcd: false
