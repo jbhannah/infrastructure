@@ -54,7 +54,6 @@ spec:
         allowed_organizations: hannahs-family
       server:
         root_url: https://monitoring.hannahs.family
-    replicas: 2
     serviceMonitor:
       enabled: true
     sidecar:
