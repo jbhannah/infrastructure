@@ -20,3 +20,4 @@
   ansible.builtin.stat:
     path: /var/run/reboot-required
   notify: Reboot
+  when: apt_reboot
