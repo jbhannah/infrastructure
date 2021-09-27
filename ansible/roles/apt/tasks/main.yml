@@ -14,7 +14,6 @@
     install_recommends: false
     purge: true
     upgrade: full
-    update_cache: true
 
 - name: Check for reboot sentinel
   ansible.builtin.stat:
