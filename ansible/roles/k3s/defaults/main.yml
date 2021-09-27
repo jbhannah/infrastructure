@@ -10,4 +10,4 @@ k3s_install_systemd_dir: /etc/systemd/system
 k3s_install_type: null
 k3s_kubeconfig: "{{ k3s_config_dir }}/k3s.yaml"
 k3s_token: null
-k3s_version: v1.21.2+k3s1
+k3s_version: v1.22.2+k3s1
