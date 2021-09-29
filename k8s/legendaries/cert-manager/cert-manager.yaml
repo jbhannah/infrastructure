@@ -3,12 +3,12 @@ apiVersion: helm.cattle.io/v1
 kind: HelmChart
 metadata:
   name: cert-manager
-  namespace: kube-system
+  namespace: cert-manager
 spec:
   repo: https://charts.jetstack.io
   chart: cert-manager
   version: 1.5.3
-  targetNamespace: kube-system
+  targetNamespace: cert-manager
   valuesContent: |-
     deploymentAnnotations:
       operator.1password.io/item-path: vaults/wusn2jxjimwouyjyaqp654h7vq/items/lka26khjsd4f3kwukwcut7rq7a
@@ -46,7 +46,7 @@ apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
   name: self-signed
-  namespace: kube-system
+  namespace: cert-manager
 spec:
   selfSigned: {}
 
@@ -55,7 +55,7 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: internal-ca-root
-  namespace: kube-system
+  namespace: cert-manager
 spec:
   isCA: true
   commonName: internal-ca
