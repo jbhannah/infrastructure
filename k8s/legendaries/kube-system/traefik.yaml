@@ -26,7 +26,7 @@ spec:
         - 10.0.0.0/8
     image:
       name: traefik
-      tag: v2.5.1
+      tag: v2.5.3
     ingressClass:
       enabled: true
       isDefaultClass: true
@@ -140,21 +140,3 @@ metadata:
   namespace: kube-system
   labels:
     <<: *labels
-# ---
-# apiVersion: monitoring.coreos.com/v1
-# kind: PodMonitor
-# metadata:
-#   name: traefik
-#   namespace: kube-system
-# spec:
-#   namespaceSelector:
-#     matchNames:
-#       - kube-system
-#   podMetricsEndpoints:
-#     - port: metrics
-#       path: /metrics
-#       interval: 15s
-#   selector:
-#     matchLabels:
-#       app.kubernetes.io/instance: traefik
-#       app.kubernetes.io/name: traefik
