@@ -23,7 +23,7 @@ apiVersion: helm.cattle.io/v1
 kind: HelmChart
 metadata:
   name: monitoring-postgresql-exporter
-  namespace: kube-system
+  namespace: monitoring
 spec:
   repo: https://prometheus-community.github.io/helm-charts
   chart: prometheus-postgres-exporter

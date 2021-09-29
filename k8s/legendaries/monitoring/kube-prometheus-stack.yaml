@@ -3,11 +3,11 @@ apiVersion: helm.cattle.io/v1
 kind: HelmChart
 metadata:
   name: kube-prometheus-stack
-  namespace: kube-system
+  namespace: monitoring
 spec:
   repo: https://prometheus-community.github.io/helm-charts
   chart: kube-prometheus-stack
-  version: 18.0.12
+  version: 19.0.0
   targetNamespace: monitoring
   valuesContent: |-
     alertmanager:
