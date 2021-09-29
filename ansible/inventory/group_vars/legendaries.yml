@@ -12,12 +12,12 @@ k3s_config_server_legendaries:
   cluster-domain: &cluster_domain "{{ k3s_cluster_name }}.{{ ansible_domain }}"
   kube-controller-manager-arg:
     - bind-address=0.0.0.0
-    - authentication-kubeconfig={{ k3s_config_dir }}/config.yaml
-    - authorization-kubeconfig={{ k3s_config_dir }}/config.yaml
+    - authentication-kubeconfig={{ k3s_kubeconfig }}
+    - authorization-kubeconfig={{ k3s_kubeconfig }}
   kube-scheduler-arg:
     - bind-address=0.0.0.0
-    - authentication-kubeconfig={{ k3s_config_dir }}/config.yaml
-    - authorization-kubeconfig={{ k3s_config_dir }}/config.yaml
+    - authentication-kubeconfig={{ k3s_kubeconfig }}
+    - authorization-kubeconfig={{ k3s_kubeconfig }}
   tls-san:
     - *cluster_domain
     - *node_ip
