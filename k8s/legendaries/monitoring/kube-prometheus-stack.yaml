@@ -35,7 +35,7 @@ spec:
           - name: "null"
           - name: autocode
             webhook_configs:
-              - url: https://jbhannah.api.stdlib.com/alertmanager-hooks@dev/
+              - url: https://jbhannah.api.stdlib.com/pagerduty-alertmanager-watchdog@1.0.0/watchdog/
                 send_resolved: false
     defaultRules:
       rules:
