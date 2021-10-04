@@ -18,8 +18,7 @@ spec:
             key: credential
     fqdnTemplate: "{{name}}.hannahs.family"
     image:
-      repository: shosti/external-dns
-      tag: 0.9.0-k8s-1.22-v1
+      tag: v0.10.0
     serviceMonitor:
       enabled: true
     podAnnotations:
