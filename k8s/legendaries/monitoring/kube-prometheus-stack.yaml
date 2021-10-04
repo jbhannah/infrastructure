@@ -105,13 +105,14 @@ spec:
         walCompression: true
     prometheusOperator:
       admissionWebhooks:
-        patch:
-          enabled: false
         certManager:
           enabled: true
           issuerRef:
             name: internal-ca
             kind: ClusterIssuer
+        failurePolicy: Ignore
+        patch:
+          enabled: false
 
 ---
 apiVersion: networking.k8s.io/v1
