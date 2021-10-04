@@ -7,14 +7,12 @@ metadata:
 spec:
   repo: https://grafana.github.io/helm-charts
   chart: grafana
-  version: 6.16.7
+  version: 6.16.10
   targetNamespace: monitoring
   valuesContent: |-
     annotations:
       operator.1password.io/item-path: vaults/wusn2jxjimwouyjyaqp654h7vq/items/5mxdqt64tyh5em5vlx25ftfoea
       operator.1password.io/item-name: &github_secret grafana-github-auth
-    image:
-      tag: 8.1.5
     ingress:
       enabled: true
       annotations:
