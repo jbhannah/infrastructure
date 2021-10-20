@@ -9,6 +9,7 @@ spec:
     additionalArguments:
       - --api
       - --metrics.prometheus=true
+      - --metrics.prometheus.addrouterslabels=true
       - --providers.kubernetesingress.ingressendpoint.hostname=www.hannahs.family
     affinity:
       podAntiAffinity:
