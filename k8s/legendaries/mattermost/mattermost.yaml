@@ -1,0 +1,229 @@
+# ---
+# apiVersion: helm.cattle.io/v1
+# kind: HelmChart
+# metadata:
+#   name: mattermost
+#   namespace: mattermost
+# spec:
+#   repo: https://helm.mattermost.com
+#   chart: mattermost-team-edition
+#   version: 5.5.0
+#   valuesContent: |-
+#     ingress:
+#       enabled: true
+#       hosts:
+#         - chat.hannahs.family
+#     mysql:
+#       enabled: false
+#     externalDB:
+#       enabled: true
+#     serviceAccount:
+#       create: true
+---
+# Source: mattermost-team-edition/templates/service-account.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: mattermost
+  namespace: mattermost
+  labels:
+    app.kubernetes.io/name: mattermost-team-edition
+    app.kubernetes.io/instance: mattermost
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: mattermost-team-edition-5.5.0
+---
+# Source: mattermost-team-edition/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: mattermost
+  namespace: mattermost
+  labels:
+    app.kubernetes.io/name: mattermost-team-edition
+    app.kubernetes.io/instance: mattermost
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: mattermost-team-edition-5.5.0
+spec:
+  selector:
+    app.kubernetes.io/name: mattermost-team-edition
+    app.kubernetes.io/instance: mattermost
+    app.kubernetes.io/managed-by: Helm
+  type: ClusterIP
+  ports:
+    - port: 8065
+      targetPort: http
+      protocol: TCP
+      name: mattermost
+---
+# Source: mattermost-team-edition/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mattermost
+  namespace: mattermost
+  labels:
+    app.kubernetes.io/name: mattermost-team-edition
+    app.kubernetes.io/instance: mattermost
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: mattermost-team-edition-5.5.0
+  annotations:
+    operator.1password.io/item-path: vaults/wusn2jxjimwouyjyaqp654h7vq/items/hsjn5xfugzmyla7qc3untpbl5u
+    operator.1password.io/item-name: &1password mattermost-1password
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mattermost-team-edition
+      app.kubernetes.io/instance: mattermost
+      app.kubernetes.io/managed-by: Helm
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: mattermost-team-edition
+        app.kubernetes.io/instance: mattermost
+        app.kubernetes.io/managed-by: Helm
+        helm.sh/chart: mattermost-team-edition-5.5.0
+    spec:
+      serviceAccountName: mattermost
+      containers:
+        - name: mattermost
+          image: mattermost/mattermost-team-edition:6.0.2
+          env:
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: &dbSecret mattermost.mattermost-postgresql.credentials.postgresql.acid.zalan.do
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: *dbSecret
+                  key: password
+            - name: MM_SQLSETTINGS_DRIVERNAME
+              value: postgres
+            - name: MM_SQLSETTINGS_DATASOURCE
+              value: postgres://$(DB_USERNAME):$(DB_PASSWORD)@mattermost-postgresql:5432/mattermost?sslmode=require
+            - name: MM_CONFIG
+              value: $(MM_SQLSETTINGS_DATASOURCE)
+            - name: MM_FILESETTINGS_DRIVERNAME
+              value: amazons3
+            - name: MM_FILESETTINGS_AMAZONS3BUCKET
+              value: mattermost
+            - name: MM_FILESETTINGS_AMAZONS3ACCESSKEYID
+              valueFrom:
+                secretKeyRef:
+                  name: *1password
+                  key: minio-access-key-id
+            - name: MM_FILESETTINGS_AMAZONS3SECRETACCESSKEY
+              valueFrom:
+                secretKeyRef:
+                  name: *1password
+                  key: minio-secret-access-key
+            - name: MM_FILESETTINGS_AMAZONS3ENDPOINT
+              value: minio.default
+            - name: MM_FILESETTINGS_AMAZONS3SSL
+              value: "false"
+            - name: MM_SERVICESETTINGS_SITEURL
+              value: https://chat.hannahs.family
+            - name: MM_EMAILSETTINGS_ENABLESIGNUPWITHEMAIL
+              value: "false"
+            - name: MM_EMAILSETTINGS_ENABLESIGNINWITHEMAIL
+              value: "false"
+            - name: MM_EMAILSETTINGS_ENABLESIGNINWITHUSERNAME
+              value: "false"
+            - name: MM_GITLABSETTINGS_ENABLE
+              value: "true"
+            - name: MM_GITLABSETTINGS_ID
+              valueFrom:
+                secretKeyRef:
+                  name: *1password
+                  key: gitlab-application-id
+            - name: MM_GITLABSETTINGS_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: *1password
+                  key: gitlab-secret
+            - name: MM_GITLABSETTINGS_DISCOVERYENDPOINT
+              value: https://git.hannahs.family/.well-known/openid-configuration
+            - name: MM_GITLABSETTINGS_SCOPE
+              value: read_user
+            - name: MM_GITLABSETTINGS_AUTHENDPOINT
+              value: https://git.hannahs.family/oauth/authorize
+            - name: MM_GITLABSETTINGS_TOKENENDPOINT
+              value: https://git.hannahs.family/oauth/token
+            - name: MM_GITLABSETTINGS_USERAPIENDPOINT
+              value: https://git.hannahs.family/api/v4/user
+          ports:
+            - name: http
+              containerPort: 8065
+              protocol: TCP
+          livenessProbe:
+            initialDelaySeconds: 90
+            timeoutSeconds: 5
+            periodSeconds: 15
+            httpGet:
+              path: /api/v4/system/ping
+              port: http
+          readinessProbe:
+            initialDelaySeconds: 15
+            timeoutSeconds: 5
+            periodSeconds: 15
+            httpGet:
+              path: /api/v4/system/ping
+              port: http
+          resources: {}
+---
+# Source: mattermost-team-edition/templates/ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mattermost
+  namespace: mattermost
+  labels:
+    app.kubernetes.io/name: mattermost-team-edition
+    app.kubernetes.io/instance: mattermost
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: mattermost-team-edition-5.5.0
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: &hostname chat.hannahs.family
+      http:
+        paths:
+          - backend:
+              service:
+                name: mattermost
+                port:
+                  number: 8065
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - *hostname
+      secretName: *hostname
+# apiVersion: "networking.k8s.io/v1beta1"
+# kind: Ingress
+# metadata:
+#   name: mattermost-mattermost-team-edition
+#   labels:
+#     app.kubernetes.io/name: mattermost-team-edition
+#     app.kubernetes.io/instance: mattermost
+#     app.kubernetes.io/managed-by: Helm
+#     helm.sh/chart: mattermost-team-edition-5.5.0
+#   annotations:
+#     nginx.ingress.kubernetes.io/ssl-redirect: "false"
+# spec:
+#   rules:
+#     - host: "chat.hannahs.family"
+#       http:
+#         paths:
+#           - path: /
+#             backend:
+#               serviceName: mattermost-team-edition
+#               servicePort: 8065
