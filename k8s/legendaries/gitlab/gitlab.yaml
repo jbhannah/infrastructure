@@ -1,0 +1,89 @@
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: gitlab
+  namespace: gitlab
+spec:
+  repo: http://charts.gitlab.io/
+  chart: gitlab
+  version: 5.4.1
+  targetNamespace: gitlab
+  valuesContent: |-
+    global:
+      edition: ce
+      extraEnv:
+        PGSSLMODE: require
+      hosts:
+        domain: git.hannahs.family
+        gitlab:
+          name: git.hannahs.family
+      ingress:
+        configureCertmanager: false
+        class: traefik
+        annotations:
+          kubernetes.io/tls-acme: "true"
+          traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+        provider: traefik
+      psql:
+        host: gitlab-postgresql
+        password:
+          secret: gitlab.gitlab-postgresql.credentials.postgresql.acid.zalan.do
+          key: password
+      minio:
+        enabled: false
+      appConfig:
+        object_store:
+          enabled: true
+          connection:
+            secret: minio-connection
+      kas:
+        enabled: true
+      serviceAccount:
+        enabled: true
+    certmanager:
+      install: false
+    gitlab:
+      kas:
+        minReplicas: 1
+        maxReplicas: 1
+      sidekiq:
+        minReplicas: 1
+        maxReplicas: 1
+      gitlab-shell:
+        minReplicas: 1
+        maxReplicas: 1
+      webservice:
+        minReplicas: 1
+        maxReplicas: 1
+        ingress:
+          tls:
+            secretName: gitlab-gitlab-tls
+    registry:
+      hpa:
+        minReplicas: 1
+        maxReplcias: 1
+      ingress:
+        tls:
+          secretName: gitlab-registry-tls
+    postgresql:
+      install: false
+    prometheus:
+      install: false
+    nginx-ingress:
+      enabled: false
+    gitlab-runner:
+      runners:
+        config: |-
+          [[runners]]
+            [runners.kubernetes]
+            image = "ubuntu:18.04"
+            [runners.cache]
+              Type = "s3"
+              Path = "gitlab-runner"
+              Shared = true
+              [runners.cache.s3]
+                ServerAddress = "minio.default"
+                BucketName = "gitlab-runner-cache"
+                BucketLocation = "us-east-1"
+                Insecure = true
