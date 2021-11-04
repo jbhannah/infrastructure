@@ -41,6 +41,18 @@ spec:
         enabled: true
       serviceAccount:
         enabled: true
+      email:
+        from: no-reply@git.hannahs.family
+        reply_to: no-reply@git.hannahs.family
+      smtp:
+        enabled: true
+        address: smtp.sendgrid.net
+        port: 465
+        tls: true
+        user_name: apikey
+        password:
+          secret: gitlab-sendgrid
+          key: credential
     certmanager:
       install: false
     gitlab:
@@ -87,3 +99,33 @@ spec:
                 BucketName = "gitlab-runner-cache"
                 BucketLocation = "us-east-1"
                 Insecure = true
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: gitlab-admin
+  namespace: gitlab
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: gitlab-admin
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - kind: ServiceAccount
+    name: gitlab-admin
+    namespace: gitlab
+
+---
+apiVersion: onepassword.com/v1
+kind: OnePasswordItem
+metadata:
+  name: gitlab-sendgrid
+  namespace: gitlab
+spec:
+  itemPath: vaults/wusn2jxjimwouyjyaqp654h7vq/items/bd6lb7pafdl5z247krfw6lztee
