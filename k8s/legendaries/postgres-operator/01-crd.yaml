@@ -62,7 +62,7 @@ spec:
               properties:
                 docker_image:
                   type: string
-                  default: "registry.opensource.zalan.do/acid/spilo-13:2.1-p1"
+                  default: "registry.opensource.zalan.do/acid/spilo-14:2.1-p3"
                 enable_crd_validation:
                   type: boolean
                   default: true
@@ -132,10 +132,10 @@ spec:
                       default: "off"
                     minimal_major_version:
                       type: string
-                      default: "9.5"
+                      default: "9.6"
                     target_major_version:
                       type: string
-                      default: "13"
+                      default: "14"
                 kubernetes:
                   type: object
                   properties:
@@ -396,7 +396,7 @@ spec:
                   properties:
                     logical_backup_docker_image:
                       type: string
-                      default: "registry.opensource.zalan.do/acid/logical-backup:v1.7.0"
+                      default: "registry.opensource.zalan.do/acid/logical-backup:v1.7.1"
                     logical_backup_google_application_credentials:
                       type: string
                     logical_backup_job_prefix:
@@ -531,7 +531,7 @@ spec:
                       default: "pooler"
                     connection_pooler_image:
                       type: string
-                      default: "registry.opensource.zalan.do/acid/pgbouncer:master-18"
+                      default: "registry.opensource.zalan.do/acid/pgbouncer:master-19"
                     connection_pooler_max_db_connections:
                       type: integer
                       default: 60
@@ -927,14 +927,13 @@ spec:
                     version:
                       type: string
                       enum:
-                        - "9.3"
-                        - "9.4"
                         - "9.5"
                         - "9.6"
                         - "10"
                         - "11"
                         - "12"
                         - "13"
+                        - "14"
                     parameters:
                       type: object
                       additionalProperties:

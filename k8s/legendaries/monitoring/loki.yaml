@@ -7,7 +7,7 @@ metadata:
 spec:
   repo: https://grafana.github.io/helm-charts
   chart: loki-stack
-  version: 2.4.1
+  version: 2.5.0
   targetNamespace: monitoring
   valuesContent: |-
     grafana:
