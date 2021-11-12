@@ -85,11 +85,16 @@ spec:
     nginx-ingress:
       enabled: false
     gitlab-runner:
+      unregisterRunners: true
+      logLevel: debug
       runners:
+        executor: kubernetes
         config: |-
           [[runners]]
             [runners.kubernetes]
-            image = "ubuntu:18.04"
+              allow_privilege_escalation = true
+              image = "ubuntu:18.04"
+              privileged = true
             [runners.cache]
               Type = "s3"
               Path = "gitlab-runner"
