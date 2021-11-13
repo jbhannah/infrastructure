@@ -13,7 +13,7 @@ spec:
     configMajorVersionUpgrade:
       major_version_upgrade_mode: "manual"
       minimal_major_version: "9.6"
-      target_major_version: "13"
+      target_major_version: "14"
     configKubernetes:
       cluster_domain: legendaries.hannahs.family
       enable_pod_antiaffinity: true

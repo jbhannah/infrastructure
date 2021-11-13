@@ -16,7 +16,7 @@ spec:
   preparedDatabases:
     mattermost: {}
   postgresql:
-    version: "13"
+    version: "14"
 
 ---
 apiVersion: helm.cattle.io/v1
