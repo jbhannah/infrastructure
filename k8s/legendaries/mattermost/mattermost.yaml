@@ -90,7 +90,7 @@ spec:
       serviceAccountName: mattermost
       containers:
         - name: mattermost
-          image: mattermost/mattermost-team-edition:6.0.2
+          image: mattermost/mattermost-team-edition:6.1.0
           env:
             - name: DB_USERNAME
               valueFrom:
