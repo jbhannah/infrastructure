@@ -9,6 +9,16 @@
     mode: 0644
   register: minecraft_systemd_unit
 
+- name: Copy systemd defaults file
+  become: true
+  template:
+    src: minecraft@.defaults.j2
+    dest: /etc/default/minecraft@{{ minecraft_domain }}
+    owner: root
+    group: root
+    mode: 0644
+  register: minecraft_systemd_defaults
+
 - name: Enable and start Minecraft {{ minecraft_domain }} service
   become: true
   service:
@@ -16,4 +26,4 @@
     enabled: true
     state: restarted
     daemon_reload: true
-  when: minecraft_systemd_unit.changed
+  when: minecraft_systemd_unit.changed or minecraft_systemd_defaults.changed
