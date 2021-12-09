@@ -27,7 +27,7 @@ spec:
         - 10.0.0.0/8
     image:
       name: traefik
-      tag: v2.5.3
+      tag: v2.5.4
     ingressClass:
       enabled: true
       isDefaultClass: true
