@@ -4,3 +4,4 @@ dependencies:
   - role: adoptopenjdk
     vars:
       adoptopenjdk_jdk: false
+      adoptopenjdk_version: 17
