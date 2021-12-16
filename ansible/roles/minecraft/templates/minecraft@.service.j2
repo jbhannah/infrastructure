@@ -3,7 +3,7 @@ Description=Minecraft Server %i
 After=network.target
 
 [Service]
-EnvironmentFile=-/etc/default/%N
+EnvironmentFile=-/etc/default/%N.defaults
 WorkingDirectory={{ minecraft_user_home }}/%i
 PrivateUsers=true
 User={{ minecraft_user }}

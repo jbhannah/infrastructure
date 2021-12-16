@@ -13,7 +13,7 @@
   become: true
   template:
     src: minecraft@.defaults.j2
-    dest: /etc/default/minecraft@{{ minecraft_domain }}
+    dest: /etc/default/minecraft@{{ minecraft_domain }}.defaults
     owner: root
     group: root
     mode: 0644
