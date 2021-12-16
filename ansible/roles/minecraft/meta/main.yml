@@ -1,7 +1,4 @@
 ---
 allow_duplicates: true
 dependencies:
-  - role: adoptopenjdk
-    vars:
-      adoptopenjdk_jdk: false
-      adoptopenjdk_version: 17
+  - role: adoptium

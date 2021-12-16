@@ -1,4 +1,0 @@
----
-adoptopenjdk_jdk: true
-adoptopenjdk_jvm: openj9
-adoptopenjdk_version: 16

@@ -15,7 +15,8 @@
             ]
         minecraft_domain: mc.jbhannah.net
         minecraft_mods:
-          lithium.jar: https://github.com/CaffeineMC/lithium-fabric/releases/download/mc1.17-0.7.2/lithium-fabric-mc1.17-0.7.2.jar
+          lithium.jar: https://github.com/CaffeineMC/lithium-fabric/releases/download/mc1.18-0.7.6-rc1/lithium-fabric-mc1.18-0.7.6-rc1.jar
+          starlight.jar: https://media.forgecdn.net/files/3554/912/starlight-1.0.0%2Bfabric.d0a3220.jar
         minecraft_properties:
           difficulty: hard
           enable-rcon: true
@@ -34,64 +35,65 @@
             6431616131313966333032633266353239376537353231326135
         minecraft_rcon_port: 25575
         minecraft_server_port: 25565
-        minecraft_ufw: false
-    - name: minecraft
-      vars:
-        minecraft_configs:
-          eula.txt: "eula=true"
-        minecraft_domain: hc7.mc.hannahs.family
-        minecraft_mods:
-          lithium.jar: https://github.com/CaffeineMC/lithium-fabric/releases/download/mc1.16.5-0.6.6/lithium-fabric-mc1.16.5-0.6.6.jar
-          phosphor.jar: https://github.com/CaffeineMC/phosphor-fabric/releases/download/mc1.16.2-v0.7.2/phosphor-fabric-mc1.16.3-0.7.2+build.12.jar
-        minecraft_properties:
-          enable-rcon: true
-          gamemode: creative
-          motd: Hermitcraft Season 7
-          rcon.password: !vault |
-            $ANSIBLE_VAULT;1.1;AES256
-            62623035623466663763636537626438313133666239376533316530353737323863646433396663
-            3330386262666132323332616531316337623135663736330a343765323465633630383838363837
-            63336439396335376636613535386233333536313631613163386663333636323535666336663938
-            3261633436333761350a386336373962316161306532346538636463313161326436353161366238
-            61343962346634396439313037376264373561323539633364383434353331383132616231353764
-            3164383636376539303239376139643337336566363731343165
-        minecraft_rcon_port: 25675
-        minecraft_server_port: 25665
-        minecraft_ufw: false
-    - name: minecraft
-      vars:
-        minecraft_configs:
-          eula.txt: "eula=true"
-          whitelist.json: |
-            [
-              {
-                "uuid": "aedf3044-aaed-40cf-8ac3-2eb19ea89e59",
-                "name": "BolderBrooklyn"
-              },
-              {
-                "uuid": "11d158b7-df6d-409c-a6a4-39afc5ec3985",
-                "name": "DarkWerePanda"
-              }
-            ]
-        minecraft_domain: parents.mc.hannahs.family
-        minecraft_mods:
-          lithium.jar: https://github.com/CaffeineMC/lithium-fabric/releases/download/mc1.17-0.7.2/lithium-fabric-mc1.17-0.7.2.jar
-        minecraft_properties:
-          difficulty: hard
-          enable-rcon: true
-          enforce-whitelist: true
-          force-gamemode: true
-          gamemode: survival
-          motd: ❤️❤️❤️❤️❤️
-          white-list: true
-          rcon.password: !vault |
-            $ANSIBLE_VAULT;1.1;AES256
-            37326332396537303037323238656535643630646530346132333130323532323235643537663362
-            6364393265656338653966383335623962626362393031370a626266373039623763393362353665
-            36633537363165356165383839666262323165333662353935663236613730333639663438333537
-            6564373035633165640a666136376531613338313664653661653533663264383064646565323733
-            32366239613734363063363834393235633230626531373531326338623764323061363666306232
-            6339616663306133336336343836356435633734376633376434
-        minecraft_rcon_port: 25775
-        minecraft_server_port: 25765
-        minecraft_ufw: false
+        minecraft_ufw: true
+        minecraft_version: 1.18
+    # - name: minecraft
+    #   vars:
+    #     minecraft_configs:
+    #       eula.txt: "eula=true"
+    #     minecraft_domain: hc7.mc.hannahs.family
+    #     minecraft_mods:
+    #       lithium.jar: https://github.com/CaffeineMC/lithium-fabric/releases/download/mc1.16.5-0.6.6/lithium-fabric-mc1.16.5-0.6.6.jar
+    #       phosphor.jar: https://github.com/CaffeineMC/phosphor-fabric/releases/download/mc1.16.2-v0.7.2/phosphor-fabric-mc1.16.3-0.7.2+build.12.jar
+    #     minecraft_properties:
+    #       enable-rcon: true
+    #       gamemode: creative
+    #       motd: Hermitcraft Season 7
+    #       rcon.password: !vault |
+    #         $ANSIBLE_VAULT;1.1;AES256
+    #         62623035623466663763636537626438313133666239376533316530353737323863646433396663
+    #         3330386262666132323332616531316337623135663736330a343765323465633630383838363837
+    #         63336439396335376636613535386233333536313631613163386663333636323535666336663938
+    #         3261633436333761350a386336373962316161306532346538636463313161326436353161366238
+    #         61343962346634396439313037376264373561323539633364383434353331383132616231353764
+    #         3164383636376539303239376139643337336566363731343165
+    #     minecraft_rcon_port: 25675
+    #     minecraft_server_port: 25665
+    #     minecraft_ufw: false
+    # - name: minecraft
+    #   vars:
+    #     minecraft_configs:
+    #       eula.txt: "eula=true"
+    #       whitelist.json: |
+    #         [
+    #           {
+    #             "uuid": "aedf3044-aaed-40cf-8ac3-2eb19ea89e59",
+    #             "name": "BolderBrooklyn"
+    #           },
+    #           {
+    #             "uuid": "11d158b7-df6d-409c-a6a4-39afc5ec3985",
+    #             "name": "DarkWerePanda"
+    #           }
+    #         ]
+    #     minecraft_domain: parents.mc.hannahs.family
+    #     minecraft_mods:
+    #       lithium.jar: https://github.com/CaffeineMC/lithium-fabric/releases/download/mc1.17-0.7.2/lithium-fabric-mc1.17-0.7.2.jar
+    #     minecraft_properties:
+    #       difficulty: hard
+    #       enable-rcon: true
+    #       enforce-whitelist: true
+    #       force-gamemode: true
+    #       gamemode: survival
+    #       motd: ❤️❤️❤️❤️❤️
+    #       white-list: true
+    #       rcon.password: !vault |
+    #         $ANSIBLE_VAULT;1.1;AES256
+    #         37326332396537303037323238656535643630646530346132333130323532323235643537663362
+    #         6364393265656338653966383335623962626362393031370a626266373039623763393362353665
+    #         36633537363165356165383839666262323165333662353935663236613730333639663438333537
+    #         6564373035633165640a666136376531613338313664653661653533663264383064646565323733
+    #         32366239613734363063363834393235633230626531373531326338623764323061363666306232
+    #         6339616663306133336336343836356435633734376633376434
+    #     minecraft_rcon_port: 25775
+    #     minecraft_server_port: 25765
+    #     minecraft_ufw: false

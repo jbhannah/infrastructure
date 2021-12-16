@@ -1,0 +1,8 @@
+---
+adoptium_user: adoptium
+adoptium_user_home: /opt/{{ adoptium_user }}
+adoptium_version:
+  major: 17
+  minor: 0
+  patch: 1
+  rev: 12
