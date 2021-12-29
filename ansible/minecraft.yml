@@ -15,8 +15,8 @@
             ]
         minecraft_domain: mc.jbhannah.net
         minecraft_mods:
-          lithium.jar: https://github.com/CaffeineMC/lithium-fabric/releases/download/mc1.18-0.7.6-rc1/lithium-fabric-mc1.18-0.7.6-rc1.jar
-          starlight.jar: https://media.forgecdn.net/files/3554/912/starlight-1.0.0%2Bfabric.d0a3220.jar
+          lithium.jar: https://github.com/CaffeineMC/lithium-fabric/releases/download/mc1.18.1-0.7.6/lithium-fabric-mc1.18.1-0.7.6.jar
+          starlight.jar: https://cdn.modrinth.com/data/H8CaAYZC/versions/Starlight%201.0.0%201.18.x/starlight-1.0.0+fabric.d0a3220.jar
         minecraft_properties:
           difficulty: hard
           enable-rcon: true
@@ -36,7 +36,7 @@
         minecraft_rcon_port: 25575
         minecraft_server_port: 25565
         minecraft_ufw: true
-        minecraft_version: 1.18
+        minecraft_version: 1.18.1
     # - name: minecraft
     #   vars:
     #     minecraft_configs:
