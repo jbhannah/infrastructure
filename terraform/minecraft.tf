@@ -17,15 +17,11 @@ resource "digitalocean_firewall" "minecraft" {
   }
 }
 
-resource "digitalocean_droplet" "mc_hannahs_family" {
-  image      = "ubuntu-20-04-x64"
-  name       = "mc.hannahs.family"
-  region     = "sfo3"
-  size       = "s-1vcpu-2gb"
-  backups    = true
-  monitoring = true
-  ipv6       = true
-  ssh_keys   = [digitalocean_ssh_key.infrastructure.fingerprint]
+module "mc_hannahs_family" {
+  source   = "./modules/droplet"
+  hostname = "mc"
+  zone     = cloudflare_zone.hannahs_family
+  ssh_keys = [digitalocean_ssh_key.infrastructure.fingerprint]
   tags = [
     digitalocean_tag.minecraft.id,
     digitalocean_tag.ssh.id,
@@ -46,20 +42,6 @@ resource "digitalocean_droplet" "mc_hannahs_family" {
   YAML
 }
 
-resource "cloudflare_record" "mc_hannahs_family_A" {
-  zone_id = cloudflare_zone.hannahs_family.id
-  name    = "mc"
-  type    = "A"
-  value   = digitalocean_droplet.mc_hannahs_family.ipv4_address
-}
-
-resource "cloudflare_record" "mc_hannahs_family_AAAA" {
-  zone_id = cloudflare_zone.hannahs_family.id
-  name    = "mc"
-  type    = "AAAA"
-  value   = digitalocean_droplet.mc_hannahs_family.ipv6_address
-}
-
 resource "cloudflare_record" "mc_hannahs_family_SRV_minecraft_tcp" {
   zone_id = cloudflare_zone.hannahs_family.id
   name    = "_minecraft._tcp.mc"
@@ -72,6 +54,6 @@ resource "cloudflare_record" "mc_hannahs_family_SRV_minecraft_tcp" {
     priority = 0
     weight   = 0
     port     = local.minecraft_port
-    target   = digitalocean_droplet.mc_hannahs_family.name
+    target   = module.mc_hannahs_family.droplet.name
   }
 }
