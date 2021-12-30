@@ -7,6 +7,23 @@ resource "digitalocean_tag" "terraform" {
   name = "terraform"
 }
 
+resource "digitalocean_firewall" "allow_dns_outbound" {
+  name = "allow-dns-outbound"
+  tags = [digitalocean_tag.terraform.id]
+
+  outbound_rule {
+    protocol              = "tcp"
+    port_range            = "53"
+    destination_addresses = [local.all_ipv4, local.all_ipv6]
+  }
+
+  outbound_rule {
+    protocol              = "udp"
+    port_range            = "53"
+    destination_addresses = [local.all_ipv4, local.all_ipv6]
+  }
+}
+
 resource "digitalocean_firewall" "allow_http_outbound" {
   name = "allow-http-outbound"
   tags = [digitalocean_tag.terraform.id]
