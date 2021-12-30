@@ -55,6 +55,11 @@ variable "ipv6" {
   default = true
 }
 
+variable "graceful_shutdown" {
+  type    = bool
+  default = true
+}
+
 variable "ssh_keys" {
   type    = list(string)
   default = []
