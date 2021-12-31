@@ -31,13 +31,22 @@ module "mc_hannahs_family" {
   user_data = <<-YAML
     #cloud-config
 
+    package_upgrade: true
+    package_reboot_if_required: true
+
     packages:
       - openjdk-17-jre-headless
       - tmux
 
+    runcmd:
+      - ufw limit ssh
+      - ufw allow 25565
+      - ufw enable
+
     users:
       - name: minecraft
         homedir: /opt/minecraft
+        shell: /bin/bash
         system: true
   YAML
 }
