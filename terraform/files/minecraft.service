@@ -1,0 +1,31 @@
+[Unit]
+Description=Minecraft Server
+After=network.target
+
+[Service]
+Type=forking
+WorkingDirectory=/opt/minecraft
+PrivateUsers=true
+User=minecraft
+Group=minecraft
+KillMode=none
+KillSignal=SIGCONT
+ProtectSystem=full
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+Restart=on-failure
+
+ExecStart=tmux new-session -d -n minecraft ./server.sh
+
+ExecStop=tmux send-keys -t minecraft 'say SERVER SHUTDOWN IN 15 SECONDS\015'
+ExecStop=sleep 5
+ExecStop=tmux send-keys -t minecraft 'say SERVER SHUTDOWN IN 10 SECONDS\015'
+ExecStop=sleep 5
+ExecStop=tmux send-keys -t minecraft 'say SERVER SHUTDOWN IN 5 SECONDS\015'
+ExecStop=sleep 5
+ExecStop=tmux send-keys -t minecraft 'stop\015'
+
+[Install]
+WantedBy=multi-user.target
