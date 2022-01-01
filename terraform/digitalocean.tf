@@ -126,6 +126,12 @@ resource "digitalocean_firewall" "ssh" {
     port_range       = "22"
     source_addresses = [local.all_ipv4, local.all_ipv6]
   }
+
+  outbound_rule {
+    protocol         = "tcp"
+    port_range       = "22"
+    destination_tags = [digitalocean_tag.ssh.id]
+  }
 }
 
 resource "digitalocean_ssh_key" "infrastructure" {
