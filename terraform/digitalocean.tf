@@ -1,6 +1,8 @@
 locals {
   all_ipv4 = "0.0.0.0/0"
   all_ipv6 = "::/0"
+
+  email_alerts = ["jesse+alerts@jbhannah.net"]
 }
 
 resource "digitalocean_tag" "terraform" {
@@ -39,6 +41,76 @@ resource "digitalocean_firewall" "allow_http_outbound" {
     port_range            = "443"
     destination_addresses = [local.all_ipv4, local.all_ipv6]
   }
+}
+
+resource "digitalocean_monitor_alert" "cpu_alert" {
+  alerts {
+    email = local.email_alerts
+  }
+
+  window      = "10m"
+  type        = "v1/insights/droplet/cpu"
+  compare     = "GreaterThan"
+  value       = 70
+  enabled     = true
+  tags        = [digitalocean_tag.terraform.id]
+  description = "CPU is running high"
+}
+
+resource "digitalocean_monitor_alert" "memory_utilization_percent_alert" {
+  alerts {
+    email = local.email_alerts
+  }
+
+  window      = "10m"
+  type        = "v1/insights/droplet/memory_utilization_percent"
+  compare     = "GreaterThan"
+  value       = 90
+  enabled     = true
+  tags        = [digitalocean_tag.terraform.id]
+  description = "Memory usage is running high"
+}
+
+resource "digitalocean_monitor_alert" "disk_read_alert" {
+  alerts {
+    email = local.email_alerts
+  }
+
+  window      = "5m"
+  type        = "v1/insights/droplet/disk_read"
+  compare     = "GreaterThan"
+  value       = 1
+  enabled     = true
+  tags        = [digitalocean_tag.terraform.id]
+  description = "Disk read is running high"
+}
+
+resource "digitalocean_monitor_alert" "disk_write_alert" {
+  alerts {
+    email = local.email_alerts
+  }
+
+  window      = "5m"
+  type        = "v1/insights/droplet/disk_write"
+  compare     = "GreaterThan"
+  value       = 1
+  enabled     = true
+  tags        = [digitalocean_tag.terraform.id]
+  description = "Disk write is running high"
+}
+
+resource "digitalocean_monitor_alert" "disk_utilization_percent_alert" {
+  alerts {
+    email = local.email_alerts
+  }
+
+  window      = "5m"
+  type        = "v1/insights/droplet/disk_utilization_percent"
+  compare     = "GreaterThan"
+  value       = 85
+  enabled     = true
+  tags        = [digitalocean_tag.terraform.id]
+  description = "Disk usage is running high"
 }
 
 resource "digitalocean_tag" "ssh" {
