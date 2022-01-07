@@ -154,6 +154,27 @@ resource "digitalocean_monitor_alert" "disk_utilization_percent_alert" {
   description = "Disk usage is running high"
 }
 
+resource "digitalocean_tag" "nginx" {
+  name = "nginx"
+}
+
+resource "digitalocean_firewall" "nginx" {
+  name = "nginx"
+  tags = [digitalocean_tag.nginx.id]
+
+  inbound_rule {
+    protocol         = "tcp"
+    port_range       = "80"
+    source_addresses = [local.all_ipv4, local.all_ipv6]
+  }
+
+  inbound_rule {
+    protocol         = "tcp"
+    port_range       = "443"
+    source_addresses = [local.all_ipv4, local.all_ipv6]
+  }
+}
+
 resource "digitalocean_tag" "ssh" {
   name = "ssh"
 }
@@ -166,12 +187,6 @@ resource "digitalocean_firewall" "ssh" {
     protocol         = "tcp"
     port_range       = "22"
     source_addresses = [local.all_ipv4, local.all_ipv6]
-  }
-
-  outbound_rule {
-    protocol         = "tcp"
-    port_range       = "22"
-    destination_tags = [digitalocean_tag.ssh.id]
   }
 }
 

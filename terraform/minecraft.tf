@@ -46,6 +46,7 @@ module "mc_hannahs_family" {
   ssh_keys = [digitalocean_ssh_key.infrastructure.fingerprint]
   tags = [
     digitalocean_tag.minecraft.id,
+    digitalocean_tag.nginx.id,
     digitalocean_tag.ssh.id,
     digitalocean_tag.terraform.id,
   ]
@@ -75,6 +76,7 @@ module "creative_mc_hannahs_family" {
   ssh_keys = [digitalocean_ssh_key.infrastructure.fingerprint]
   tags = [
     digitalocean_tag.minecraft.id,
+    digitalocean_tag.nginx.id,
     digitalocean_tag.ssh.id,
     digitalocean_tag.terraform.id,
   ]
