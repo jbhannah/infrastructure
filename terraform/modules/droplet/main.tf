@@ -30,9 +30,17 @@ variable "zone" {
   description = "Cloudflare zone of base domain"
 }
 
-variable "region" {
-  type    = string
-  default = "sfo3"
+variable "vpc" {
+  type = object({
+    region = string
+    vpc = object({
+      id = string
+    })
+    tag = object({
+      id = string
+    })
+  })
+  description = "DigitalOcean VPC of droplet"
 }
 
 variable "size" {
@@ -66,7 +74,9 @@ variable "ssh_keys" {
 }
 
 variable "tags" {
-  type    = list(string)
+  type = list(object({
+    id = string
+  }))
   default = []
 }
 

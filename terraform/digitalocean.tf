@@ -2,8 +2,6 @@ locals {
   all_ipv4 = "0.0.0.0/0"
   all_ipv6 = "::/0"
 
-  private_ipv4 = "10.124.0.0/20"
-
   email_alerts = ["jesse+alerts@jbhannah.net"]
 }
 
@@ -11,43 +9,8 @@ resource "digitalocean_tag" "terraform" {
   name = "terraform"
 }
 
-resource "digitalocean_firewall" "allow_private" {
-  name = "allow-private"
-  tags = [digitalocean_tag.terraform.id]
-
-  inbound_rule {
-    protocol         = "tcp"
-    port_range       = "1-65535"
-    source_addresses = [local.private_ipv4]
-  }
-
-  inbound_rule {
-    protocol         = "udp"
-    port_range       = "1-65535"
-    source_addresses = [local.private_ipv4]
-  }
-
-  inbound_rule {
-    protocol         = "icmp"
-    source_addresses = [local.private_ipv4]
-  }
-
-  outbound_rule {
-    protocol              = "tcp"
-    port_range            = "1-65535"
-    destination_addresses = [local.private_ipv4]
-  }
-
-  outbound_rule {
-    protocol              = "udp"
-    port_range            = "1-65535"
-    destination_addresses = [local.private_ipv4]
-  }
-
-  outbound_rule {
-    protocol              = "icmp"
-    destination_addresses = [local.private_ipv4]
-  }
+module "vpc_sfo3" {
+  source = "./modules/vpc"
 }
 
 resource "digitalocean_firewall" "allow_dns_outbound" {

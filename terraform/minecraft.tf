@@ -43,12 +43,13 @@ module "mc_hannahs_family" {
   source   = "./modules/droplet"
   hostname = "mc"
   zone     = cloudflare_zone.hannahs_family
+  vpc      = module.vpc_sfo3
   ssh_keys = [digitalocean_ssh_key.infrastructure.fingerprint]
   tags = [
-    digitalocean_tag.minecraft.id,
-    digitalocean_tag.nginx.id,
-    digitalocean_tag.ssh.id,
-    digitalocean_tag.terraform.id,
+    digitalocean_tag.minecraft,
+    digitalocean_tag.nginx,
+    digitalocean_tag.ssh,
+    digitalocean_tag.terraform,
   ]
   user_data = local.user_data
 }
@@ -73,12 +74,13 @@ module "creative_mc_hannahs_family" {
   source   = "./modules/droplet"
   hostname = "creative.mc"
   zone     = cloudflare_zone.hannahs_family
+  vpc      = module.vpc_sfo3
   ssh_keys = [digitalocean_ssh_key.infrastructure.fingerprint]
   tags = [
-    digitalocean_tag.minecraft.id,
-    digitalocean_tag.nginx.id,
-    digitalocean_tag.ssh.id,
-    digitalocean_tag.terraform.id,
+    digitalocean_tag.minecraft,
+    digitalocean_tag.nginx,
+    digitalocean_tag.ssh,
+    digitalocean_tag.terraform,
   ]
   user_data = local.user_data
 }
