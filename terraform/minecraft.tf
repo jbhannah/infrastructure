@@ -43,6 +43,7 @@ module "mc_hannahs_family" {
   source   = "./modules/droplet"
   hostname = "mc"
   zone     = cloudflare_zone.hannahs_family
+  proxied  = true
   vpc      = module.vpc_sfo3
   ssh_keys = [digitalocean_ssh_key.infrastructure.fingerprint]
   tags = [
@@ -74,6 +75,7 @@ module "creative_mc_hannahs_family" {
   source   = "./modules/droplet"
   hostname = "creative.mc"
   zone     = cloudflare_zone.hannahs_family
+  proxied  = true
   vpc      = module.vpc_sfo3
   ssh_keys = [digitalocean_ssh_key.infrastructure.fingerprint]
   tags = [

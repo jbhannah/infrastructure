@@ -3,6 +3,7 @@ resource "cloudflare_record" "dns_A" {
   name    = var.hostname
   type    = "A"
   value   = digitalocean_droplet.droplet.ipv4_address
+  proxied = var.proxied
 }
 
 resource "cloudflare_record" "dns_AAAA" {
@@ -11,6 +12,7 @@ resource "cloudflare_record" "dns_AAAA" {
   name    = var.hostname
   type    = "AAAA"
   value   = digitalocean_droplet.droplet.ipv6_address
+  proxied = var.proxied
 }
 
 output "dns_A" {

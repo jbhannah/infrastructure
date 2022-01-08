@@ -43,17 +43,12 @@ variable "vpc" {
   description = "DigitalOcean VPC of droplet"
 }
 
-variable "size" {
-  type    = string
-  default = "s-1vcpu-2gb"
-}
-
 variable "backups" {
   type    = bool
   default = true
 }
 
-variable "monitoring" {
+variable "graceful_shutdown" {
   type    = bool
   default = true
 }
@@ -63,9 +58,19 @@ variable "ipv6" {
   default = true
 }
 
-variable "graceful_shutdown" {
+variable "monitoring" {
   type    = bool
   default = true
+}
+
+variable "proxied" {
+  type    = bool
+  default = false
+}
+
+variable "size" {
+  type    = string
+  default = "s-1vcpu-2gb"
 }
 
 variable "ssh_keys" {
