@@ -9,7 +9,7 @@ resource "digitalocean_tag" "terraform" {
   name = "terraform"
 }
 
-module "vpc_sfo3" {
+module "vpc_default_sfo3" {
   source = "./modules/vpc"
 }
 

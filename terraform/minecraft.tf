@@ -22,7 +22,7 @@ module "mc_hannahs_family" {
   hostname       = "mc"
   minecraft_port = local.minecraft_port
   zone           = cloudflare_zone.hannahs_family
-  vpc            = module.vpc_sfo3
+  vpc            = module.vpc_default_sfo3
   ssh_keys       = [digitalocean_ssh_key.infrastructure.fingerprint]
   tags = [
     digitalocean_tag.minecraft,
@@ -37,7 +37,7 @@ module "creative_mc_hannahs_family" {
   hostname       = "creative.mc"
   minecraft_port = local.minecraft_port
   zone           = cloudflare_zone.hannahs_family
-  vpc            = module.vpc_sfo3
+  vpc            = module.vpc_default_sfo3
   ssh_keys       = [digitalocean_ssh_key.infrastructure.fingerprint]
   tags = [
     digitalocean_tag.minecraft,
