@@ -1,0 +1,52 @@
+source ~/.config/neomutt/gpg.rc
+source "gpg --decrypt ~/.config/neomutt/app-password.gpg |"
+
+set hostname = "jbhannah.net"
+set realname = "Jesse Brooklyn Hannah"
+set from = "jesse@jbhannah.net"
+set use_from = yes
+set envelope_from = yes
+
+set folder = "imaps://imap.gmail.com:993"
+set smtp_url = "smtps://smtp.gmail.com:465"
+set smtp_user = "jesse@jbhannah.net"
+set smtp_authenticators = 'gssapi:login'
+set imap_user = "jesse@jbhannah.net"
+set spoolfile = "+INBOX"
+set trash = "+Trash"
+
+set ssl_force_tls = yes
+set ssl_starttls = yes
+set ssl_use_sslv2 = no
+set ssl_use_sslv3 = no
+set ssl_use_tlsv1 = no
+set ssl_use_tlsv1_1 = no
+set ssl_use_tlsv1_2 = yes
+set ssl_use_tlsv1_3 = yes
+set ssl_verify_dates = yes
+set ssl_verify_host = yes
+set ssl_usesystemcerts = yes
+
+set mailcap_path = ~/.config/neomutt/mailcap
+auto_view text/html
+alternative_order text/plain text/enriched text/html
+
+bind index G imap-fetch-mail
+set editor = "nvim"
+set charset = "utf-8"
+set record = ''
+
+set message_cachedir = ~/.cache/neomutt/
+set header_cache = ~/.cache/neomutt/
+set header_cache_backend = tokyocabinet
+
+set timeout=300
+# --------------------------------------------------------------------------
+# COMMANDS – shown with an example argument
+# --------------------------------------------------------------------------
+# After $timeout seconds of inactivity, run this NeoMutt command
+timeout-hook 'exec sync-mailbox'
+# When NeoMutt first loads, run this NeoMutt command
+startup-hook 'exec sync-mailbox'
+# When NeoMutt quits, run this NeoMutt command
+shutdown-hook 'exec sync-mailbox'

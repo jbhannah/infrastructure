@@ -1,0 +1,3 @@
+application/pdf; open -a /System/Applications/Preview.app -f
+image/*; open -a /System/Applications/Preview.app -f
+text/html; lynx -stdin
