@@ -12,6 +12,7 @@ package_become: "{{ 'true' if ansible_system == 'Linux' else 'false' }}"
 shell: fish
 starship_config_all:
   add_newline: false
+  command_timeout: 1000ms
   aws:
     disabled: true
   battery:
