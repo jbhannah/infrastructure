@@ -12,10 +12,10 @@ async def run_playbook(playbook: str, selector_list: List[str], *args,
         "ansible", "{playbook}.yml".format(playbook=playbook)).resolve()
     selectors = ",".join(selector_list)
 
-    logger.debug("Running playbook {playbook}{selectors}".format(
-        playbook=playbook,
-        selectors=" on host selectors {selectors}".format(
-            selectors=selectors) if selectors else ""))
+    logger.debug(
+        "Running playbook %s%s", playbook,
+        " on host selectors {selectors}".format(
+            selectors=selectors) if selectors else "")
 
     cmd = ["pipenv", "run", "ansible-playbook", str(playbook_path)]
     if selectors:

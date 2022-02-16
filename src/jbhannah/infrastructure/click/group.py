@@ -2,7 +2,7 @@ from asyncio import run
 from functools import wraps
 from typing import Coroutine, Optional, Type
 
-from jbhannah.infrastructure import Exception
+from jbhannah.infrastructure import InfException
 
 import click
 from click import ClickException, Context, pass_context
@@ -16,7 +16,7 @@ PROXY_COMMAND_CONTEXT_SETTINGS = {
 class ClickError(ClickException):
     """Handles cleanly exiting from internal exceptions, while retaining any
     nonzero return codes from called subprocesses."""
-    def __init__(self, err: Exception):
+    def __init__(self, err: InfException):
         super().__init__(err)
         ClickException.exit_code = err.returncode
 
@@ -92,5 +92,5 @@ async def _wrap_function(func, *args, **kwargs):
             return await result
 
         return result
-    except Exception as err:
-        raise ClickError(err)
+    except InfException as err:
+        raise ClickError from err

@@ -7,10 +7,10 @@ from jbhannah.infrastructure.click import proxy_command, verbose_option
 
 
 @proxy_command()
-@argument("playbook", required=True)
+@argument("name", required=True)
 @argument("selectors", nargs=-1)
 @verbose_option(logger)
-async def playbook(ctx: Context, playbook: str, selectors: List[str]):
+async def playbook(ctx: Context, name: str, selectors: List[str]):
     """Execute a playbook against one or more hosts, defaulting to the hosts
     specified in the playbook."""
-    await run_playbook(playbook, selectors, *ctx.args)
+    await run_playbook(name, selectors, *ctx.args)

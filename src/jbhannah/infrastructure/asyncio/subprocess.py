@@ -4,10 +4,10 @@ from os import environ
 from shlex import join
 from subprocess import CalledProcessError as _CalledProcessError
 
-from jbhannah.infrastructure import Exception, logger
+from jbhannah.infrastructure import InfException, logger
 
 
-class CalledProcessError(_CalledProcessError, Exception):
+class CalledProcessError(_CalledProcessError, InfException):
     pass
 
 

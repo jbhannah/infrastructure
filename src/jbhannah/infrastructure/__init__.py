@@ -8,7 +8,7 @@ handler = StreamHandler(stream=stderr)
 logger.addHandler(handler)
 
 
-class Exception(Exception):
+class InfException(Exception):
     """Specific exception for handling only internal errors."""
     def __init__(self, *args):
         super().__init__(*args)
