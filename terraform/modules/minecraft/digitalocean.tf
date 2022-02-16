@@ -13,3 +13,7 @@ module "droplet" {
   tags              = var.tags
   user_data         = var.user_data
 }
+
+output "droplet" {
+  value = module.droplet.droplet
+}
