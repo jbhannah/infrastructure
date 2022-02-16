@@ -6,6 +6,7 @@ from jbhannah.infrastructure.click import group, verbose_option
 from .bootstrap import bootstrap
 from .hello import hello
 from .playbook import playbook
+from .terraform import terraform
 
 
 @group()
@@ -19,3 +20,6 @@ def inf(ctx: Context):
 inf.add_command(hello)
 inf.add_command(bootstrap)
 inf.add_command(playbook)
+
+inf.add_command(terraform)
+inf.add_command(terraform, name="tf")
