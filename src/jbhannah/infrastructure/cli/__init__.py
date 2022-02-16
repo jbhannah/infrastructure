@@ -19,7 +19,9 @@ def inf(ctx: Context):
 
 inf.add_command(hello)
 inf.add_command(bootstrap)
+
 inf.add_command(playbook)
+inf.add_command(playbook, name="pb")
 
 inf.add_command(terraform)
 inf.add_command(terraform, name="tf")
