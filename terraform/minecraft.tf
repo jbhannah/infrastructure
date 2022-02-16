@@ -32,9 +32,9 @@ module "mc_hannahs_family" {
   ]
 }
 
-module "creative_mc_hannahs_family" {
+module "dkl_mc_hannahs_family" {
   source         = "./modules/minecraft"
-  hostname       = "creative.mc"
+  hostname       = "dkl.mc"
   minecraft_port = local.minecraft_port
   zone           = cloudflare_zone.hannahs_family
   vpc            = module.vpc_default_sfo3
