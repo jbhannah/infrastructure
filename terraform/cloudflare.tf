@@ -16,7 +16,7 @@ resource "cloudflare_record" "MX_hannahs_family" {
   }
 
   zone_id  = cloudflare_zone.hannahs_family.id
-  name     = "hannahs.family"
+  name     = cloudflare_zone.hannahs_family.zone
   type     = "MX"
   priority = each.value
   value    = each.key
@@ -24,7 +24,7 @@ resource "cloudflare_record" "MX_hannahs_family" {
 
 resource "cloudflare_record" "TXT_hannahs_family" {
   zone_id = cloudflare_zone.hannahs_family.id
-  name    = "hannahs.family"
+  name    = cloudflare_zone.hannahs_family.zone
   type    = "TXT"
   value   = "v=spf1 a include:_spf.google.com ~all"
 }
@@ -46,7 +46,7 @@ resource "cloudflare_zone_dnssec" "jbhannah_net" {
 
 resource "cloudflare_record" "CNAME_jbhannah_net" {
   zone_id = cloudflare_zone.jbhannah_net.id
-  name    = "jbhannah.net"
+  name    = cloudflare_zone.jbhannah_net.zone
   type    = "CNAME"
   value   = "cname.vercel-dns.com"
 }
@@ -76,7 +76,7 @@ resource "cloudflare_record" "MX_jbhannah_net" {
   }
 
   zone_id  = cloudflare_zone.jbhannah_net.id
-  name     = "jbhannah.net"
+  name     = cloudflare_zone.jbhannah_net.zone
   type     = "MX"
   priority = each.value
   value    = each.key
@@ -89,7 +89,7 @@ resource "cloudflare_record" "TXT_jbhannah_net" {
   ])
 
   zone_id = cloudflare_zone.jbhannah_net.id
-  name    = "jbhannah.net"
+  name    = cloudflare_zone.jbhannah_net.zone
   type    = "TXT"
   value   = each.value
 }
