@@ -44,6 +44,29 @@ resource "cloudflare_zone_dnssec" "jbhannah_net" {
   zone_id = cloudflare_zone.jbhannah_net.id
 }
 
+resource "cloudflare_page_rule" "FWD_www_jbhannah_net" {
+  zone_id  = cloudflare_zone.jbhannah_net.id
+  target   = "${cloudflare_record.CNAME_www_jbhannah_net.hostname}/*"
+  priority = 2
+
+  actions {
+    forwarding_url {
+      status_code = 301
+      url         = "https://jbhannah.net/$1"
+    }
+  }
+}
+
+resource "cloudflare_page_rule" "HTTPS_jbhannah_net" {
+  zone_id  = cloudflare_zone.jbhannah_net.id
+  target   = "http://${cloudflare_zone.jbhannah_net.zone}/*"
+  priority = 1
+
+  actions {
+    always_use_https = true
+  }
+}
+
 resource "cloudflare_record" "CNAME_jbhannah_net" {
   zone_id = cloudflare_zone.jbhannah_net.id
   name    = cloudflare_zone.jbhannah_net.zone
