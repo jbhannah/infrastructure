@@ -1,0 +1,78 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: oauth2-proxy-forward-auth
+  namespace: traefik
+spec:
+  forwardAuth:
+    address: http://oauth2-proxy/
+    trustForwardHeader: true
+    authResponseHeaders:
+      - X-Auth-Request-Access-Token
+      - Authorization
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: oauth2-proxy-auth-headers
+  namespace: traefik
+spec:
+  headers:
+    stsSeconds: 315360000
+    browserXssFilter: true
+    contentTypeNosniff: true
+    forceSTSHeader: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    frameDeny: true
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: oauth2-proxy
+  namespace: traefik
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`auth.hannahs.family`) || PathPrefix(`/oauth2`)
+      kind: Rule
+      priority: 100
+      services:
+        - name: oauth2-proxy
+          kind: Service
+          port: 80
+      middlewares:
+        - name: oauth2-proxy-auth-headers
+  tls:
+    secretName: auth.hannahs.family
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: &name auth.hannahs.family
+  namespace: traefik
+spec:
+  secretName: *name
+  dnsNames:
+    - *name
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+
+---
+apiVersion: externaldns.k8s.io/v1alpha1
+kind: DNSEndpoint
+metadata:
+  name: oauth2-proxy
+  namespace: traefik
+spec:
+  endpoints:
+    - dnsName: auth.hannahs.family
+      recordType: CNAME
+      targets:
+        - www.hannahs.family

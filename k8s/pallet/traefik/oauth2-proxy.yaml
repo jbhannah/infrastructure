@@ -1,0 +1,162 @@
+---
+# Source: oauth2-proxy/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app: oauth2-proxy
+    helm.sh/chart: oauth2-proxy-6.0.1
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: authentication-proxy
+    app.kubernetes.io/part-of: oauth2-proxy
+    app.kubernetes.io/name: oauth2-proxy
+    app.kubernetes.io/instance: oauth2-proxy
+    app.kubernetes.io/version: "7.2.0"
+  name: oauth2-proxy
+---
+# Source: oauth2-proxy/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: oauth2-proxy
+    helm.sh/chart: oauth2-proxy-6.0.1
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: authentication-proxy
+    app.kubernetes.io/part-of: oauth2-proxy
+    app.kubernetes.io/name: oauth2-proxy
+    app.kubernetes.io/instance: oauth2-proxy
+    app.kubernetes.io/version: "7.2.0"
+  name: oauth2-proxy
+data:
+  oauth2_proxy.cfg: "cookie_domains = [\n  \".hannahs.family\",\n  \".jbhannah.net\"\n]\nemail_domains = [\"*\"]\ngithub_org = \"hannahs-family\"\ngithub_team = \"\"\nprovider = \"github\"\nredirect_url = \"https://auth.hannahs.family/oauth2/callback\"\nreverse_proxy = true\nset_authorization_header = true\nset_xauthrequest = true\nupstreams = [\n  \"static://202\"\n]\nwhitelist_domains = [\n  \".hannahs.family\",\n  \".jbhannah.net\"\n]"
+---
+# Source: oauth2-proxy/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: oauth2-proxy
+    helm.sh/chart: oauth2-proxy-6.0.1
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: authentication-proxy
+    app.kubernetes.io/part-of: oauth2-proxy
+    app.kubernetes.io/name: oauth2-proxy
+    app.kubernetes.io/instance: oauth2-proxy
+    app.kubernetes.io/version: "7.2.0"
+  name: oauth2-proxy
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+    - port: 44180
+      protocol: TCP
+      targetPort: metrics
+      name: metrics
+  selector:
+    app.kubernetes.io/name: oauth2-proxy
+    app.kubernetes.io/instance: oauth2-proxy
+---
+# Source: oauth2-proxy/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: oauth2-proxy
+    helm.sh/chart: oauth2-proxy-6.0.1
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: authentication-proxy
+    app.kubernetes.io/part-of: oauth2-proxy
+    app.kubernetes.io/name: oauth2-proxy
+    app.kubernetes.io/instance: oauth2-proxy
+    app.kubernetes.io/version: "7.2.0"
+  name: oauth2-proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: oauth2-proxy
+      app.kubernetes.io/instance: oauth2-proxy
+  template:
+    metadata:
+      annotations:
+        checksum/config: 09aa3a3921a6b014382ae4e4dc3fdb7a6a4cb1966b1671fa9887dec74a00575b
+        checksum/config-emails: 01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b
+        checksum/secret: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+        checksum/google-secret: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+        checksum/redis-secret: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+        operator.1password.io/item-name: oauth2-proxy
+        operator.1password.io/item-path: vaults/wusn2jxjimwouyjyaqp654h7vq/items/mevlkheef2vvcgcrdxq2ynhrjq
+      labels:
+        app: oauth2-proxy
+        helm.sh/chart: oauth2-proxy-6.0.1
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/component: authentication-proxy
+        app.kubernetes.io/part-of: oauth2-proxy
+        app.kubernetes.io/name: oauth2-proxy
+        app.kubernetes.io/instance: oauth2-proxy
+        app.kubernetes.io/version: "7.2.0"
+    spec:
+      serviceAccountName: oauth2-proxy
+      containers:
+        - name: oauth2-proxy
+          image: "quay.io/oauth2-proxy/oauth2-proxy:v7.2.0"
+          imagePullPolicy: IfNotPresent
+          args:
+            - --http-address=0.0.0.0:4180
+            - --metrics-address=0.0.0.0:44180
+            - --config=/etc/oauth2_proxy/oauth2_proxy.cfg
+          env:
+            - name: OAUTH2_PROXY_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: oauth2-proxy
+                  key: client-id
+            - name: OAUTH2_PROXY_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: oauth2-proxy
+                  key: client-secret
+            - name: OAUTH2_PROXY_COOKIE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: oauth2-proxy
+                  key: cookie-secret
+          ports:
+            - containerPort: 4180
+              name: http
+              protocol: TCP
+            - containerPort: 44180
+              protocol: TCP
+              name: metrics
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 0
+            timeoutSeconds: 1
+          readinessProbe:
+            httpGet:
+              path: /ping
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 0
+            timeoutSeconds: 1
+            successThreshold: 1
+            periodSeconds: 10
+          resources: {}
+          volumeMounts:
+            - mountPath: /etc/oauth2_proxy
+              name: configmain
+          securityContext:
+            runAsNonRoot: true
+      volumes:
+        - configMap:
+            defaultMode: 420
+            name: oauth2-proxy
+          name: configmain
+      tolerations: []
