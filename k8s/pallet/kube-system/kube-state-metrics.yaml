@@ -4,13 +4,13 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   labels:
-    helm.sh/chart: kube-state-metrics-4.5.0
+    helm.sh/chart: kube-state-metrics-4.7.0
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: metrics
     app.kubernetes.io/part-of: kube-state-metrics
     app.kubernetes.io/name: kube-state-metrics
     app.kubernetes.io/instance: kube-state-metrics
-    app.kubernetes.io/version: "2.3.0"
+    app.kubernetes.io/version: "2.4.1"
   name: kube-state-metrics
   namespace: kube-system
 imagePullSecrets: []
@@ -20,13 +20,13 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   labels:
-    helm.sh/chart: kube-state-metrics-4.5.0
+    helm.sh/chart: kube-state-metrics-4.7.0
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: metrics
     app.kubernetes.io/part-of: kube-state-metrics
     app.kubernetes.io/name: kube-state-metrics
     app.kubernetes.io/instance: kube-state-metrics
-    app.kubernetes.io/version: "2.3.0"
+    app.kubernetes.io/version: "2.4.1"
   name: kube-state-metrics
 rules:
   - apiGroups: ["certificates.k8s.io"]
@@ -169,13 +169,13 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   labels:
-    helm.sh/chart: kube-state-metrics-4.5.0
+    helm.sh/chart: kube-state-metrics-4.7.0
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: metrics
     app.kubernetes.io/part-of: kube-state-metrics
     app.kubernetes.io/name: kube-state-metrics
     app.kubernetes.io/instance: kube-state-metrics
-    app.kubernetes.io/version: "2.3.0"
+    app.kubernetes.io/version: "2.4.1"
   name: kube-state-metrics
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -193,13 +193,13 @@ metadata:
   name: kube-state-metrics
   namespace: kube-system
   labels:
-    helm.sh/chart: kube-state-metrics-4.5.0
+    helm.sh/chart: kube-state-metrics-4.7.0
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: metrics
     app.kubernetes.io/part-of: kube-state-metrics
     app.kubernetes.io/name: kube-state-metrics
     app.kubernetes.io/instance: kube-state-metrics
-    app.kubernetes.io/version: "2.3.0"
+    app.kubernetes.io/version: "2.4.1"
   annotations:
     prometheus.io/scrape: "true"
 spec:
@@ -221,13 +221,13 @@ metadata:
   name: kube-state-metrics
   namespace: kube-system
   labels:
-    helm.sh/chart: kube-state-metrics-4.5.0
+    helm.sh/chart: kube-state-metrics-4.7.0
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: metrics
     app.kubernetes.io/part-of: kube-state-metrics
     app.kubernetes.io/name: kube-state-metrics
     app.kubernetes.io/instance: kube-state-metrics
-    app.kubernetes.io/version: "2.3.0"
+    app.kubernetes.io/version: "2.4.1"
 spec:
   selector:
     matchLabels:
@@ -237,13 +237,13 @@ spec:
   template:
     metadata:
       labels:
-        helm.sh/chart: kube-state-metrics-4.5.0
+        helm.sh/chart: kube-state-metrics-4.7.0
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/component: metrics
         app.kubernetes.io/part-of: kube-state-metrics
         app.kubernetes.io/name: kube-state-metrics
         app.kubernetes.io/instance: kube-state-metrics
-        app.kubernetes.io/version: "2.3.0"
+        app.kubernetes.io/version: "2.4.1"
     spec:
       hostNetwork: false
       serviceAccountName: kube-state-metrics
@@ -258,7 +258,7 @@ spec:
             - --resources=certificatesigningrequests,configmaps,cronjobs,daemonsets,deployments,endpoints,horizontalpodautoscalers,ingresses,jobs,limitranges,mutatingwebhookconfigurations,namespaces,networkpolicies,nodes,persistentvolumeclaims,persistentvolumes,poddisruptionbudgets,pods,replicasets,replicationcontrollers,resourcequotas,secrets,services,statefulsets,storageclasses,validatingwebhookconfigurations,volumeattachments
             - --telemetry-port=8081
           imagePullPolicy: IfNotPresent
-          image: "k8s.gcr.io/kube-state-metrics/kube-state-metrics:v2.3.0"
+          image: "k8s.gcr.io/kube-state-metrics/kube-state-metrics:v2.4.1"
           ports:
             - containerPort: 8080
               name: "http"

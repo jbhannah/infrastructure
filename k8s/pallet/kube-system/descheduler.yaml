@@ -44,9 +44,9 @@ metadata:
   name: descheduler
   labels:
     app.kubernetes.io/name: descheduler
-    helm.sh/chart: descheduler-0.23.1
+    helm.sh/chart: descheduler-0.23.2
     app.kubernetes.io/instance: descheduler
-    app.kubernetes.io/version: "0.23.0"
+    app.kubernetes.io/version: "0.23.1"
     app.kubernetes.io/managed-by: Helm
 ---
 # Source: descheduler/templates/configmap.yaml
@@ -56,9 +56,9 @@ metadata:
   name: descheduler
   labels:
     app.kubernetes.io/name: descheduler
-    helm.sh/chart: descheduler-0.23.1
+    helm.sh/chart: descheduler-0.23.2
     app.kubernetes.io/instance: descheduler
-    app.kubernetes.io/version: "0.23.0"
+    app.kubernetes.io/version: "0.23.1"
     app.kubernetes.io/managed-by: Helm
 data:
   policy.yaml: |
@@ -96,9 +96,9 @@ metadata:
   name: descheduler
   labels:
     app.kubernetes.io/name: descheduler
-    helm.sh/chart: descheduler-0.23.1
+    helm.sh/chart: descheduler-0.23.2
     app.kubernetes.io/instance: descheduler
-    app.kubernetes.io/version: "0.23.0"
+    app.kubernetes.io/version: "0.23.1"
     app.kubernetes.io/managed-by: Helm
 rules:
   - apiGroups: [""]
@@ -132,9 +132,9 @@ metadata:
   name: descheduler
   labels:
     app.kubernetes.io/name: descheduler
-    helm.sh/chart: descheduler-0.23.1
+    helm.sh/chart: descheduler-0.23.2
     app.kubernetes.io/instance: descheduler
-    app.kubernetes.io/version: "0.23.0"
+    app.kubernetes.io/version: "0.23.1"
     app.kubernetes.io/managed-by: Helm
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -152,9 +152,9 @@ metadata:
   name: descheduler
   labels:
     app.kubernetes.io/name: descheduler
-    helm.sh/chart: descheduler-0.23.1
+    helm.sh/chart: descheduler-0.23.2
     app.kubernetes.io/instance: descheduler
-    app.kubernetes.io/version: "0.23.0"
+    app.kubernetes.io/version: "0.23.1"
     app.kubernetes.io/managed-by: Helm
 spec:
   schedule: "*/2 * * * *"
@@ -165,7 +165,7 @@ spec:
         metadata:
           name: descheduler
           annotations:
-            checksum/config: d08807256506ecbb2e380eb0dd7407eeda9f0411e3596e85fc8b7430c7f7fb38
+            checksum/config: 008d0ade2b141a5a1d0ff325548490f0b4f3eb27a0ca551527e7f44f62a3416b
           labels:
             app.kubernetes.io/name: descheduler
             app.kubernetes.io/instance: descheduler
@@ -175,7 +175,7 @@ spec:
           restartPolicy: "Never"
           containers:
             - name: descheduler
-              image: "k8s.gcr.io/descheduler/descheduler:v0.23.0"
+              image: "k8s.gcr.io/descheduler/descheduler:v0.23.1"
               imagePullPolicy: IfNotPresent
               command:
                 - "/bin/descheduler"

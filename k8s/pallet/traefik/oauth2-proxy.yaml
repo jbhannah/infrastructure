@@ -5,7 +5,7 @@ kind: ServiceAccount
 metadata:
   labels:
     app: oauth2-proxy
-    helm.sh/chart: oauth2-proxy-6.0.1
+    helm.sh/chart: oauth2-proxy-6.2.0
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: authentication-proxy
     app.kubernetes.io/part-of: oauth2-proxy
@@ -20,7 +20,7 @@ kind: ConfigMap
 metadata:
   labels:
     app: oauth2-proxy
-    helm.sh/chart: oauth2-proxy-6.0.1
+    helm.sh/chart: oauth2-proxy-6.2.0
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: authentication-proxy
     app.kubernetes.io/part-of: oauth2-proxy
@@ -37,7 +37,7 @@ kind: Service
 metadata:
   labels:
     app: oauth2-proxy
-    helm.sh/chart: oauth2-proxy-6.0.1
+    helm.sh/chart: oauth2-proxy-6.2.0
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: authentication-proxy
     app.kubernetes.io/part-of: oauth2-proxy
@@ -66,7 +66,7 @@ kind: Deployment
 metadata:
   labels:
     app: oauth2-proxy
-    helm.sh/chart: oauth2-proxy-6.0.1
+    helm.sh/chart: oauth2-proxy-6.2.0
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: authentication-proxy
     app.kubernetes.io/part-of: oauth2-proxy
@@ -83,16 +83,16 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: 09aa3a3921a6b014382ae4e4dc3fdb7a6a4cb1966b1671fa9887dec74a00575b
+        checksum/config: a10e1684bf1e5d8f0b3a1fb72805cd4fefc325e9fbb95e771ec0a46d5c471a03
         checksum/config-emails: 01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b
         checksum/secret: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
         checksum/google-secret: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
-        checksum/redis-secret: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+        checksum/redis-secret: 01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b
         operator.1password.io/item-name: oauth2-proxy
         operator.1password.io/item-path: vaults/wusn2jxjimwouyjyaqp654h7vq/items/mevlkheef2vvcgcrdxq2ynhrjq
       labels:
         app: oauth2-proxy
-        helm.sh/chart: oauth2-proxy-6.0.1
+        helm.sh/chart: oauth2-proxy-6.2.0
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/component: authentication-proxy
         app.kubernetes.io/part-of: oauth2-proxy
@@ -150,8 +150,9 @@ spec:
             periodSeconds: 10
           resources: {}
           volumeMounts:
-            - mountPath: /etc/oauth2_proxy
+            - mountPath: /etc/oauth2_proxy/oauth2_proxy.cfg
               name: configmain
+              subPath: oauth2_proxy.cfg
           securityContext:
             runAsNonRoot: true
       volumes:

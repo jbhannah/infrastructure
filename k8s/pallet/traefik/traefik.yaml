@@ -9,7 +9,7 @@ metadata:
   name: traefik
   labels:
     app.kubernetes.io/name: traefik
-    helm.sh/chart: traefik-10.14.1
+    helm.sh/chart: traefik-10.15.0
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/instance: traefik
 spec:
@@ -22,8 +22,8 @@ spec:
   hostPID: false
   fsGroup:
     ranges:
-    - max: 65535
-      min: 1
+      - max: 65535
+        min: 1
     rule: MustRunAs
   readOnlyRootFilesystem: true
   runAsUser:
@@ -32,15 +32,15 @@ spec:
     rule: RunAsAny
   supplementalGroups:
     ranges:
-    - max: 65535
-      min: 1
+      - max: 65535
+        min: 1
     rule: MustRunAs
   volumes:
-  - configMap
-  - downwardAPI
-  - secret
-  - emptyDir
-  - projected
+    - configMap
+    - downwardAPI
+    - secret
+    - emptyDir
+    - projected
 ---
 # Source: traefik/templates/poddisruptionbudget.yaml
 apiVersion: policy/v1beta1
@@ -49,7 +49,7 @@ metadata:
   name: traefik
   labels:
     app.kubernetes.io/name: traefik
-    helm.sh/chart: traefik-10.14.1
+    helm.sh/chart: traefik-10.15.0
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/instance: traefik
 spec:
@@ -66,7 +66,7 @@ metadata:
   name: traefik
   labels:
     app.kubernetes.io/name: traefik
-    helm.sh/chart: traefik-10.14.1
+    helm.sh/chart: traefik-10.15.0
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/instance: traefik
   annotations:
@@ -78,7 +78,7 @@ metadata:
   name: traefik
   labels:
     app.kubernetes.io/name: traefik
-    helm.sh/chart: traefik-10.14.1
+    helm.sh/chart: traefik-10.15.0
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/instance: traefik
 rules:
@@ -141,7 +141,7 @@ metadata:
   name: traefik
   labels:
     app.kubernetes.io/name: traefik
-    helm.sh/chart: traefik-10.14.1
+    helm.sh/chart: traefik-10.15.0
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/instance: traefik
 roleRef:
@@ -160,7 +160,7 @@ metadata:
   name: traefik
   labels:
     app.kubernetes.io/name: traefik
-    helm.sh/chart: traefik-10.14.1
+    helm.sh/chart: traefik-10.15.0
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/instance: traefik
   annotations:
@@ -176,7 +176,7 @@ spec:
       maxSurge: 1
       maxUnavailable: 1
   minReadySeconds: 0
-  template: 
+  template:
     metadata:
       annotations:
         prometheus.io/scrape: "true"
@@ -184,7 +184,7 @@ spec:
         prometheus.io/port: "9100"
       labels:
         app.kubernetes.io/name: traefik
-        helm.sh/chart: traefik-10.14.1
+        helm.sh/chart: traefik-10.15.0
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/instance: traefik
     spec:
@@ -192,91 +192,91 @@ spec:
       terminationGracePeriodSeconds: 60
       hostNetwork: false
       containers:
-      - image: "traefik:2.6.0"
-        imagePullPolicy: IfNotPresent
-        name: traefik
-        resources:
-          limits:
-            cpu: 300m
-            memory: 150Mi
-          requests:
-            cpu: 100m
-            memory: 50Mi
-        readinessProbe:
-          httpGet:
-            path: /ping
-            port: 9000
-          failureThreshold: 1
-          initialDelaySeconds: 10
-          periodSeconds: 10
-          successThreshold: 1
-          timeoutSeconds: 2
-        livenessProbe:
-          httpGet:
-            path: /ping
-            port: 9000
-          failureThreshold: 3
-          initialDelaySeconds: 10
-          periodSeconds: 10
-          successThreshold: 1
-          timeoutSeconds: 2
-        ports:
-        - name: "metrics"
-          containerPort: 9100
-          protocol: "TCP"
-        - name: "traefik"
-          containerPort: 9000
-          protocol: "TCP"
-        - name: "web"
-          containerPort: 8000
-          protocol: "TCP"
-        - name: "websecure"
-          containerPort: 8443
-          protocol: "TCP"
-        securityContext:
-          capabilities:
-            drop:
-            - ALL
-          readOnlyRootFilesystem: true
-          runAsGroup: 65532
-          runAsNonRoot: true
-          runAsUser: 65532
-        volumeMounts:
-          - name: data
-            mountPath: /data
-          - name: tmp
-            mountPath: /tmp
-          - name: plugins
-            mountPath: "/plugins-storage"
-        args:
-          - "--global.checknewversion"
-          - "--global.sendanonymoususage"
-          - "--entrypoints.metrics.address=:9100/tcp"
-          - "--entrypoints.traefik.address=:9000/tcp"
-          - "--entrypoints.web.address=:8000/tcp"
-          - "--entrypoints.websecure.address=:8443/tcp"
-          - "--api.dashboard=true"
-          - "--ping=true"
-          - "--metrics.prometheus=true"
-          - "--metrics.prometheus.entrypoint=metrics"
-          - "--providers.kubernetescrd"
-          - "--providers.kubernetesingress"
-          - "--entrypoints.web.http.redirections.entryPoint.to=:443"
-          - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
-          - "--entrypoints.websecure.http.tls=true"
-          - "--log.level=INFO"
-          - "--pilot.token=f9339a9d-27bb-4dbe-a26d-10396526d4c8"
-          - "--pilot.dashboard=true"
-          - "--api"
-          - "--providers.kubernetesingress.ingressendpoint.hostname=www.hannahs.family"
-          - "--entrypoints.web.proxyprotocol"
-          - "--entrypoints.web.proxyprotocol.trustedips=10.0.0.0/8"
-          - "--entrypoints.web.forwardedheaders"
-          - "--entrypoints.web.forwardedheaders.trustedips=10.0.0.0/8"
-          - "--entrypoints.websecure.proxyprotocol"
-          - "--entrypoints.websecure.proxyprotocol.trustedips=10.0.0.0/8"
-          - "--entrypoints.websecure.forwardedheaders"
-          - "--entrypoints.websecure.forwardedheaders.trustedips=10.0.0.0/8"
+        - image: "traefik:2.6.1"
+          imagePullPolicy: IfNotPresent
+          name: traefik
+          resources:
+            limits:
+              cpu: 300m
+              memory: 150Mi
+            requests:
+              cpu: 100m
+              memory: 50Mi
+          readinessProbe:
+            httpGet:
+              path: /ping
+              port: 9000
+            failureThreshold: 1
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 2
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: 9000
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 2
+          ports:
+            - name: "metrics"
+              containerPort: 9100
+              protocol: "TCP"
+            - name: "traefik"
+              containerPort: 9000
+              protocol: "TCP"
+            - name: "web"
+              containerPort: 8000
+              protocol: "TCP"
+            - name: "websecure"
+              containerPort: 8443
+              protocol: "TCP"
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+            runAsGroup: 65532
+            runAsNonRoot: true
+            runAsUser: 65532
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: tmp
+              mountPath: /tmp
+            - name: plugins
+              mountPath: "/plugins-storage"
+          args:
+            - "--global.checknewversion"
+            - "--global.sendanonymoususage"
+            - "--entrypoints.metrics.address=:9100/tcp"
+            - "--entrypoints.traefik.address=:9000/tcp"
+            - "--entrypoints.web.address=:8000/tcp"
+            - "--entrypoints.websecure.address=:8443/tcp"
+            - "--api.dashboard=true"
+            - "--ping=true"
+            - "--metrics.prometheus=true"
+            - "--metrics.prometheus.entrypoint=metrics"
+            - "--providers.kubernetescrd"
+            - "--providers.kubernetesingress"
+            - "--entrypoints.web.http.redirections.entryPoint.to=:443"
+            - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+            - "--entrypoints.websecure.http.tls=true"
+            - "--log.level=INFO"
+            - "--pilot.token=f9339a9d-27bb-4dbe-a26d-10396526d4c8"
+            - "--pilot.dashboard=true"
+            - "--api"
+            - "--providers.kubernetesingress.ingressendpoint.hostname=www.hannahs.family"
+            - "--entrypoints.web.proxyprotocol"
+            - "--entrypoints.web.proxyprotocol.trustedips=10.0.0.0/8"
+            - "--entrypoints.web.forwardedheaders"
+            - "--entrypoints.web.forwardedheaders.trustedips=10.0.0.0/8"
+            - "--entrypoints.websecure.proxyprotocol"
+            - "--entrypoints.websecure.proxyprotocol.trustedips=10.0.0.0/8"
+            - "--entrypoints.websecure.forwardedheaders"
+            - "--entrypoints.websecure.forwardedheaders.trustedips=10.0.0.0/8"
       volumes:
         - name: data
           emptyDir: {}
@@ -287,13 +287,13 @@ spec:
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-              - key: app.kubernetes.io/name
-                operator: In
-                values:
-                - traefik
-            topologyKey: kubernetes.io/hostname
+            - labelSelector:
+                matchExpressions:
+                  - key: app.kubernetes.io/name
+                    operator: In
+                    values:
+                      - traefik
+              topologyKey: kubernetes.io/hostname
       securityContext:
         fsGroup: 65532
 ---
@@ -305,7 +305,7 @@ metadata:
     ingressclass.kubernetes.io/is-default-class: "true"
   labels:
     app.kubernetes.io/name: traefik
-    helm.sh/chart: traefik-10.14.1
+    helm.sh/chart: traefik-10.15.0
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/instance: traefik
   name: traefik
@@ -324,7 +324,7 @@ items:
       name: traefik
       labels:
         app.kubernetes.io/name: traefik
-        helm.sh/chart: traefik-10.14.1
+        helm.sh/chart: traefik-10.15.0
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/instance: traefik
       annotations:
@@ -335,12 +335,11 @@ items:
         app.kubernetes.io/name: traefik
         app.kubernetes.io/instance: traefik
       ports:
-      - port: 80
-        name: web
-        targetPort: "web"
-        protocol: TCP
-      - port: 443
-        name: websecure
-        targetPort: "websecure"
-        protocol: TCP
-
+        - port: 80
+          name: web
+          targetPort: "web"
+          protocol: TCP
+        - port: 443
+          name: websecure
+          targetPort: "websecure"
+          protocol: TCP
