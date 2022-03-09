@@ -16,9 +16,6 @@ spec:
           secretKeyRef:
             name: cloudflare-api
             key: credential
-    fqdnTemplate: "{{name}}.hannahs.family"
-    serviceMonitor:
-      enabled: true
     podAnnotations:
       operator.1password.io/item-path: vaults/wusn2jxjimwouyjyaqp654h7vq/items/lka26khjsd4f3kwukwcut7rq7a
       operator.1password.io/item-name: cloudflare-api
@@ -31,7 +28,7 @@ spec:
       - service
       - ingress
       - crd
-    txtOwnerId: legendaries.hannahs.family
+    txtOwnerId: kanto.external-dns
 
 ---
 apiVersion: rbac.authorization.k8s.io/v1

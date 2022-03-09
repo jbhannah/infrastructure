@@ -19,7 +19,6 @@ spec:
         email_domains = ["*"]
         github_org = "hannahs-family"
         github_team = ""
-        metrics_address = "0.0.0.0:4190"
         provider = "github"
         redirect_url = "https://auth.hannahs.family/oauth2/callback"
         reverse_proxy = true
