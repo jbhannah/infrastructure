@@ -1,4 +1,0 @@
----
-k3s_config_agent_ssdnodes_us_central:
-  node-label:
-    - topology.kubernetes.io/region=us-central

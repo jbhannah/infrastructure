@@ -1,9 +1,0 @@
----
-- name: Install exa
-  ansible.builtin.package:
-    name: exa
-    state: present
-  become: "{{ package_become }}"
-
-- name: Install {{ shell }} shell configuration
-  include_tasks: "{{ shell }}.yml"

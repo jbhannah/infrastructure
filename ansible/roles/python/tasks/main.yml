@@ -1,8 +1,0 @@
----
-- name: Install Python 3 and Pipenv
-  ansible.builtin.package:
-    name:
-      - python3
-      - pipenv
-    state: present
-  become: "{{ package_become }}"

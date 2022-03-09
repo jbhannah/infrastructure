@@ -1,9 +1,0 @@
----
-- name: Install Postgres.app
-  community.general.homebrew_cask:
-    name: postgres-unofficial
-    state: present
-  when: ansible_system == "Darwin"
-
-- name: Install {{ shell }} shell configuration
-  include_tasks: "{{ shell }}.yml"

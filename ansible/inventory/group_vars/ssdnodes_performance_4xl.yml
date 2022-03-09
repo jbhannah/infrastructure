@@ -1,4 +1,0 @@
----
-k3s_config_agent_ssdnodes_performance_4xl:
-  node-label:
-    - node.hannahs.family/instance-type=performance.4xl

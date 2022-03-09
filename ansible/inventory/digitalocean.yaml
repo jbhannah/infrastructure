@@ -1,0 +1,25 @@
+---
+plugin: community.digitalocean.digitalocean
+api_token: |-
+  {{ lookup("ini", "digitalocean_token file=terraform/terraform.tfvars type=properties") | trim('"') }}
+attributes:
+  - id
+  - name
+  - networks
+  - region
+  - size_slug
+  - tags
+compose:
+  ansible_host: do_networks.v4 | selectattr("type", "eq", "public") | map(attribute="ip_address") | first
+keyed_groups:
+  - key: do_region.slug
+    parent_group: digitalocean
+    prefix: region
+  - key: do_size_slug | replace("-", "_")
+    parent_group: digitalocean
+    prefix: size
+  - key: do_tags | reject("in", ":") | replace("-", "_")
+    parent_group: digitalocean
+    prefix: tag
+filters:
+  - '"k8s" not in do_tags'

@@ -1,1 +1,0 @@
-set -gx TZ {{ timezone }}

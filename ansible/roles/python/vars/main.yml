@@ -1,6 +1,0 @@
----
-fd_ignores_python:
-  - .local/share/virtualenvs
-  - .pyenv
-  - .venv
-  - venv

@@ -1,3 +1,0 @@
----
-- name: Generate helptags
-  ansible.builtin.command: nvim -c UpdateRemotePlugins -c "helptags ALL" -c q

@@ -1,4 +1,0 @@
----
-service_user_group: ansible
-service_user_name: ansible
-service_user_sudoers: true

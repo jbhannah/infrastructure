@@ -1,8 +1,0 @@
----
-- name: Restart k3s
-  ansible.builtin.systemd:
-    name: k3s{{ '-agent' if k3s_command == 'agent' else '' }}
-    enabled: true
-    daemon_reload: true
-    state: restarted
-  become: true

@@ -1,5 +1,0 @@
----
-k3s_config_agent_ssdnodes_performance:
-  node-label:
-    - node.kubernetes.io/disk-type=nvme
-    - node.hannahs.family/instance-class=performance

@@ -1,8 +1,0 @@
----
-- name: Install asdf
-  community.general.homebrew:
-    name: asdf
-    state: present
-
-- name: Install {{ shell }} shell configuration
-  include_tasks: "{{ shell }}.yml"

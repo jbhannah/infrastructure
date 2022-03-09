@@ -1,4 +1,0 @@
-{{ query('vars', *query('varnames', '^k3s_config_agent.*')) | combine | to_nice_yaml }}
-{% if k3s_command == 'server' %}
-{{ query('vars', *query('varnames', '^k3s_config_server.*')) | combine | to_nice_yaml }}
-{% endif %}
