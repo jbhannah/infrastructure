@@ -11,8 +11,8 @@ resource "digitalocean_vpc" "kanto" {
   region = "sfo3"
 }
 
-data "digitalocean_kubernetes_versions" "v1_21" {
-  version_prefix = "1.21"
+data "digitalocean_kubernetes_versions" "v1_22" {
+  version_prefix = "1.22"
 }
 
 resource "digitalocean_kubernetes_cluster" "kanto" {
@@ -21,7 +21,7 @@ resource "digitalocean_kubernetes_cluster" "kanto" {
   vpc_uuid = digitalocean_vpc.kanto.id
 
   auto_upgrade = true
-  version      = data.digitalocean_kubernetes_versions.v1_21.latest_version
+  version      = data.digitalocean_kubernetes_versions.v1_22.latest_version
 
   tags = [digitalocean_tag.kanto.name]
 
