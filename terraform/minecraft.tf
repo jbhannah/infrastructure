@@ -1,5 +1,17 @@
 locals {
   minecraft_port = 25565
+
+  packages = [
+    "certbot",
+    "nginx",
+    "python3-certbot-nginx"
+  ]
+
+  runcmd = [
+    "ufw allow http",
+    "ufw allow https",
+    "certbot -n --nginx -d mc.hannahs.family --agree-tos --email admin@hannahs.family --redirect",
+  ]
 }
 
 resource "digitalocean_project" "minecraft" {
@@ -34,7 +46,9 @@ module "mc_hannahs_family" {
   minecraft_port = local.minecraft_port
   zone           = cloudflare_zone.hannahs_family
   vpc            = module.vpc_default_sfo3
-  ssh_keys       = [digitalocean_ssh_key.infrastructure.fingerprint]
+  ssh_keys       = [digitalocean_ssh_key.infrastructure]
+  packages       = local.packages
+  runcmd         = local.runcmd
 
   tags = [
     digitalocean_tag.minecraft,
@@ -50,7 +64,10 @@ module "dkl_mc_hannahs_family" {
   minecraft_port = local.minecraft_port
   zone           = cloudflare_zone.hannahs_family
   vpc            = module.vpc_default_sfo3
-  ssh_keys       = [digitalocean_ssh_key.infrastructure.fingerprint]
+  ssh_keys       = [digitalocean_ssh_key.infrastructure]
+  packages       = local.packages
+  runcmd         = local.runcmd
+
   tags = [
     digitalocean_tag.minecraft,
     digitalocean_tag.nginx,

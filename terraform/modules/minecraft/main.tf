@@ -1,4 +1,6 @@
 terraform {
+  experiments = [module_variable_optional_attrs]
+
   required_providers {
     cloudflare = {
       source  = "cloudflare/cloudflare"
@@ -79,7 +81,9 @@ variable "size" {
 }
 
 variable "ssh_keys" {
-  type    = list(string)
+  type = list(object({
+    public_key = string
+  }))
   default = []
 }
 
@@ -90,27 +94,71 @@ variable "tags" {
   default = []
 }
 
-variable "user_data" {
-  type    = string
-  default = <<-YAML
-    #cloud-config
+# variable "user_data" {
+#   type = object({
+#     package_upgrade            = optional(bool)
+#     package_reboot_if_required = optional(bool)
+#     packages                   = optional(list(string))
+#     runcmd                     = optional(list(string))
 
-    package_upgrade: true
-    package_reboot_if_required: true
+#     users = optional(list(object({
+#       name                = optional(string)
+#       homedir             = optional(string)
+#       ssh_authorized_keys = optional(list(string))
+#       sudo                = optional(list(string))
+#       groups              = optional(list(string))
+#       shell               = optional(string)
+#       system              = optional(bool)
+#     })))
 
-    packages:
-      - openjdk-17-jre-headless
-      - tmux
+#     write_files = optional(list(object({
+#       path    = string
+#       content = string
+#     })))
+#   })
 
-    runcmd:
-      - ufw limit ssh
-      - ufw allow 25565
-      - ufw enable
+#   default = {}
+# }
 
-    users:
-      - name: minecraft
-        homedir: /opt/minecraft
-        shell: /bin/bash
-        system: true
-  YAML
+variable "package_upgrade" {
+  type    = bool
+  default = true
+}
+
+variable "package_reboot_if_required" {
+  type    = bool
+  default = true
+}
+
+variable "packages" {
+  type    = list(string)
+  default = []
+}
+
+variable "runcmd" {
+  type    = list(string)
+  default = []
+}
+
+variable "users" {
+  type = list(object({
+    name                = string
+    homedir             = optional(string)
+    ssh_authorized_keys = optional(list(string))
+    sudo                = optional(list(string))
+    groups              = optional(list(string))
+    shell               = optional(string)
+    system              = optional(bool)
+  }))
+
+  default = []
+}
+
+variable "write_files" {
+  type = list(object({
+    path    = string
+    content = string
+  }))
+
+  default = []
 }
