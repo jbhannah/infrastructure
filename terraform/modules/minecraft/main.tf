@@ -37,6 +37,11 @@ variable "minecraft_port" {
   default = 25565
 }
 
+variable "rcon_port" {
+  type    = number
+  default = 25575
+}
+
 variable "vpc" {
   type = object({
     region = string
@@ -93,32 +98,6 @@ variable "tags" {
   }))
   default = []
 }
-
-# variable "user_data" {
-#   type = object({
-#     package_upgrade            = optional(bool)
-#     package_reboot_if_required = optional(bool)
-#     packages                   = optional(list(string))
-#     runcmd                     = optional(list(string))
-
-#     users = optional(list(object({
-#       name                = optional(string)
-#       homedir             = optional(string)
-#       ssh_authorized_keys = optional(list(string))
-#       sudo                = optional(list(string))
-#       groups              = optional(list(string))
-#       shell               = optional(string)
-#       system              = optional(bool)
-#     })))
-
-#     write_files = optional(list(object({
-#       path    = string
-#       content = string
-#     })))
-#   })
-
-#   default = {}
-# }
 
 variable "package_upgrade" {
   type    = bool

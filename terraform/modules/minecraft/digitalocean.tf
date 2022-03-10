@@ -5,8 +5,8 @@ locals {
   ]
 
   runcmd = [
-    "ufw allow 25565",
-    "ufw allow 25566",
+    "ufw allow ${var.minecraft_port}",
+    "ufw allow ${var.rcon_port}",
   ]
 
   users = [
