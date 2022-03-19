@@ -50,6 +50,7 @@ resource "digitalocean_firewall" "minecraft" {
 module "mc_hannahs_family" {
   source         = "./modules/minecraft"
   hostname       = "mc"
+  size           = "s-2vcpu-4gb-intel"
   minecraft_port = local.minecraft_port
   rcon_port      = local.rcon_port
   zone           = cloudflare_zone.hannahs_family
