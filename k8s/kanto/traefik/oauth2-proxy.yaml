@@ -1,4 +1,45 @@
 ---
+apiVersion: helm.infra.hannahs.family/v1
+kind: HelmChart
+metadata:
+  name: oauth2-proxy
+  namespace: traefik
+spec:
+  chart:
+    repo: https://oauth2-proxy.github.io/manifests
+    name: oauth2-proxy
+    version: 6.2.0
+  values:
+    config:
+      configFile: |-
+        cookie_domains = [
+          ".hannahs.family",
+          ".jbhannah.net"
+        ]
+        email_domains = ["*"]
+        github_org = "hannahs-family"
+        github_team = ""
+        provider = "github"
+        redirect_url = "https://auth.hannahs.family/oauth2/callback"
+        reverse_proxy = true
+        set_authorization_header = true
+        set_xauthrequest = true
+        upstreams = [
+          "static://202"
+        ]
+        whitelist_domains = [
+          ".hannahs.family",
+          ".jbhannah.net"
+        ]
+      existingSecret: oauth2-proxy
+    ingress:
+      enabled: false
+    podAnnotations:
+      operator.1password.io/item-name: oauth2-proxy
+      operator.1password.io/item-path: vaults/wusn2jxjimwouyjyaqp654h7vq/items/mevlkheef2vvcgcrdxq2ynhrjq
+    securityContext:
+      enabled: true
+---
 # Source: oauth2-proxy/templates/serviceaccount.yaml
 apiVersion: v1
 kind: ServiceAccount

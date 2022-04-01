@@ -1,4 +1,15 @@
 ---
+apiVersion: helm.infra.hannahs.family/v1
+kind: HelmChart
+metadata:
+  name: metrics-server
+  namespace: kube-system
+spec:
+  chart:
+    repo: https://kubernetes-sigs.github.io/metrics-server/
+    name: metrics-server
+    version: 3.8.2
+---
 # Source: metrics-server/templates/serviceaccount.yaml
 apiVersion: v1
 kind: ServiceAccount

@@ -1,4 +1,35 @@
 ---
+apiVersion: helm.infra.hannahs.family/v1
+kind: HelmChart
+metadata:
+  name: external-dns
+  namespace: external-dns
+spec:
+  chart:
+    repo: https://kubernetes-sigs.github.io/external-dns/
+    chart: external-dns
+    version: 1.7.1
+  values:
+    env:
+      - name: CF_API_TOKEN
+        valueFrom:
+          secretKeyRef:
+            key: credential
+            name: cloudflare-api
+    podAnnotations:
+      operator.1password.io/item-name: cloudflare-api
+      operator.1password.io/item-path: vaults/wusn2jxjimwouyjyaqp654h7vq/items/lka26khjsd4f3kwukwcut7rq7a
+    provider: cloudflare
+    resources:
+      requests:
+        cpu: 10m
+        memory: 32Mi
+    sources:
+      - service
+      - ingress
+      - crd
+    txtOwnerId: kanto.external-dns
+---
 # Source: external-dns/templates/serviceaccount.yaml
 apiVersion: v1
 kind: ServiceAccount
@@ -25,19 +56,19 @@ metadata:
 rules:
   - apiGroups: [""]
     resources: ["nodes"]
-    verbs: ["list","watch"]
+    verbs: ["list", "watch"]
   - apiGroups: [""]
     resources: ["pods"]
-    verbs: ["get","watch","list"]
+    verbs: ["get", "watch", "list"]
   - apiGroups: [""]
-    resources: ["services","endpoints"]
-    verbs: ["get","watch","list"]
-  - apiGroups: ["extensions","networking.k8s.io"]
+    resources: ["services", "endpoints"]
+    verbs: ["get", "watch", "list"]
+  - apiGroups: ["extensions", "networking.k8s.io"]
     resources: ["ingresses"]
-    verbs: ["get","watch","list"]
+    verbs: ["get", "watch", "list"]
   - apiGroups: ["externaldns.k8s.io"]
     resources: ["dnsendpoints"]
-    verbs: ["get","watch","list"]
+    verbs: ["get", "watch", "list"]
   - apiGroups: ["externaldns.k8s.io"]
     resources: ["dnsendpoints/status"]
     verbs: ["*"]
@@ -118,7 +149,7 @@ spec:
           securityContext:
             capabilities:
               drop:
-              - ALL
+                - ALL
             readOnlyRootFilesystem: true
             runAsNonRoot: true
             runAsUser: 65534
@@ -167,4 +198,3 @@ spec:
             requests:
               cpu: 10m
               memory: 32Mi
-

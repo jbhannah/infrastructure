@@ -1,4 +1,15 @@
 ---
+apiVersion: helm.infra.hannahs.family/v1
+kind: HelmChart
+metadata:
+  name: kube-state-metrics
+  namespace: kube-system
+spec:
+  chart:
+    repo: https://prometheus-community.github.io/helm-charts
+    name: kube-state-metrics
+    version: 4.7.0
+---
 # Source: kube-state-metrics/templates/serviceaccount.yaml
 apiVersion: v1
 kind: ServiceAccount

@@ -1,4 +1,33 @@
 ---
+apiVersion: helm.infra.hannahs.family/v1
+kind: HelmChart
+metadata:
+  name: descheduler
+  namespace: kube-system
+spec:
+  chart:
+    repo: https://kubernetes-sigs.github.io/descheduler
+    name: descheduler
+    version: 0.23.2
+  values:
+    deschedulerPolicy:
+      strategies:
+        LowNodeUtilization:
+          params:
+            nodeResourceUtilizationThresholds:
+              targetThresholds:
+                cpu: 80
+                memory: 80
+                pods: 15
+              thresholds:
+                cpu: 60
+                memory: 60
+                pods: 5
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+---
 # Source: descheduler/templates/podsecuritypolicy.yaml
 apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
