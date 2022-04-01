@@ -7,6 +7,7 @@ metadata:
   annotations:
     seccomp.security.alpha.kubernetes.io/allowedProfileNames: "docker/default,runtime/default"
     seccomp.security.alpha.kubernetes.io/defaultProfileName: "runtime/default"
+  namespace: kube-system
 spec:
   privileged: false
   allowPrivilegeEscalation: false
@@ -48,6 +49,7 @@ metadata:
     app.kubernetes.io/instance: descheduler
     app.kubernetes.io/version: "0.23.1"
     app.kubernetes.io/managed-by: Helm
+  namespace: kube-system
 ---
 # Source: descheduler/templates/configmap.yaml
 apiVersion: v1
@@ -60,6 +62,7 @@ metadata:
     app.kubernetes.io/instance: descheduler
     app.kubernetes.io/version: "0.23.1"
     app.kubernetes.io/managed-by: Helm
+  namespace: kube-system
 data:
   policy.yaml: |
     apiVersion: "descheduler/v1alpha1"
@@ -70,13 +73,13 @@ data:
         params:
           nodeResourceUtilizationThresholds:
             targetThresholds:
-              cpu: 50
-              memory: 50
-              pods: 50
+              cpu: 80
+              memory: 80
+              pods: 15
             thresholds:
-              cpu: 20
-              memory: 20
-              pods: 20
+              cpu: 60
+              memory: 60
+              pods: 5
       RemoveDuplicates:
         enabled: true
       RemovePodsViolatingInterPodAntiAffinity:
@@ -156,6 +159,7 @@ metadata:
     app.kubernetes.io/instance: descheduler
     app.kubernetes.io/version: "0.23.1"
     app.kubernetes.io/managed-by: Helm
+  namespace: kube-system
 spec:
   schedule: "*/2 * * * *"
   concurrencyPolicy: "Forbid"
@@ -165,7 +169,7 @@ spec:
         metadata:
           name: descheduler
           annotations:
-            checksum/config: 008d0ade2b141a5a1d0ff325548490f0b4f3eb27a0ca551527e7f44f62a3416b
+            checksum/config: 4cc9846caecab196b219aec9c767085d4a91d7bcdc2c51f109c835ecd9e1e1d5
           labels:
             app.kubernetes.io/name: descheduler
             app.kubernetes.io/instance: descheduler
