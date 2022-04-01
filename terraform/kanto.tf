@@ -28,7 +28,7 @@ resource "digitalocean_kubernetes_cluster" "kanto" {
   node_pool {
     name       = "pallet"
     size       = "s-1vcpu-2gb"
-    node_count = 2
+    node_count = 3
 
     tags = [
       digitalocean_tag.kanto.name,
