@@ -5,6 +5,7 @@ from jbhannah.infrastructure.click import group, verbose_option
 
 from .bootstrap import bootstrap
 from .hello import hello
+from .helm import helm
 from .playbook import playbook
 from .terraform import terraform
 
@@ -25,3 +26,5 @@ inf.add_command(playbook, name="pb")
 
 inf.add_command(terraform)
 inf.add_command(terraform, name="tf")
+
+inf.add_command(helm)

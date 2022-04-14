@@ -11,7 +11,7 @@ class CalledProcessError(_CalledProcessError, InfException):
     pass
 
 
-async def run(*args, watch=False, **kwargs):
+async def run(*args, watch=False, callback=None, **kwargs):
     """Run a subprocess with asyncio.create_subprocess_exec."""
     _env = environ
 
@@ -21,20 +21,24 @@ async def run(*args, watch=False, **kwargs):
     if "env" in kwargs:
         _env.update(kwargs["env"])
 
-    logger.debug("Running command {cmd}".format(cmd=join(args)))
+    logger.debug("Running command %s", join(args))
 
     kwargs["env"] = _env
     proc = await (create_subprocess_shell(join(args), **kwargs)
                   if "shell" in kwargs and kwargs["shell"] else
                   create_subprocess_exec(*args, **kwargs))
 
-    return proc, _error_handler(proc, args)
+    return proc, _error_handler(proc, args, callback=callback)
 
 
-def _error_handler(proc: Process, cmd):
+def _error_handler(proc: Process, cmd, callback=None):
     async def error_handler():
-        returncode = await proc.wait()
-        if returncode != 0:
-            raise CalledProcessError(returncode=returncode, cmd=cmd)
+        if callback is not None:
+            await callback(proc)
+        else:
+            returncode = await proc.wait()
+
+            if returncode != 0:
+                raise CalledProcessError(returncode=returncode, cmd=cmd)
 
     return error_handler()

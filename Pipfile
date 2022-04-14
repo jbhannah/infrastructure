@@ -9,6 +9,8 @@ ansible = "~= 4.0"
 paramiko = "*"
 passlib = "*"
 lxml = "*"
+pyyaml = "*"
+aiofiles = "*"
 
 [dev-packages]
 autoflake = "*"
