@@ -7,8 +7,8 @@ metadata:
 spec:
   chart:
     repo: https://kubernetes-sigs.github.io/external-dns/
-    chart: external-dns
-    version: 1.7.1
+    name: external-dns
+    version: 1.8.0
   values:
     env:
       - name: CF_API_TOKEN
@@ -35,8 +35,9 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: external-dns
+  namespace: external-dns
   labels:
-    helm.sh/chart: external-dns-1.7.1
+    helm.sh/chart: external-dns-1.8.0
     app.kubernetes.io/name: external-dns
     app.kubernetes.io/instance: external-dns
     app.kubernetes.io/version: "0.10.2"
@@ -48,7 +49,7 @@ kind: ClusterRole
 metadata:
   name: external-dns
   labels:
-    helm.sh/chart: external-dns-1.7.1
+    helm.sh/chart: external-dns-1.8.0
     app.kubernetes.io/name: external-dns
     app.kubernetes.io/instance: external-dns
     app.kubernetes.io/version: "0.10.2"
@@ -79,7 +80,7 @@ kind: ClusterRoleBinding
 metadata:
   name: external-dns-viewer
   labels:
-    helm.sh/chart: external-dns-1.7.1
+    helm.sh/chart: external-dns-1.8.0
     app.kubernetes.io/name: external-dns
     app.kubernetes.io/instance: external-dns
     app.kubernetes.io/version: "0.10.2"
@@ -98,8 +99,9 @@ apiVersion: v1
 kind: Service
 metadata:
   name: external-dns
+  namespace: external-dns
   labels:
-    helm.sh/chart: external-dns-1.7.1
+    helm.sh/chart: external-dns-1.8.0
     app.kubernetes.io/name: external-dns
     app.kubernetes.io/instance: external-dns
     app.kubernetes.io/version: "0.10.2"
@@ -120,8 +122,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: external-dns
+  namespace: external-dns
   labels:
-    helm.sh/chart: external-dns-1.7.1
+    helm.sh/chart: external-dns-1.8.0
     app.kubernetes.io/name: external-dns
     app.kubernetes.io/instance: external-dns
     app.kubernetes.io/version: "0.10.2"

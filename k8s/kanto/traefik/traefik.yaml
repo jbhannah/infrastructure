@@ -8,7 +8,7 @@ spec:
   chart:
     repo: https://helm.traefik.io/traefik
     name: traefik
-    version: 10.15.0
+    version: 10.19.4
   values:
     additionalArguments:
       - --api
@@ -86,9 +86,10 @@ metadata:
   name: traefik
   labels:
     app.kubernetes.io/name: traefik
-    helm.sh/chart: traefik-10.15.0
+    helm.sh/chart: traefik-10.19.4
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/instance: traefik
+  namespace: traefik
 spec:
   privileged: false
   allowPrivilegeEscalation: false
@@ -126,9 +127,10 @@ metadata:
   name: traefik
   labels:
     app.kubernetes.io/name: traefik
-    helm.sh/chart: traefik-10.15.0
+    helm.sh/chart: traefik-10.19.4
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/instance: traefik
+  namespace: traefik
 spec:
   selector:
     matchLabels:
@@ -143,10 +145,10 @@ metadata:
   name: traefik
   labels:
     app.kubernetes.io/name: traefik
-    helm.sh/chart: traefik-10.15.0
+    helm.sh/chart: traefik-10.19.4
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/instance: traefik
-  annotations:
+  namespace: traefik
 ---
 # Source: traefik/templates/rbac/clusterrole.yaml
 kind: ClusterRole
@@ -155,7 +157,7 @@ metadata:
   name: traefik
   labels:
     app.kubernetes.io/name: traefik
-    helm.sh/chart: traefik-10.15.0
+    helm.sh/chart: traefik-10.19.4
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/instance: traefik
 rules:
@@ -218,7 +220,7 @@ metadata:
   name: traefik
   labels:
     app.kubernetes.io/name: traefik
-    helm.sh/chart: traefik-10.15.0
+    helm.sh/chart: traefik-10.19.4
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/instance: traefik
 roleRef:
@@ -237,10 +239,10 @@ metadata:
   name: traefik
   labels:
     app.kubernetes.io/name: traefik
-    helm.sh/chart: traefik-10.15.0
+    helm.sh/chart: traefik-10.19.4
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/instance: traefik
-  annotations:
+  namespace: traefik
 spec:
   replicas: 2
   selector:
@@ -261,7 +263,7 @@ spec:
         prometheus.io/port: "9100"
       labels:
         app.kubernetes.io/name: traefik
-        helm.sh/chart: traefik-10.15.0
+        helm.sh/chart: traefik-10.19.4
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/instance: traefik
     spec:
@@ -269,7 +271,7 @@ spec:
       terminationGracePeriodSeconds: 60
       hostNetwork: false
       containers:
-        - image: "traefik:2.6.1"
+        - image: "traefik:2.6.3"
           imagePullPolicy: IfNotPresent
           name: traefik
           resources:
@@ -382,7 +384,7 @@ metadata:
     ingressclass.kubernetes.io/is-default-class: "true"
   labels:
     app.kubernetes.io/name: traefik
-    helm.sh/chart: traefik-10.15.0
+    helm.sh/chart: traefik-10.19.4
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/instance: traefik
   name: traefik
@@ -394,6 +396,7 @@ apiVersion: v1
 kind: List
 metadata:
   name: traefik
+  namespace: traefik
 items:
   - apiVersion: v1
     kind: Service
@@ -401,7 +404,7 @@ items:
       name: traefik
       labels:
         app.kubernetes.io/name: traefik
-        helm.sh/chart: traefik-10.15.0
+        helm.sh/chart: traefik-10.19.4
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/instance: traefik
       annotations:
