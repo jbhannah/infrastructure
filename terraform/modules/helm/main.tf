@@ -42,5 +42,5 @@ variable "chart_version" {
 variable "values" {
   type        = string
   description = "Chart values"
-  default     = null
+  default     = ""
 }
