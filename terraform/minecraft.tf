@@ -22,7 +22,6 @@ resource "digitalocean_project" "minecraft" {
 
   resources = [
     module.mc_hannahs_family.droplet.urn,
-    module.dkl_mc_hannahs_family.droplet.urn,
   ]
 }
 
@@ -50,26 +49,7 @@ resource "digitalocean_firewall" "minecraft" {
 module "mc_hannahs_family" {
   source         = "./modules/minecraft"
   hostname       = "mc"
-  size           = "s-2vcpu-4gb-intel"
-  minecraft_port = local.minecraft_port
-  rcon_port      = local.rcon_port
-  zone           = cloudflare_zone.hannahs_family
-  vpc            = module.vpc_default_sfo3
-  ssh_keys       = [digitalocean_ssh_key.infrastructure]
-  packages       = local.packages
-  runcmd         = local.runcmd
-
-  tags = [
-    digitalocean_tag.minecraft,
-    digitalocean_tag.nginx,
-    digitalocean_tag.ssh,
-    digitalocean_tag.terraform,
-  ]
-}
-
-module "dkl_mc_hannahs_family" {
-  source         = "./modules/minecraft"
-  hostname       = "dkl.mc"
+  size           = "s-2vcpu-4gb-amd"
   minecraft_port = local.minecraft_port
   rcon_port      = local.rcon_port
   zone           = cloudflare_zone.hannahs_family
