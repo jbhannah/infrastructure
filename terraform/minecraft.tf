@@ -65,3 +65,21 @@ module "mc_hannahs_family" {
     digitalocean_tag.terraform,
   ]
 }
+
+module "mc_jbhannah_net" {
+  source         = "./modules/minecraft.v2"
+  hostname       = "mc"
+  size           = "s-1vcpu-2gb-amd"
+  minecraft_port = local.minecraft_port
+  rcon_port      = local.rcon_port
+  zone           = cloudflare_zone.jbhannah_net
+  vpc            = module.vpc_default_sfo3
+  ssh_keys       = [digitalocean_ssh_key.infrastructure]
+
+  tags = [
+    digitalocean_tag.minecraft,
+    digitalocean_tag.nginx,
+    digitalocean_tag.ssh,
+    digitalocean_tag.terraform,
+  ]
+}
