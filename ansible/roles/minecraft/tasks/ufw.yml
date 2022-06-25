@@ -1,0 +1,15 @@
+---
+- name: Allow Minecraft server connections
+  become: true
+  ufw:
+    port: "'{{ minecraft_combined_properties['server-port'] }}'"
+    proto: tcp
+    rule: allow
+
+- name: Allow RCON connections
+  become: true
+  ufw:
+    port: "'{{ minecraft_combined_properties['rcon.port'] }}'"
+    proto: tcp
+    rule: allow
+  when: minecraft_combined_properties['enable-rcon']

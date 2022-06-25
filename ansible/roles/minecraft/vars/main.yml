@@ -1,0 +1,33 @@
+---
+minecraft_default_configs:
+  banned-ips.json: "[]"
+  banned-players.json: "[]"
+  eula.txt: "eula=false"
+  log4j2.xml: |
+    <?xml version="1.0" encoding="UTF-8"?>
+    <Configuration status="WARN" packages="com.mojang.util">
+        <Appenders>
+            <Console name="SysOut" target="SYSTEM_OUT">
+                <PatternLayout pattern="[%d{HH:mm:ss}] [%t/%level]: %msg%n" />
+            </Console>
+            <Queue name="ServerGuiConsole">
+                <PatternLayout pattern="[%d{HH:mm:ss} %level]: %msg%n" />
+            </Queue>
+        </Appenders>
+        <Loggers>
+            <Root level="info">
+                <filters>
+                    <MarkerFilter marker="NETWORK_PACKETS" onMatch="DENY" onMismatch="NEUTRAL" />
+                </filters>
+                <AppenderRef ref="SysOut" />
+                <AppenderRef ref="ServerGuiConsole" />
+            </Root>
+        </Loggers>
+    </Configuration>
+  ops.json: "[]"
+  whitelist.json: "[]"
+minecraft_default_properties:
+  server-port: "{{ minecraft_server_port }}"
+  query.port: "{{ minecraft_server_port }}"
+  enable-rcon: false
+  rcon.port: "{{ minecraft_rcon_port }}"

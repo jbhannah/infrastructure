@@ -1,0 +1,45 @@
+---
+- name: Set Adoptium version
+  set_fact:
+    adoptium_version_string: "{{ adoptium_version.major }}.{{ adoptium_version.minor }}.{{ adoptium_version.patch }}+{{ adoptium_version.rev }}"
+
+- name: Create {{ adoptium_user }} group
+  become: true
+  ansible.builtin.group:
+    name: "{{ adoptium_user }}"
+    system: true
+
+- name: Create {{ adoptium_user }} user
+  become: true
+  ansible.builtin.user:
+    name: "{{ adoptium_user }}"
+    group: "{{ adoptium_user }}"
+    system: true
+    home: "{{ adoptium_user_home }}"
+    password_lock: true
+    shell: /usr/sbin/nologin
+
+- name: Make {{ adoptium_user_home }} world-readable
+  become: true
+  ansible.builtin.file:
+    path: "{{ adoptium_user_home }}"
+    state: directory
+    mode: 01755
+
+- name: Download and extract Temurin {{ adoptium_version.major }} release
+  become: true
+  become_user: "{{ adoptium_user }}"
+  ansible.builtin.unarchive:
+    creates: "{{ adoptium_user_home }}/jdk-{{ adoptium_version_string }}"
+    remote_src: true
+    src: https://github.com/adoptium/temurin{{ adoptium_version.major }}-binaries/releases/download/jdk-{{ adoptium_version_string }}/OpenJDK{{ adoptium_version.major }}U-jdk_x64_linux_hotspot_{{ adoptium_version.major }}.{{ adoptium_version.minor }}.{{ adoptium_version.patch }}_{{ adoptium_version.rev }}.tar.gz
+    dest: "{{ adoptium_user_home }}"
+    owner: "{{ adoptium_user }}"
+    group: "{{ adoptium_user }}"
+
+- name: Link java into /usr/local/bin
+  become: true
+  ansible.builtin.file:
+    src: "{{ adoptium_user_home }}/jdk-{{ adoptium_version_string }}/bin/java"
+    dest: /usr/local/bin/java
+    state: link

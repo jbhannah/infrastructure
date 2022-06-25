@@ -1,0 +1,66 @@
+---
+- name: Check for Fabric installer
+  become: true
+  stat:
+    path: "{{ minecraft_home }}/fabric-installer.jar"
+  register: fabric_installer_current
+
+- name: Get URL of latest Fabric installer
+  local_action:
+    module: shell
+    cmd: curl -s https://meta.fabricmc.net/v2/versions/installer | jq -r '.[] | select(.stable==true) | .url'
+  register: fabric_installer_latest
+  when: not fabric_installer_current.stat.exists
+
+- name: Get latest Fabric installer
+  become: true
+  get_url:
+    url: "{{ fabric_installer_latest.stdout }}"
+    dest: "{{ minecraft_home }}/fabric-installer.jar"
+    owner: "{{ minecraft_user }}"
+    group: "{{ minecraft_user }}"
+  register: fabric_installer
+  when: not fabric_installer_current.stat.exists
+
+- name: Check for Fabric server launcher
+  become: true
+  stat:
+    path: "{{ minecraft_home }}/fabric-server-launch.jar"
+  register: fabric_launcher
+
+- name: Check for Minecraft server
+  become: true
+  stat:
+    path: "{{ minecraft_home }}/server.jar"
+  register: minecraft_server
+
+- name: Remove old Fabric remapped JARs
+  become: true
+  become_user: "{{ minecraft_user }}"
+  file:
+    path: "{{ minecraft_home }}/.fabric"
+    state: absent
+  when: fabric_installer.changed or not fabric_launcher.stat.exists or not minecraft_server.stat.exists
+
+- name: Run the Fabric installer
+  become: true
+  become_user: "{{ minecraft_user }}"
+  command:
+    chdir: "{{ minecraft_home }}"
+    cmd: java -jar fabric-installer.jar server -downloadMinecraft -mcversion {{ minecraft_version }}
+  when: fabric_installer.changed or not fabric_launcher.stat.exists or not minecraft_server.stat.exists
+
+- name: Create mods directory
+  become: true
+  become_user: "{{ minecraft_user }}"
+  file:
+    path: "{{ minecraft_home }}/mods"
+    state: directory
+
+- name: Install mods
+  include_tasks:
+    file: modrinth.yml
+  vars:
+    minecraft_mod: "{{ item }}"
+  loop: "{{ minecraft_mods }}"
+  register: minecraft_mods_install

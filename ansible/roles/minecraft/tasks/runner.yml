@@ -1,0 +1,22 @@
+---
+- name: Check for mc-server-runner
+  stat:
+    path: /usr/local/bin/mc-server-runner
+  register: runner_current
+
+- name: Get URL of latest mc-server-runner release
+  # TODO: check against current version and replace if newer
+  local_action:
+    module: shell
+    cmd: curl https://api.github.com/repos/itzg/mc-server-runner/releases/latest | jq '.assets | map(select(.name | contains("amd64"))) | .[0].browser_download_url' | tr -d '"'
+    warn: false
+  register: runner_latest_release
+  when: not runner_current.stat.exists
+
+- name: Get latest mc-server-runner release
+  become: true
+  shell:
+    cmd: curl -L {{ runner_latest_release.stdout }} | tar xzf - mc-server-runner
+    chdir: /usr/local/bin
+    warn: false
+  when: not runner_current.stat.exists

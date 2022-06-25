@@ -1,16 +1,16 @@
 locals {
   user_data = {
-    package_upgrade            = var.package_upgrade
-    package_reboot_if_required = var.package_reboot_if_required
+    package_upgrade            = true
+    package_reboot_if_required = true
 
-    packages = var.packages
+    packages = []
 
-    runcmd = concat([
+    runcmd = [
       "ufw limit ssh",
       "ufw enable",
-    ], var.runcmd)
+    ]
 
-    users = concat([
+    users = [
       {
         name                = "infrastructure"
         ssh_authorized_keys = var.ssh_keys[*].public_key
@@ -18,9 +18,9 @@ locals {
         groups              = ["sudo"]
         shell               = "/bin/bash"
       }
-    ], var.users)
+    ]
 
-    write_files = concat([
+    write_files = [
       {
         path    = "/etc/ssh/sshd_config.d/00-defaults.conf"
         content = <<-EOF
@@ -29,7 +29,7 @@ locals {
           AllowUsers infrastructure
         EOF
       }
-    ], var.write_files)
+    ]
   }
 }
 

@@ -1,6 +1,4 @@
 terraform {
-  experiments = [module_variable_optional_attrs]
-
   required_providers {
     cloudflare = {
       source  = "cloudflare/cloudflare"
@@ -16,7 +14,7 @@ terraform {
 
 variable "image" {
   type    = string
-  default = "ubuntu-20-04-x64"
+  default = "ubuntu-22-04-x64"
 }
 
 variable "hostname" {
@@ -96,48 +94,5 @@ variable "tags" {
   type = list(object({
     id = string
   }))
-  default = []
-}
-
-variable "package_upgrade" {
-  type    = bool
-  default = true
-}
-
-variable "package_reboot_if_required" {
-  type    = bool
-  default = true
-}
-
-variable "packages" {
-  type    = list(string)
-  default = []
-}
-
-variable "runcmd" {
-  type    = list(string)
-  default = []
-}
-
-variable "users" {
-  type = list(object({
-    name                = string
-    homedir             = optional(string)
-    ssh_authorized_keys = optional(list(string))
-    sudo                = optional(list(string))
-    groups              = optional(list(string))
-    shell               = optional(string)
-    system              = optional(bool)
-  }))
-
-  default = []
-}
-
-variable "write_files" {
-  type = list(object({
-    path    = string
-    content = string
-  }))
-
   default = []
 }

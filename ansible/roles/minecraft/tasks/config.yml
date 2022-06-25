@@ -1,0 +1,30 @@
+---
+- name: Set server properties
+  become: true
+  lineinfile:
+    create: true
+    path: "{{ minecraft_home }}/server.properties"
+    regexp: "^{{ item.key }} ?="
+    line: "{{ item.key }}={{ (item.value | string | lower) if item.value is boolean else item.value }}"
+    owner: "{{ minecraft_user }}"
+    group: "{{ minecraft_user }}"
+  loop: "{{ minecraft_combined_properties | dict2items }}"
+
+- name: Write configuration files
+  become: true
+  copy:
+    content: "{{ item.value }}"
+    dest: "{{ minecraft_home }}/{{ item.key }}"
+    owner: "{{ minecraft_user }}"
+    group: "{{ minecraft_user }}"
+  loop: "{{ minecraft_combined_configs | dict2items }}"
+
+- name: Copy server.sh
+  become: true
+  copy:
+    src: server.sh
+    dest: "{{ minecraft_home }}/server.sh"
+    owner: "{{ minecraft_user }}"
+    group: "{{ minecraft_user }}"
+    mode: 0755
+  register: minecraft_server_sh

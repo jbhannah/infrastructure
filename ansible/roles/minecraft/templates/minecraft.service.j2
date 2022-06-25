@@ -1,0 +1,23 @@
+[Unit]
+Description=Minecraft Server
+After=network.target
+
+[Service]
+Type=simple
+EnvironmentFile=-/etc/default/%N.defaults
+WorkingDirectory={{ minecraft_home }}
+PrivateUsers=true
+User={{ minecraft_user }}
+Group={{ minecraft_user }}
+KillMode=mixed
+ProtectSystem=full
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+Restart=on-failure
+
+ExecStart=mc-server-runner -debug -detach-stdin -stop-server-announce-delay 1m -stop-duration 15s ./server.sh
+
+[Install]
+WantedBy=multi-user.target

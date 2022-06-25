@@ -1,0 +1,40 @@
+---
+minecraft_configs:
+  eula.txt: "eula=true"
+  whitelist.json: |
+    [
+      {
+        "uuid": "aedf3044-aaed-40cf-8ac3-2eb19ea89e59",
+        "name": "BolderBrooklyn"
+      }
+    ]
+minecraft_domain: creative.mc.bolderbrooklyn.tv
+minecraft_enabled: true
+minecraft_mods:
+  - Chunky
+  - debugify
+  - fabric-api
+  - krypton
+  - lithium
+  - spark
+  - starlight
+minecraft_properties:
+  difficulty: hard
+  enable-rcon: true
+  enforce-whitelist: true
+  force-gamemode: true
+  gamemode: creative
+  level-seed: "-6940013810757740425"
+  motd: mc.BolderBrooklyn.tv - Creative Mode
+  white-list: true
+  rcon.password: !vault |
+    $ANSIBLE_VAULT;1.1;AES256
+    35633433303866343434646562326264333335313063363230373233623731326434376638623932
+    3832353735613665616336316264383864373631626666330a613637333733613766343661633563
+    36393266313932646261613862663739313061343661626139383735303064373162386139303738
+    6364383838303230310a616630383035303539306637616430653162663739656336613465323563
+    37613237656538333834323331666434646338353765633038336235663536623832326330373763
+    3330353731323262643765383763383730653962363932366137
+minecraft_rcon_port: 25575
+minecraft_server_port: 25565
+minecraft_ufw: true

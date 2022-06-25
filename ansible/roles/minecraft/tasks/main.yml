@@ -1,0 +1,13 @@
+---
+- name: Set Minecraft properties
+  set_fact:
+    minecraft_combined_configs: "{{ minecraft_default_configs | combine(minecraft_configs) }}"
+    minecraft_combined_properties: "{{ minecraft_default_properties | combine(minecraft_properties) }}"
+
+- include_tasks: user.yml
+- include_tasks: fabric.yml
+- include_tasks: config.yml
+- include_tasks: runner.yml
+- include_tasks: ufw.yml
+  when: minecraft_ufw
+- include_tasks: systemd.yml

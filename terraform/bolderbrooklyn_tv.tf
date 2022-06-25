@@ -13,12 +13,29 @@ resource "digitalocean_project" "bolderbrooklyn_tv" {
 
   resources = [
     module.mc_bolderbrooklyn_tv.droplet.urn,
+    module.creative_mc_bolderbrooklyn_tv.droplet.urn,
   ]
 }
 
 module "mc_bolderbrooklyn_tv" {
-  source   = "./modules/minecraft.v2"
+  source   = "./modules/minecraft"
   hostname = "mc"
+  size     = "s-1vcpu-2gb-amd"
+  zone     = cloudflare_zone.bolderbrooklyn_tv
+  vpc      = module.vpc_default_sfo3
+  ssh_keys = [digitalocean_ssh_key.infrastructure]
+
+  tags = [
+    digitalocean_tag.minecraft,
+    digitalocean_tag.nginx,
+    digitalocean_tag.ssh,
+    digitalocean_tag.terraform
+  ]
+}
+
+module "creative_mc_bolderbrooklyn_tv" {
+  source   = "./modules/minecraft"
+  hostname = "creative.mc"
   size     = "s-1vcpu-2gb-amd"
   zone     = cloudflare_zone.bolderbrooklyn_tv
   vpc      = module.vpc_default_sfo3

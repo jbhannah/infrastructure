@@ -1,0 +1,6 @@
+---
+- hosts:
+    - tag_minecraft
+  roles:
+    - name: minecraft
+      when: minecraft_enabled

@@ -1,0 +1,51 @@
+---
+minecraft_configs:
+  eula.txt: "eula=true"
+  whitelist.json: |
+    [
+      {
+        "uuid": "aedf3044-aaed-40cf-8ac3-2eb19ea89e59",
+        "name": "BolderBrooklyn"
+      },
+      {
+        "uuid": "11d158b7-df6d-409c-a6a4-39afc5ec3985",
+        "name": "DarkWerePanda"
+      },
+      {
+        "uuid": "f63dcac9-344f-4dcf-a7e9-68005d6ac204",
+        "name": "Koji31"
+      },
+      {
+        "uuid": "d14be735-c7e0-4d52-8aed-3b0f2500f52c",
+        "name": "RescuePuppy"
+      }
+    ]
+minecraft_domain: mc.hannahs.family
+minecraft_enabled: true
+minecraft_mods:
+  - Chunky
+  - debugify
+  - fabric-api
+  - krypton
+  - lithium
+  - spark
+  - starlight
+minecraft_properties:
+  difficulty: hard
+  enable-rcon: true
+  enforce-whitelist: true
+  force-gamemode: true
+  gamemode: survival
+  motd: Hannah Family Minecraft
+  white-list: true
+  rcon.password: !vault |
+    $ANSIBLE_VAULT;1.1;AES256
+    37613232343731346433613335363964643061326531356133626430333535333030313533303332
+    6262346366303738656364666166633134663833623432310a323166643663333431393533653834
+    63303364613166336633633661656162393239663665316137323134366237306664653131323938
+    6530383031663831350a623666386139373965313862613661616362366130366464643437373561
+    38326262323935633437343630613431666563383666313765623433323464303339633737343232
+    3739666430333533643139636435336363663231313564386462
+minecraft_rcon_port: 25575
+minecraft_server_port: 25565
+minecraft_ufw: true

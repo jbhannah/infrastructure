@@ -1,0 +1,14 @@
+---
+minecraft_configs: {}
+minecraft_domain: mc.example.com
+minecraft_enabled: false
+minecraft_home: /opt/minecraft
+minecraft_jvm_args: {}
+minecraft_jvm_heap_size: 1024M
+minecraft_mods: []
+minecraft_properties: {}
+minecraft_rcon_port: 25575
+minecraft_server_port: 25565
+minecraft_ufw: true
+minecraft_user: minecraft
+minecraft_version: 1.19

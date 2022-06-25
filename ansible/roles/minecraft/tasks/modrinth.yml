@@ -1,0 +1,16 @@
+---
+- name: Get URL of latest {{ minecraft_mod }} release for {{ minecraft_version }}
+  local_action:
+    module: shell
+    cmd: curl https://api.modrinth.com/v2/project/{{ minecraft_mod }}/version\?loaders=fabric\&game_versions=%5B%22{{ minecraft_version }}%22%5D | jq -r '.[0].files[0].url'
+  register: minecraft_mod_url
+
+- name: Get latest {{ minecraft_mod }} release for {{ minecraft_version }}
+  become: true
+  become_user: "{{ minecraft_user }}"
+  get_url:
+    url: "{{ minecraft_mod_url.stdout }}"
+    dest: "{{ minecraft_home }}/mods/{{ minecraft_mod }}.jar"
+    owner: "{{ minecraft_user }}"
+    group: "{{ minecraft_user }}"
+  register: minecraft_mod_install
